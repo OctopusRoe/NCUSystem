@@ -85,16 +85,16 @@ const UserGroup: React.FC<{}> = () => {
     {
       title: '用户组名称',
       dataIndex: 'name',
-      key: 'name',
       width: 250,
+      key: 'name',
       fixed: 'left',
     },
     {
       title: '权限详情',
       dataIndex: 'infomation',
+      width: 300,
       key: 'infomation',
       hideInSearch: true,
-      width: 350,
       // 使用 antd Tree 组件
       render: (text, record) => (
         <>
@@ -105,9 +105,9 @@ const UserGroup: React.FC<{}> = () => {
     {
       title: '用户组人数',
       dataIndex: 'userGroup',
+      width: 150,
       key: 'userGroup',
       hideInSearch: true,
-      width: 250,
       render: (text, record) => (
         <>
         
@@ -115,17 +115,24 @@ const UserGroup: React.FC<{}> = () => {
       )
     },
     {
+      title: '用户组所有者',
+      dataIndex: 'userGroupHas',
+      width: 150,
+      key: 'userGroupHas',
+      hideInSearch: true
+    },
+    {
       title: '描述',
       dataIndex: 'desc',
-      key: 'desc',
+      width: 450,
       hideInSearch: true,
-      width: 450
+      key: 'desc',
     },
     {
       title: '操作',
       dataIndex: 'option',
+      width: 180,
       valueType: 'option',
-      width: 250,
       fixed: 'right',
       render: (_, record) => (
         <>
@@ -144,7 +151,7 @@ const UserGroup: React.FC<{}> = () => {
               setStepFormValues(record);
             }}
           >
-            人员配置
+            人员
           </a>
           <Divider type="vertical" />
           <a
@@ -153,7 +160,7 @@ const UserGroup: React.FC<{}> = () => {
               setStepFormValues(record);
             }}
           >
-            权限配置
+            权限
           </a>
           <Divider type="vertical" />
           <a

@@ -1,40 +1,44 @@
 // 职务设置 组件
 
 import React from 'react'
-import { Button, Card, Form } from 'antd';
+import { Card, Form } from 'antd';
 
 import { connect, Dispatch } from 'umi';
 import TableForm from './components/TableForm';
-import FooterToolbar from './components/FooterToolbar';
 
 const tableData = [
   {
     key: '1',
-    positionName: '信息工程学院',
+    positionName: '测试人员1',
+    positionLeader: '是',
     positionVIP: '是',
     sort: 1
   },
   {
     key: '2',
-    positionName: '医学院',
+    positionName: '测试人员2',
+    positionLeader: '否',
     positionVIP: '是',
     sort: 2
   },
   {
     key: '3',
-    positionName: '食品学院',
+    positionName: '测试人员3',
+    positionLeader: '否',
     positionVIP: '是',
     sort: 3
   },
   {
     key: '4',
-    positionName: '建筑工程学院',
+    positionName: '测试人员4',
+    positionLeader: '否',
     positionVIP: '是',
     sort: 4
   },
   {
     key: '5',
-    positionName: '通信工程学院',
+    positionName: '测试人员5',
+    positionLeader: '否',
     positionVIP: '是',
     sort: 5
   },

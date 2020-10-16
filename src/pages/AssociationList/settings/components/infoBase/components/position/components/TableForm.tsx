@@ -87,7 +87,7 @@ const TableForm: FC<TableFormProps> = ({ value, onChange }) => {
         return;
       }
       const target = getRowByKey(key) || ({} as any);
-      if (!target.positionName || !target.positionVIP || !target.sort) {
+      if (!target.positionName || !target.positionLeader || !target.positionVIP || !target.sort) {
         message.error('请填写完整职务信息。');
         (e.target as HTMLInputElement).focus();
         setLoading(false);
@@ -135,10 +135,10 @@ const TableForm: FC<TableFormProps> = ({ value, onChange }) => {
 
   const columns = [
     {
-      title: '职位名称',
+      title: '职务名称',
       dataIndex: 'positionName',
       key: 'positionName',
-      width: '40%',
+      width: '25%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
@@ -147,7 +147,27 @@ const TableForm: FC<TableFormProps> = ({ value, onChange }) => {
               autoFocus
               onChange={(e) => handleFieldChange(e, 'positionName', record.key)}
               onKeyPress={(e) => handleKeyPress(e, record.key)}
-              placeholder="职位名称"
+              placeholder="职务名称"
+            />
+          );
+        }
+        return text;
+      },
+    },
+    {
+      title: '是否为社团负责人',
+      dataIndex: 'positionLeader',
+      key: 'positionLeader',
+      width: '25%',
+      render: (text: string, record: TableFormDateType) => {
+        if (record.editable) {
+          return (
+            <Input
+              value={text}
+              autoFocus
+              onChange={(e) => handleFieldChange(e, 'positionLeader', record.key)}
+              onKeyPress={(e) => handleKeyPress(e, record.key)}
+              placeholder="是否为社团负责人"
             />
           );
         }
@@ -158,7 +178,7 @@ const TableForm: FC<TableFormProps> = ({ value, onChange }) => {
       title: '是否为社团骨干',
       dataIndex: 'positionVIP',
       key: 'positionVIP',
-      width: '30%',
+      width: '25%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
@@ -178,7 +198,7 @@ const TableForm: FC<TableFormProps> = ({ value, onChange }) => {
       title: '排序号',
       dataIndex: 'sort',
       key: 'sort',
-      width: '20%',
+      width: '15%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
@@ -248,7 +268,7 @@ const TableForm: FC<TableFormProps> = ({ value, onChange }) => {
         onClick={newMember}
       >
         <PlusOutlined />
-        新增部门
+        新增职务
       </Button>
     </>
   );

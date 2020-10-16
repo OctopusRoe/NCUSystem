@@ -1,7 +1,7 @@
 // 带有搜索框的穿梭框
 
 import React from "react"
-import { Transfer, Table, Tag } from 'antd';
+import { Transfer, Table } from 'antd';
 import difference from 'lodash/difference';
 
 // Customize Table Transfer
@@ -53,16 +53,14 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }: any) => (
   </Transfer>
 );
 
-const mockTags = ['cat', 'dog', 'bird'];
+// const mockTags = [{name: '信工学院', color: 'blue'}, {name: '医学院', color: 'purple'}, {name: '保卫处', color: 'red'}];
 
 const mockData: any = [];
 for (let i = 0; i < 20; i++) {
   mockData.push({
     key: i.toString(),
-    title: `content${i + 1}`,
-    description: `description of content${i + 1}`,
-    disabled: i % 4 === 0,
-    tag: mockTags[i % 3],
+    ID: `00000${i + 1}`,
+    name: `description of content${i + 1}`,
   });
 }
 
@@ -70,24 +68,33 @@ const originTargetKeys = mockData.filter((item: any) => +item.key % 3 > 1).map((
 
 const leftTableColumns = [
   {
-    dataIndex: 'title',
-    title: 'Name',
+    dataIndex: 'ID',
+    title: '学号/工号',
   },
   {
-    dataIndex: 'tag',
-    title: 'Tag',
-    render: (tag: any) => <Tag>{tag}</Tag>,
+    dataIndex: 'name',
+    title: '姓名',
   },
-  {
-    dataIndex: 'description',
-    title: 'Description',
-  },
+  // {
+  //   dataIndex: 'department',
+  //   title: '学院/部门',
+  //   render: (department: any) => <Tag color={department.color}>{department.name}</Tag>
+  // },
 ];
 const rightTableColumns = [
   {
-    dataIndex: 'title',
-    title: 'Name',
+    dataIndex: 'ID',
+    title: '学号/工号',
   },
+  {
+    dataIndex: 'name',
+    title: '姓名',
+  },
+  // {
+  //   dataIndex: 'department',
+  //   title: '学院/部门',
+  //   render: (department: any) => <Tag color={department.color}>{department.name}</Tag>
+  // },
 ];
 
 class SearchTransfer extends React.Component {

@@ -7,10 +7,10 @@ import BaseView from './components/base';
 import BindingView from './components/binding';
 import { CurrentUser } from './data.d';
 import NotificationView from './components/notification';
-import SecurityView from './components/security';
 import styles from './base.less';
 
 import Department from './components/department/department'
+import AcademicYear from './components/academicyear/academicyear';
 
 const { Item } = Menu;
 
@@ -19,7 +19,7 @@ interface SettingsProps {
   currentUser: CurrentUser;
 }
 
-type SettingsStateKeys = 'base' | 'department' | 'security' | 'binding' | 'notification';
+type SettingsStateKeys = 'base' | 'department' | 'academicyear' | 'binding' | 'notification';
 interface SettingsState {
   mode: 'inline' | 'horizontal';
   menuMap: {
@@ -48,13 +48,13 @@ class Base extends Component<SettingsProps, SettingsState> {
           id="setting.menuMap.department"
           defaultMessage="Department Settings"
         />
-      )
-      // binding: (
-      //   <FormattedMessage
-      //     id="accountandsettings.menuMap.binding"
-      //     defaultMessage="Account Binding"
-      //   />
-      // ),
+      ),
+      academicyear: (
+        <FormattedMessage
+          id="setting.menuMap.academicyear"
+          defaultMessage="Academicyear Settings"
+        />
+      ),
       // notification: (
       //   <FormattedMessage
       //     id="accountandsettings.menuMap.notification"
@@ -127,8 +127,8 @@ class Base extends Component<SettingsProps, SettingsState> {
         return <BaseView />;
       case 'department':
         return <Department />;
-      case 'security':
-        return <SecurityView />;
+      case 'academicyear':
+        return <AcademicYear />;
       case 'binding':
         return <BindingView />;
       case 'notification':

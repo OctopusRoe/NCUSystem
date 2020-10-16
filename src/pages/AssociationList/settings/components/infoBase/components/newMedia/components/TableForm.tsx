@@ -287,7 +287,7 @@ const TableForm: FC<TableFormProps> = ({ value, onChange }) => {
         onClick={newMember}
       >
         <PlusOutlined />
-        新增部门
+        新增平台
       </Button>
     </>
   );
