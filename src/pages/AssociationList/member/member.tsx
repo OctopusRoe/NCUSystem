@@ -1,251 +1,131 @@
-//
+// 成员管理 组件
 
-import { Button, message } from 'antd';
+import { Avatar, List, Skeleton } from 'antd';
+import React, { Component } from 'react';
 
-import React, { useRef, useState } from 'react';
-import { queryRule, updateRule } from '@/pages/AssociationList/member/service';
-import UpdateForm, { FormValueType } from '@/pages/AssociationList/member/components/UpdateForm';
-import { TableListItem } from '@/pages/AssociationList/member/data';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Dispatch, connect } from 'umi';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import moment from 'moment';
+import { ModalState } from '@/models/userInfoHead';
+import styles from './style.less';
+import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data';
 
+import MemberCom from './components/memberCom/memberCom'
 
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
+interface WorkplaceProps {
+  currentUser?: CurrentUser;
+  projectNotice: NoticeType[];
+  activities: ActivitiesType[];
+  radarData: RadarDataType[];
+  dispatch: Dispatch;
+  currentUserLoading: boolean;
+  projectLoading: boolean;
+  activitiesLoading: boolean;
+}
+
+const PageHeaderContent: React.FC<{ currentUser: CurrentUser }> = ({ currentUser }) => {
+  const loading = currentUser && Object.keys(currentUser).length;
+  if (!loading) {
+    return <Skeleton avatar paragraph={{ rows: 1 }} active />;
   }
-};
-
-
-
-const Member: React.FC<{}> = () => {
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
-  const actionRef = useRef<ActionType>();
-  const columns: ProColumns<TableListItem>[] = [
-    {
-      title: '证件照',
-      dataIndex: 'number',
-      width: 150,
-      key: 'number',
-      hideInSearch: true,
-      fixed: 'left',
-    },
-    {
-      title: '学号',
-      dataIndex: 'logo',
-      width: 100,
-      key: 'logo',
-      fixed: 'left',
-    },
-    {
-      title: '姓名',
-      dataIndex: 'chinesename',
-      width: 150,
-      key: 'chinesename',
-      fixed: 'left',
-    },
-    {
-      title: '所在社团',
-      dataIndex: 'unit',
-      width: 200,
-      key: 'unit',
-      hideInSearch: true,
-    },
-    {
-      title: '社团部门',
-      dataIndex: 'count',
-      width: 200,
-      key: 'count',
-      hideInSearch: true,
-    },
-    {
-      title: '社团职务',
-      dataIndex: 'initiator',
-      width: 200,
-      key: 'initiator',
-      hideInSearch: true,
-    },
-    {
-      title: '社团骨干',
-      dataIndex: 'memberVIP',
-      width: 200,
-      key: 'memberVIP',
-      hideInSearch: true,
-
-    },
-    {
-      title: '起止日期',
-      dataIndex: 'start',
-      width: 200,
-      key: 'start',
-    },
-    {
-      title: '在岗状态',
-      dataIndex: 'staus',
-      width: 200,
-      key: 'staus',
-      hideInSearch: true,
-    },
-    {
-      title: '性别',
-      dataIndex: 'sex',
-      width: 200,
-      key: 'sex',
-      hideInSearch: true,
-    },
-    {
-      title: '学院',
-      dataIndex: 'college',
-      width: 100,
-      key: 'college',
-      hideInSearch: true,
-    },
-    {
-      title: '专业',
-      dataIndex: 'specialty',
-      width: 150,
-      key: 'specialty',
-      hideInSearch: true,
-    },
-    {
-      title: '学制',
-      dataIndex: 'educational',
-      width: 150,
-      key: 'educational',
-      hideInSearch: true,
-
-    },
-    {
-      title: '班级',
-      dataIndex: 'class',
-      width: 100,
-      key: 'class',
-    },
-    {
-      title: '年级',
-      dataIndex: 'grade',
-      width: 100,
-      key: 'grade',
-      hideInSearch: true,
-    },
-    {
-      title: '入学时间',
-      dataIndex: 'startTime',
-      width: 150,
-      key: 'startTime',
-      hideInSearch: true,
-      sorter: true,
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'IdCard',
-      width: 100,
-      key: 'IdCard'
-    },
-    {
-      title: '籍贯',
-      dataIndex: 'birthPlace',
-      width: 150,
-      key: 'birthPlace',
-      hideInSearch: true,
-    },
-    {
-      title: '民族',
-      dataIndex: 'nation',
-      width: 100,
-      key: 'nation',
-      hideInSearch: true,
-    },
-    {
-      title: '政治面貌',
-      dataIndex: 'political',
-      width: 100,
-      key: 'political',
-      hideInSearch: true,
-    },
-    {
-      title: '手机号',
-      dataIndex: 'phone',
-      width: 150,
-      key: 'phone'
-    },
-    {
-      title: 'QQ号',
-      dataIndex: 'QQ',
-      width: 150,
-      key: 'QQ'
-    },
-
-  ];
-
-
-
-
   return (
-    <>
-      <ProTable<TableListItem>
-        headerTitle="成员列表"
-        actionRef={actionRef}
-        rowKey="key"
-        rowClassName={(record, index) => {
-          let className = 'light-row';
-          if (index % 2 === 1) className = 'dark-row';
-          return className;
-        }}
-        toolBarRender={(_action, { selectedRows }) => [
-          <Button type="default" size={'small'}>
-            <DownloadOutlined /> 导出
-        </Button>,
-          selectedRows && selectedRows.length > 0 && (
-            <Button size={"small"}>
-              <DownloadOutlined /> 批量导出
-            </Button>
-          ),
-        ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
-        columns={columns}
-        rowSelection={{}}
-        scroll={{ x: 1500 }}
-      />
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
-    </>
+    <div className={styles.pageHeaderContent}>
+      <div className={styles.avatar}>
+        <Avatar size="large" src={currentUser.avatar} />
+      </div>
+      <div className={styles.content}>
+        <div className={styles.contentTitle}>
+          {currentUser.name}
+        </div>
+        <div>
+          {currentUser.title} | {currentUser.group}
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default Member;
+const ExtraContent: React.FC<{}> = () => (
+  <div className={styles.extraImg}>
+    <img
+      alt="这是一个标题"
+      src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
+    />
+  </div>
+);
+
+class Member extends Component<WorkplaceProps> {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dashboardAndworkplace/init',
+    });
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dashboardAndworkplace/clear',
+    });
+  }
+
+  renderActivities = (item: ActivitiesType) => {
+    const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
+      if (item[key]) {
+        return (
+          <a href={item[key].link} key={item[key].name}>
+            {item[key].name}
+          </a>
+        );
+      }
+      return key;
+    });
+    return (
+      <List.Item key={item.id}>
+        <List.Item.Meta
+          avatar={<Avatar src={item.user.avatar} />}
+          title={
+            <span>
+              <a className={styles.username}>{item.user.name}</a>
+              &nbsp;
+              <span className={styles.event}>{events}</span>
+            </span>
+          }
+          description={
+            <span className={styles.datetime} title={item.updatedAt}>
+              {moment(item.updatedAt).fromNow()}
+            </span>
+          }
+        />
+      </List.Item>
+    );
+  };
+
+  render() {
+    const { currentUser } = this.props;
+    if (!currentUser || !currentUser.userid) {
+      return null;
+    }
+    return (
+      <PageHeaderWrapper
+        content={<PageHeaderContent currentUser={currentUser} />}
+        extraContent={<ExtraContent />}
+      >
+        <MemberCom />
+      </PageHeaderWrapper>
+    );
+  }
+}
+
+export default connect(
+  ({ dashboardAndworkplace: { currentUser }, }: {
+    dashboardAndworkplace: ModalState;
+    loading: {
+      effects: {
+        [key: string]: boolean;
+      };
+    };
+  }) => ({
+    currentUser,
+  }),
+)(Member);

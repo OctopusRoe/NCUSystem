@@ -1,10 +1,12 @@
+// 社团设置 组件
+
 import { Avatar, List, Skeleton } from 'antd';
 import React, { Component } from 'react';
 
 import { Dispatch, connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
-import { ModalState } from './model';
+import { ModalState } from '@/models/userInfoHead';
 import styles from './style.less';
 import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data';
 
@@ -36,7 +38,7 @@ const PageHeaderContent: React.FC<{ currentUser: CurrentUser }> = ({ currentUser
           {currentUser.name}
         </div>
         <div>
-          {currentUser.title} |{currentUser.group}
+          {currentUser.title} | {currentUser.group}
         </div>
       </div>
     </div>
@@ -101,7 +103,6 @@ class Settings extends Component<WorkplaceProps> {
 
   render() {
     const { currentUser } = this.props;
-
     if (!currentUser || !currentUser.userid) {
       return null;
     }

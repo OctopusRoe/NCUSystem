@@ -1,6 +1,6 @@
 import { Effect, Reducer } from 'umi';
-import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data.d';
-import { fakeChartData, queryActivities, queryCurrent, queryProjectNotice } from './service';
+import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data';
+import { fakeChartData, queryActivities, queryCurrent, queryProjectNotice } from '@/services/userInfo';
 
 export interface ModalState {
   currentUser?: CurrentUser;

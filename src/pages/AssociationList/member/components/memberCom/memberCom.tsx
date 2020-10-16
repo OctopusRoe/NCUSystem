@@ -1,15 +1,42 @@
-// 社团成员列表 组件
+//
 
-import React, { useRef } from 'react';
-import { Button } from 'antd';
-import { queryRule } from './service';
+import { Button, message } from 'antd';
+
+import React, { useRef, useState } from 'react';
+import { queryRule, updateRule } from './service';
+import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
 
 
-const Member: React.FC<{}> = () => {
+/**
+ * 更新节点
+ * @param fields
+ */
+const handleUpdate = async (fields: FormValueType) => {
+  const hide = message.loading('正在配置');
+  try {
+    await updateRule({
+      name: fields.name,
+      desc: fields.desc,
+      key: fields.key,
+    });
+    hide();
+    message.success('配置成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('配置失败请重试！');
+    return false;
+  }
+};
 
+
+
+const MemberCom: React.FC<{}> = () => {
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -197,8 +224,28 @@ const Member: React.FC<{}> = () => {
         rowSelection={{}}
         scroll={{ x: 1500 }}
       />
+      {stepFormValues && Object.keys(stepFormValues).length ? (
+        <UpdateForm
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              handleUpdateModalVisible(false);
+              setStepFormValues({});
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+          onCancel={() => {
+            handleUpdateModalVisible(false);
+            setStepFormValues({});
+          }}
+          updateModalVisible={updateModalVisible}
+          values={stepFormValues}
+        />
+      ) : null}
     </>
   );
 };
 
-export default Member;
+export default MemberCom;
