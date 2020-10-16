@@ -1,6 +1,7 @@
-// 用户管理页面
+// 社团列表页面
 
 import React, { useState, useRef } from 'react';
+
 import { DownloadOutlined, DownOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Divider, Dropdown, Menu, message, Input } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -73,7 +74,7 @@ const handleUpdate = async (fields: FormValueType) => {
 //   }
 // };
 
-const Student: React.FC<{}> = () => {
+const List: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
@@ -242,9 +243,6 @@ const Student: React.FC<{}> = () => {
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, { selectedRows }) => [
-          // <Button type="primary" onClick={() => handleModalVisible(true)} size={'small'}>
-          //   <PlusOutlined /> 新增
-          // </Button>,
           <Button type="primary" onClick={() => handleModalVisible(true)} size={'small'}>
             <UploadOutlined /> 导入
           </Button>,
@@ -289,4 +287,4 @@ const Student: React.FC<{}> = () => {
   );
 };
 
-export default Student;
+export default List;

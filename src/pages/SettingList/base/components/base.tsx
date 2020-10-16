@@ -1,7 +1,7 @@
 // 基础设置 页面
 
 import { Button, Input, Form, message, Modal } from 'antd';
-import { connect, FormattedMessage, formatMessage} from 'umi';
+import { connect, FormattedMessage, formatMessage, useIntl} from 'umi';
 import React, { Component } from 'react';
 
 import { CurrentUser } from '../data.d';

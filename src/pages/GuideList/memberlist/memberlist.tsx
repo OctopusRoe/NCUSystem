@@ -1,8 +1,7 @@
-//
-
-import { Button, message } from 'antd';
+// 社团成员列表 组件
 
 import React, { useRef, useState } from 'react';
+import { Button, message } from 'antd';
 import { queryRule, updateRule } from '@/pages/AssociationList/member/service';
 import UpdateForm, { FormValueType } from '@/pages/AssociationList/member/components/UpdateForm';
 import { TableListItem } from '@/pages/AssociationList/member/data';
