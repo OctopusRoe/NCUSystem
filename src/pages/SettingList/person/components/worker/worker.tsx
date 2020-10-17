@@ -1,15 +1,15 @@
 // 用户管理页面
 
-import { DownloadOutlined, DownOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message, Input } from 'antd';
+import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Divider, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data';
-import { queryRule, updateRule, addRule, removeRule } from './service';
-import styles from './worker.less'
+import { queryRule, updateRule } from './service';
+
 
 /**
  * 添加节点
