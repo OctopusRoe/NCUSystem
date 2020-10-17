@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, Steps } from 'antd';
 import { connect } from 'umi';
 import { StateType } from './model';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Step1 from './components/Step1';
 import Step2 from './components/Step2';
 import Step3 from './components/Step3';
-import Step4 from './components/Step4';
 import Step5 from './components/Step5';
 import styles from './style.less';
 import Success from './components/result/success';
@@ -23,8 +23,6 @@ const getCurrentStepAndComponent = (current?: string) => {
       return { step: 1, component: <Step2 /> };
     case 'third':
       return { step: 2, component: <Step3 /> };
-    case 'fourth':
-      return { step: 3, component: <Step4 /> };
     case 'fifth':
       return { step: 4, component: <Step5 /> };
     case 'info':
@@ -44,20 +42,21 @@ const StepForm: React.FC<StepFormProps> = ({ current }) => {
   }, [current]);
 
   return (
-    <Card bordered={false}>
-      <>
-        <Steps current={currentStep} className={styles.steps}>
-          <Step title="社团基本信息填写" />
-          <Step title="社团发起人信息填写" />
-          <Step title="社团组织成员信息填写" />
-          <Step title="申请材料提交" />
-        </Steps>
-        {stepComponent}
-      </>
-
-      <Success/>
-      <Fail/>
-    </Card>
+    <PageHeaderWrapper>
+      <Card bordered={false}>
+        <div>
+          <Steps current={currentStep} className={styles.steps}>
+            <Step title="社团基本信息填写" />
+            <Step title="社团发起人信息填写" />
+            <Step title="社团组织成员信息填写" />
+            <Step title="申请材料提交" />
+          </Steps>
+          {stepComponent}
+        </div>
+        <Success/>
+        <Fail/>
+      </Card>
+    </PageHeaderWrapper>
   );
 };
 

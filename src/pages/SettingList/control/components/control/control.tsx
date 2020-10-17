@@ -1,12 +1,10 @@
 // 应用管理组件
 
-import React, { FC, useState } from 'react';
-import { Button, Card, Form } from 'antd';
+import React, { FC } from 'react';
+import { Card, Form } from 'antd';
 
 import { connect, Dispatch } from 'umi';
 import TableForm from './components/TableForm';
-import FooterToolbar from './components/FooterToolbar';
-import styles from './department.less';
 
 const tableData = [
   {
@@ -80,9 +78,7 @@ const Control: FC<AdvancedFormProps> = ({ submitting, dispatch }) => {
   );
 };
 
-export default connect(({ loading }: { loading: { effects: { [key: string]: boolean } } }) => ({
-  submitting: loading.effects['control/submitAdvancedForm'],
-}))(Control);
+export default connect()(Control);
 
 
 

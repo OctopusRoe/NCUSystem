@@ -1,7 +1,7 @@
 // 换届变更 组件
 
 import React from "react"
-import { Button, Card, Form } from 'antd';
+import { Card, Form } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 import { connect, Dispatch } from 'umi';
@@ -89,6 +89,4 @@ const ChangeOffice: React.FC<AdvancedFormProps> = ({ submitting, dispatch }) => 
   );
 };
 
-export default connect(({ loading }: { loading: { effects: { [key: string]: boolean } } }) => ({
-  submitting: loading.effects['ChangeOfficeModel/submitAdvancedForm'],
-}))(ChangeOffice);
+export default connect()(ChangeOffice);

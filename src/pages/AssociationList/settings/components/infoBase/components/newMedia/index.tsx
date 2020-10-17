@@ -1,11 +1,10 @@
 // 新媒体平台登记 组件
 
 import React from 'react'
-import { Button, Card, Form } from 'antd';
+import { Card, Form } from 'antd';
 
 import { connect, Dispatch } from 'umi';
 import TableForm from './components/TableForm';
-import FooterToolbar from './components/FooterToolbar';
 
 const tableData = [
   {
@@ -82,6 +81,4 @@ const NewMedia: React.FC<AdvancedFormProps> = ({ submitting, dispatch }) => {
   );
 };
 
-export default connect(({ loading }: { loading: { effects: { [key: string]: boolean } } }) => ({
-  submitting: loading.effects['NewMediaModel/submitAdvancedForm'],
-}))(NewMedia);
+export default connect()(NewMedia);
