@@ -4,13 +4,14 @@ import { FormattedMessage, Dispatch, connect } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import BaseView from './components/base';
-import BindingView from './components/binding';
 import { CurrentUser } from './data.d';
-import NotificationView from './components/notification';
 import styles from './base.less';
 
-import Department from './components/department/department'
-import AcademicYear from './components/academicyear/academicyear';
+import Department from './components/department'
+import AcademicYear from './components/academicyear'
+import AssociationType from './components/associationtype'
+import Specialty from './components/specialty'
+import SetClass from './components/setclass'
 
 const { Item } = Menu;
 
@@ -19,7 +20,7 @@ interface SettingsProps {
   currentUser: CurrentUser;
 }
 
-type SettingsStateKeys = 'base' | 'department' | 'academicyear' | 'binding' | 'notification';
+type SettingsStateKeys = 'base' | 'department' | 'academicyear' | 'associationtype' | 'specialty' | 'setclass';
 interface SettingsState {
   mode: 'inline' | 'horizontal';
   menuMap: {
@@ -37,12 +38,6 @@ class Base extends Component<SettingsProps, SettingsState> {
       base: (
         <FormattedMessage id="setting.menuMap.basic" defaultMessage="Basic Settings" />
       ),
-      // security: (
-      //   <FormattedMessage
-      //     id="setting.menuMap.security"
-      //     defaultMessage="Security Settings"
-      //   />
-      // ),
       department: (
         <FormattedMessage
           id="setting.menuMap.department"
@@ -55,12 +50,24 @@ class Base extends Component<SettingsProps, SettingsState> {
           defaultMessage="Academicyear Settings"
         />
       ),
-      // notification: (
-      //   <FormattedMessage
-      //     id="accountandsettings.menuMap.notification"
-      //     defaultMessage="New Message Notification"
-      //   />
-      // ),
+      associationtype: (
+        <FormattedMessage
+          id="setting.menuMap.associationtype"
+          defaultMessage="Associationtype Settings"
+        />
+      ),
+      specialty: (
+        <FormattedMessage
+          id="setting.menuMap.specialty"
+          defaultMessage="Specialty Settings"
+        />
+      ),
+      setclass: (
+        <FormattedMessage
+          id="setting.menuMap.setclass"
+          defaultMessage="Setclass Settings"
+        />
+      )
     };
     this.state = {
       mode: 'inline',
@@ -129,10 +136,12 @@ class Base extends Component<SettingsProps, SettingsState> {
         return <Department />;
       case 'academicyear':
         return <AcademicYear />;
-      case 'binding':
-        return <BindingView />;
-      case 'notification':
-        return <NotificationView />;
+      case 'associationtype':
+        return <AssociationType />;
+      case 'specialty':
+        return <Specialty />;
+      case 'setclass':
+        return <SetClass />;
       default:
         break;
     }
@@ -166,7 +175,7 @@ class Base extends Component<SettingsProps, SettingsState> {
             </Menu>
           </div>
           <div className={styles.right}>
-            <div className={styles.title}>{this.getRightTitle()}</div>
+            {/* <div className={styles.title}>{this.getRightTitle()}</div> */}
             {this.renderChildren()}
           </div>
         </div>
