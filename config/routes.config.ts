@@ -32,7 +32,8 @@ const associationData: FileType = {
     'outlay',
     'outregistration',
     'homepage',
-    'changeoffice']
+    // 'changeoffice'
+  ]
 }
 
 // 社团指导

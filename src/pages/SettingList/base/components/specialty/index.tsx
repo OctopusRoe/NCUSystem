@@ -1,7 +1,7 @@
 // 专业设置 组件
 
 import React, { useState, useRef } from 'react';
-import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Button, message, Input, Divider } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
@@ -133,26 +133,19 @@ const Specialty: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
-        actionRef={actionRef}
-        search={false}
         rowKey="key"
+        search={false}
+        actionRef={actionRef}
+        headerTitle={'专业设置'}
         toolBarRender={(action, { selectedRows }) => [
+          <Search enterButton />,
           <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>
             <PlusOutlined /> 新增
           </Button>,
-          <Button type="default" onClick={() => handleModalVisible(true)} size={'middle'}>
-            <UploadOutlined /> 导入
-          </Button>,
-          <Search />
+          <Button>
+            <DownloadOutlined /> 导出
+          </Button>
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-          <div>
-            已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
-            <span>
-              服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
-            </span>
-          </div>
-        )}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />

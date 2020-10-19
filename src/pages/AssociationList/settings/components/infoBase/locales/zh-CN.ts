@@ -1,6 +1,6 @@
 export default {
   'info.menuMap.baseInfo': '基本信息',
-  'info.menuMap.organization': '机构设置',
+  'info.menuMap.organization': '部门设置',
   'info.menuMap.position': '职务设置',
   'info.menuMap.newMedia': '网络平台',
   'info.menuMap.changeOffice': '换届更变',
@@ -15,6 +15,7 @@ export default {
   'info.infoBase.regulations': '社团章程',
   'info.infoBase.startTime': '成立时间',
   'info.infoBase.syssimpleimg': '缩略图',
+  'info.infoBase.teacher': '变更审批',
 
 
   'info.infoBase.fullname-cn-message': '请输入社团中文全称!',

@@ -1,6 +1,6 @@
 // 基本信息 组件
 
-import { Button, Input, Form, message, Modal } from 'antd';
+import { Button, Input, Form, message, Modal, Radio, Space } from 'antd';
 import { FormattedMessage, formatMessage} from 'umi';
 import React, { Component } from 'react';
 
@@ -9,6 +9,7 @@ import UploadView from '@/components/UploadView/uploadView'
 import styles from './BaseView.less';
 
 interface BaseViewProps {
+  teacherValue: {name: string, phone: string}[]
   currentUser?: CurrentUser;
 }
 
@@ -20,20 +21,26 @@ interface BaseViewState {
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 7 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 12 },
-    md: { span: 10 },
+    md: { span: 12 },
   },
 };
 
 const submitFormLayout = {
   wrapperCol: {
     xs: { span: 24, offset: 0 },
-    sm: { span: 10, offset: 7 },
+    sm: { span: 12, offset: 6 },
   },
+};
+
+const radioStyle = {
+  display: 'block',
+  height: '30px',
+  lineHeight: '30px',
 };
 
 class BaseInfo extends Component<BaseViewProps, BaseViewState> {
@@ -75,8 +82,12 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
     console.log(e)
   }
 
+  getCode = (e: any) => {
+    console.log(e)
+  }
+
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, teacherValue } = this.props;
 
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
@@ -84,6 +95,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
           layout={"horizontal"}
           onFinish={this.handleFinish}
           initialValues={currentUser}
+          autoComplete={'off'}
           hideRequiredMark
         >
           <Form.Item
@@ -104,7 +116,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
               },
             ]}
           >
-            <Input autoComplete={'off'} placeholder="请输入社团中文全称" />
+            <Input placeholder="请输入社团中文全称" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -117,7 +129,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
               },
             ]}
           >
-            <Input autoComplete={'off'} placeholder="请输入社团英文全称" />
+            <Input placeholder="请输入社团英文全称" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -130,7 +142,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
               },
             ]}
           >
-            <Input autoComplete={'off'} placeholder="请输入社团类别" />
+            <Input placeholder="请输入社团类别" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -143,7 +155,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
               },
             ]}
           >
-            <Input autoComplete={'off'} placeholder="请输入社团级别" />
+            <Input placeholder="请输入社团级别" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -156,7 +168,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
               },
             ]}
           >
-            <Input autoComplete={'off'} placeholder="请输入指导部门" />
+            <Input placeholder="请输入指导部门" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -169,7 +181,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
               },
             ]}
           >
-            <Input autoComplete={'off'} placeholder="请输入成员数量" />
+            <Input placeholder="请输入成员数量" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -189,7 +201,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
               },
             ]}
           >
-            <Input autoComplete={'off'} placeholder="请输入成立时间" />
+            <Input placeholder="请输入成立时间" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -197,6 +209,31 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
             label={formatMessage({ id: 'info.infoBase.syssimpleimg' })}
           >
             <UploadView id="backgroundImg" name="background" title="登录页背景" />
+          </Form.Item>
+          <Form.Item
+            {...formItemLayout}
+            name={"pickTeacher"}
+            label={formatMessage({ id: 'info.infoBase.teacher'})}
+          >
+            <Radio.Group>
+              {teacherValue.map((item:any,index:number)=>{
+                return (
+                  <Radio style={radioStyle} value={index} key={index}>
+                    <Space>
+                      <div>{item.name}</div>
+                      <div>{item.phone}</div>
+                    </Space>
+                  </Radio>
+                )
+              })}
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            {...formItemLayout}
+            name={"verification"}
+            label={formatMessage({ id: 'info.infoBase.teacher'})}
+          >
+            <Input />
           </Form.Item>
           <Form.Item
             {...submitFormLayout}

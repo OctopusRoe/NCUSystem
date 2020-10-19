@@ -1,24 +1,24 @@
-// 社团类型 组件
+// 网络平台设置 组件
 
-import React from 'react';
+import React from 'react'
 
 import { Row, Col} from 'antd';
 import FormListCom, { Group } from '@/components/FormListCom/formlistcom'
 
-const AssociationType: React.FC<{}> = (props) => {
 
+const OnlinePlatform: React.FC<{}> = (props) => {
   // 启动页面后默认存在两个数据
   const inputList: Group[] = [
-    {name: 0, key: 0, fieldKey: 0, value: {one: '科学社团'}},
-    {name: 1, key: 1, fieldKey: 1, value: {one: '文艺社团'}},
+    {name: 0, key: 0, fieldKey: 0, value: {one: '腾讯'}},
+    {name: 1, key: 1, fieldKey: 1, value: {one: '网易'}},
   ]
 
   // input 输入框属性
   const info = {
     one: {
       name: 'name',
-      message: '请输入社团类别!',
-      placeHodel: '请输入社团类别',
+      message: '请输入网络平台类型!',
+      placeHodel: '请输入网络平台类型',
     }
   }
   
@@ -29,7 +29,7 @@ const AssociationType: React.FC<{}> = (props) => {
     <Row style={{paddingTop: '12px'}}>
       <Col span={6} >
         <Row justify={'end'} style={{marginRight: '8px', height: '32px'}} align={'middle'}>
-          <div>社团类别:</div>
+          <div>网络平台类型:</div>
         </Row>
       </Col>
       <Col span={12}>
@@ -42,4 +42,4 @@ const AssociationType: React.FC<{}> = (props) => {
   )
 }
 
-export default AssociationType
+export default OnlinePlatform

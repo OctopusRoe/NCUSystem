@@ -9,9 +9,13 @@ import styles from './base.less';
 
 import Department from './components/department'
 import AcademicYear from './components/academicyear'
-import AssociationType from './components/associationtype'
 import Specialty from './components/specialty'
 import SetClass from './components/setclass'
+import OnlinePlatform from './components/onlinePlatform'
+import AssociationType from './components/associationtype'
+import AssociationGrade from './components/associationgrade'
+import DepartmentType from './components/departmenttype'
+import MicroSystem from './components/microsystem'
 
 const { Item } = Menu;
 
@@ -20,7 +24,7 @@ interface SettingsProps {
   currentUser: CurrentUser;
 }
 
-type SettingsStateKeys = 'base' | 'department' | 'academicyear' | 'associationtype' | 'specialty' | 'setclass';
+type SettingsStateKeys = 'base' | 'department' | 'academicyear' | 'specialty' | 'setclass' | 'onlineplatform'  | 'associationtype' | 'associationgrade' | 'departmenttype' | 'microsystem';
 interface SettingsState {
   mode: 'inline' | 'horizontal';
   menuMap: {
@@ -50,12 +54,6 @@ class Base extends Component<SettingsProps, SettingsState> {
           defaultMessage="Academicyear Settings"
         />
       ),
-      associationtype: (
-        <FormattedMessage
-          id="setting.menuMap.associationtype"
-          defaultMessage="Associationtype Settings"
-        />
-      ),
       specialty: (
         <FormattedMessage
           id="setting.menuMap.specialty"
@@ -66,6 +64,36 @@ class Base extends Component<SettingsProps, SettingsState> {
         <FormattedMessage
           id="setting.menuMap.setclass"
           defaultMessage="Setclass Settings"
+        />
+      ),
+      onlineplatform: (
+        <FormattedMessage
+          id="setting.menuMap.onlineplatform"
+          defaultMessage="Onlineplatform Settings"
+        />
+      ),
+      associationgrade: (
+        <FormattedMessage
+          id="setting.menuMap.associationgrade"
+          defaultMessage="Associationgrade Settings"
+        />
+      ),
+      associationtype: (
+        <FormattedMessage
+          id="setting.menuMap.associationtype"
+          defaultMessage="Associationtype Settings"
+        />
+      ),
+      departmenttype: (
+        <FormattedMessage
+          id="setting.menuMap.departmenttype"
+          defaultMessage="Departmenttype Settings"
+        />
+      ),
+      microsystem: (
+        <FormattedMessage
+          id="setting.menuMap.microsystem"
+          defaultMessage="Microsystem Settings"
         />
       )
     };
@@ -136,12 +164,20 @@ class Base extends Component<SettingsProps, SettingsState> {
         return <Department />;
       case 'academicyear':
         return <AcademicYear />;
-      case 'associationtype':
-        return <AssociationType />;
       case 'specialty':
         return <Specialty />;
       case 'setclass':
         return <SetClass />;
+      case 'onlineplatform':
+        return <OnlinePlatform />;
+      case 'associationgrade':
+        return <AssociationGrade />;
+      case 'associationtype':
+        return <AssociationType />;
+      case 'departmenttype':
+        return <DepartmentType />;
+      case 'microsystem':
+        return <MicroSystem />
       default:
         break;
     }

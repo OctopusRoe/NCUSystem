@@ -20,19 +20,19 @@ interface BaseViewState {
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 7 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 12 },
-    md: { span: 10 },
+    md: { span: 12 },
   },
 };
 
 const submitFormLayout = {
   wrapperCol: {
     xs: { span: 24, offset: 0 },
-    sm: { span: 10, offset: 7 },
+    sm: { span: 12, offset: 6 },
   },
 };
 
@@ -124,19 +124,6 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
             ]}
           >
             <Input autoComplete={'off'} placeholder="请输入系统全称" />
-          </Form.Item>
-          <Form.Item
-            {...formItemLayout}
-            name={"microsystem"}
-            label={formatMessage({ id: 'setting.basic.microsystem' })}
-            rules={[
-              {
-                required: true,
-                message: formatMessage({ id: 'setting.basic.microsystem-message' }, {}),
-              },
-            ]}
-          >
-            <Input autoComplete={'off'} placeholder="小程序名称" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}

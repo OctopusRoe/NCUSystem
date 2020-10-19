@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, Dispatch, connect } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
-import BindingView from './components/binding';
 import { CurrentUser } from './data';
-import NotificationView from './components/notification';
-import SecurityView from './components/security';
 import styles from './base.less';
 
 // 菜单组件
@@ -30,6 +27,11 @@ interface SettingsState {
   };
   selectKey: SettingsStateKeys;
 }
+
+const teacherValue = [
+  {name: '名字1', phone: '11011211911'},
+  {name: '名字2', phone: '11011211911'}
+]
 
 class InfoBase extends Component<SettingsProps, SettingsState> {
   main: HTMLDivElement | undefined = undefined
@@ -112,7 +114,7 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
     const { selectKey } = this.state;
     switch (selectKey) {
       case 'baseInfo':
-        return <BaseInfo />;
+        return <BaseInfo teacherValue={teacherValue} />;
       case 'organization':
         return <Organization />;
       case 'position':
@@ -148,7 +150,7 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
             </Menu>
           </div>
           <div className={styles.right}>
-            <div className={styles.title}>{this.getRightTitle()}</div>
+            {/* <div className={styles.title}>{this.getRightTitle()}</div> */}
             {this.renderChildren()}
           </div>
         </div>

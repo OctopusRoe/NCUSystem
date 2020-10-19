@@ -1,10 +1,14 @@
 export default {
   'setting.menuMap.basic': '系统信息',
-  'setting.menuMap.department': '部门设置',
+  'setting.menuMap.department': '单位设置',
   'setting.menuMap.academicyear': '学年设置',
-  'setting.menuMap.associationtype': '社团类型',
   'setting.menuMap.specialty': '专业设置',
   'setting.menuMap.setclass': '班级设置',
+  'setting.menuMap.onlineplatform': '网络平台类型',
+  'setting.menuMap.associationgrade': '社团级别',
+  'setting.menuMap.associationtype': '社团类别',
+  'setting.menuMap.departmenttype': '单位类别',
+  'setting.menuMap.microsystem': '小程序配置',
   
   'setting.basic.avatar': '头像',
   'setting.basic.change-avatar': '更换头像',

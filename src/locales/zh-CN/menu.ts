@@ -6,8 +6,8 @@ export default {
 
   // 社团管理菜单
   'menu.association': '社团管理',
-  'menu.association.apply': '登记申请',
-  'menu.association.settings': '社团设置',
+  'menu.association.apply': '注册申请',
+  'menu.association.settings': '信息变更',
   'menu.association.member': '成员管理',
   'menu.association.recruitment': '招新管理',
   'menu.association.upgrade': '社团升级',
