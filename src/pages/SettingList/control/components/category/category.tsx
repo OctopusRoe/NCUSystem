@@ -69,19 +69,19 @@ const tableData = [
   },
 ];
 
-interface AdvancedFormProps {
-  dispatch: Dispatch;
-  submitting: boolean;
-}
+// interface AdvancedFormProps {
+//   dispatch: Dispatch;
+//   submitting: boolean;
+// }
 
-const Category: FC<AdvancedFormProps> = ({ submitting, dispatch }) => {
+const Category: FC<{}> = ({ }) => {
   const [form] = Form.useForm();
 
   const onFinish = (values: { [key: string]: any }) => {
-    dispatch({
-      type: 'category/submitAdvancedForm',
-      payload: values,
-    });
+    // dispatch({
+    //   type: 'category/submitAdvancedForm',
+    //   payload: values,
+    // });
   };
 
   const onFinishFailed = (errorInfo: any) => {

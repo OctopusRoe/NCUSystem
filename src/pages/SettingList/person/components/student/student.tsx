@@ -1,32 +1,15 @@
 // 用户管理页面
 
 import React, { useState, useRef } from 'react';
-import { DownloadOutlined,  UploadOutlined } from '@ant-design/icons';
-import { Button, message, } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Divider, message, Switch } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-
-import CreateForm from './components/CreateForm';
+import InfoModal from '@/components/InfoModal/Infomodal';
+import CreateForm from '@/components/CreateForm/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
 import { queryRule, updateRule } from './service';
-
-/**
- * 添加节点
- * @param fields
- */
-// const handleAdd = async (fields: TableListItem) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addRule({ ...fields });
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
+import ModalForm from '../student/components/ModalForm'
 
 /**
  * 更新节点
@@ -51,33 +34,21 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-/**
- *  删除节点
- * @param selectedRows
- */
-// const handleRemove = async (selectedRows: TableListItem[]) => {
-//   const hide = message.loading('正在删除');
-//   if (!selectedRows) return true;
-//   try {
-//     await removeRule({
-//       key: selectedRows.map((row) => row.key),
-//     });
-//     hide();
-//     message.success('删除成功，即将刷新');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('删除失败，请重试');
-//     return false;
-//   }
-// };
-
 const Student: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [infomodalModalVisible, handleinfomodalModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
+    {
+      title: '用户类别',
+      dataIndex: 'category',
+      hideInSearch: true,
+      key: 'category',
+      width: 150,
+      fixed: 'left',
+    },
     {
       title: '证件照',
       dataIndex: 'photo',
@@ -85,171 +56,100 @@ const Student: React.FC<{}> = () => {
       hideInSearch: true,
       width: 100,
       fixed: 'left',
-      render: (text, record)=>{
-        const img = record.photo
+      render: (text, record) => {
+        const img = record.photo;
         return (
           <>
-            <img src={img} alt="" style={{width: '30px', height: '30px', borderRadius: '50%'}} />
+            <img
+              src={img}
+              alt=""
+              style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+              onClick={() => handleinfomodalModalVisible(true)}
+            />
           </>
-        )
-      }
-    },
-    {
-      title: '学号',
-      dataIndex: 'studentId',
-      width: 120,
-      key: 'studentId',
-      fixed: 'left'
+        );
+      },
     },
     {
       title: '姓名',
       dataIndex: 'userName',
       width: 80,
       key: 'userName',
-      fixed: 'left'
+      fixed: 'left',
+    },
+    {
+      title: '学号/工号',
+      dataIndex: 'studentId',
+      width: 120,
+      key: 'studentId',
     },
     {
       title: '性别',
       dataIndex: 'sex',
       hideInSearch: true,
       width: 100,
-      key: 'sex'
+      key: 'sex',
     },
     {
-      title: '学院',
+      title: '身份证号',
+      dataIndex: 'IdCard',
+      hideInSearch: false,
+      key: 'IdCard',
+      width: 150,
+    },
+    {
+      title: '学院/单位',
       dataIndex: 'college',
       hideInSearch: true,
       key: 'college',
       width: 200,
     },
     {
-      title: '专业',
-      dataIndex: 'specialty',
-      hideInSearch: true,
-      key: 'specialty',
-      width: 150
-    },
-    {
-      title: '学制',
-      dataIndex: 'educational',
-      hideInSearch: true,
-      key: 'educational',
-      width: 150
-    },
-    {
-      title: '年级',
-      dataIndex: 'grade',
-      hideInSearch: true,
-      key: 'grade',
-      width: 150
-    },
-    {
       title: '班级',
-      dataIndex: 'classId',
+      dataIndex: 'class',
       hideInSearch: true,
-      key: 'classId',
-      width: 150
-    },
-    {
-      title: '入学时间',
-      dataIndex: 'startTime',
-      hideInSearch: true,
-      key: 'startTime',
-      width: 150
-    },
-    {
-      title: '民族',
-      dataIndex: 'nation',
-      key: 'nation',
-      width: 150,
-      valueEnum: {
-        0: { text: '汉族'},
-        1: { text: '回族'},
-        2: { text: '维吾尔族'},
-        3: { text: '其他'},
-      },
-    },
-    {
-      title: '政治面貌',
-      dataIndex: 'political',
-      hideInSearch: true,
-      key: 'political',
-      width: 150
-    },
-    {
-      title: '籍贯',
-      dataIndex: 'birthPlace',
-      hideInSearch: true,
-      key: 'birthPlace',
-      width: 150
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'IdCard',
-      hideInSearch: true,
-      key: 'IdCard',
-      width: 150
+      key: 'class',
+      width: 200,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
+      hideInSearch: false,
       key: 'phone',
-      width: 150
+      width: 150,
     },
+
     {
-      title: 'QQ号',
-      dataIndex: 'qqId',
-      hideInSearch: true,
-      key: 'qqId',
-      width: 150
+      title: '操作',
+      dataIndex: 'option',
+      valueType: 'option',
+      width: 250,
+      fixed: 'right',
+      render: (_, record) => (
+        <>
+          <a>编辑</a>
+          <Divider type="vertical" />
+          <a onClick={() => {}}>密码重置</a>
+          <Divider type="vertical" />
+          <Switch checkedChildren="锁定" unCheckedChildren="解除" defaultChecked />
+          <Divider type="vertical" />
+          <a>删除</a>
+        </>
+      ),
     },
-    {
-      title: '头像',
-      dataIndex: 'profile',
-      hideInSearch: true,
-      key: 'profile',
-      width: 100,
-      render: (text, record)=>{
-        const img = record.profile
-        return (
-          <>
-            <img src={img} alt="" style={{width: '30px', height: '30px', borderRadius: '50%'}} />
-          </>
-        )
-      }
-    },
-    {
-      title: '学生状态',
-      dataIndex: 'status',
-      hideInSearch: true,
-      key: 'status',
-      width: 100,
-      valueEnum: {
-        0: { text: '毕业', status: 'Default' },
-        1: { text: '休学', status: 'Processing' },
-        2: { text: '在校', status: 'Success' },
-        3: { text: '退学', status: 'Error' },
-      },
-    }
   ];
 
   return (
     <div>
       <ProTable<TableListItem>
-        scroll={{x: "1800"}}
-        // headerTitle="学生列表"
+        scroll={{ x: '1800' }}
+        headerTitle="用户列表"
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, { selectedRows }) => [
-          // <Button type="primary" onClick={() => handleModalVisible(true)} size={'small'}>
-          //   <PlusOutlined /> 新增
-          // </Button>,
-          <Button type="primary" onClick={() => handleModalVisible(true)} size={'small'}>
-            <UploadOutlined /> 导入
-          </Button>,
-          <Button type="default" onClick={() => handleModalVisible(true)} size={'small'}>
-            <DownloadOutlined /> 导出
-          </Button>
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined /> 新增
+          </Button>,       
         ]}
         tableAlertRender={({ selectedRowKeys, selectedRows }) => (
           <div>
@@ -263,7 +163,11 @@ const Student: React.FC<{}> = () => {
         columns={columns}
         // rowSelection={{}}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
+      <InfoModal
+        onCancel={() => handleinfomodalModalVisible(false)}
+        modalVisible={infomodalModalVisible}
+      />
+      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} form={<ModalForm/>}/>
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {

@@ -1,16 +1,16 @@
 // 用户管理页面
 
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { DownloadOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import CreateForm from './components/CreateForm';
 import ChangeAuthorization, { FormValueType } from './components/ChangeAuthorization';
-import ChangePerson from './components/ChangePerson'
+import ChangePerson from './components/ChangePerson';
 import { TableListItem } from './data';
 import { queryRule, updateRule, addRule, removeRule } from './service';
-import styles from './usergroup.less'
+import styles from './usergroup.less';
 
 /**
  * 添加节点
@@ -31,7 +31,7 @@ const handleAdd = async (fields: TableListItem) => {
 };
 
 /**
- * 
+ *
  * 更新节点
  * @param fields
  */
@@ -96,11 +96,7 @@ const UserGroup: React.FC<{}> = () => {
       key: 'infomation',
       hideInSearch: true,
       // 使用 antd Tree 组件
-      render: (text, record) => (
-        <>
-        
-        </>
-      )
+      render: (text, record) => <></>,
     },
     {
       title: '用户组人数',
@@ -108,18 +104,14 @@ const UserGroup: React.FC<{}> = () => {
       width: 150,
       key: 'userGroup',
       hideInSearch: true,
-      render: (text, record) => (
-        <>
-        
-        </>
-      )
+      render: (text, record) => <></>,
     },
     {
       title: '用户组所有者',
       dataIndex: 'userGroupHas',
       width: 150,
       key: 'userGroupHas',
-      hideInSearch: true
+      hideInSearch: true,
     },
     {
       title: '描述',
@@ -138,8 +130,8 @@ const UserGroup: React.FC<{}> = () => {
         <>
           <a
             onClick={() => {
-              handleModalVisible(true)
-              setStepFormValues(record)
+              handleModalVisible(true);
+              setStepFormValues(record);
             }}
           >
             编辑
@@ -163,10 +155,7 @@ const UserGroup: React.FC<{}> = () => {
             权限
           </a>
           <Divider type="vertical" />
-          <a
-          >
-            删除
-          </a>
+          <a>删除</a>
         </>
       ),
     },
@@ -175,21 +164,24 @@ const UserGroup: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
-        scroll={{x: "1500"}}
+        scroll={{ x: '1500' }}
         headerTitle="权限列表"
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() => handleModalVisible(true)} size={'small'}>
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新增
-          </Button>
+          </Button>,
+          <Button type="default">
+            <DownloadOutlined /> 导出
+          </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      
+
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
-      <ChangePerson 
+      <ChangePerson
         onCancel={() => handleChangePersonVisible(false)}
         updateModalVisible={changePersonVisible}
         values={stepFormValues}
