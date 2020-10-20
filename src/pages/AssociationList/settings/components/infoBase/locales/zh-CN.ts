@@ -15,7 +15,7 @@ export default {
   'info.infoBase.regulations': '社团章程',
   'info.infoBase.startTime': '成立时间',
   'info.infoBase.syssimpleimg': '缩略图',
-  'info.infoBase.teacher': '变更审批',
+  'info.infoBase.pickeLeader': '选择审批人',
 
 
   'info.infoBase.fullname-cn-message': '请输入社团中文全称!',
@@ -24,5 +24,7 @@ export default {
   'info.infoBase.level-message': '请输入社团级别!',
   'info.infoBase.department-message': '请输入指导部门!',
   'info.infoBase.member-message': '请输入成员数量!',
-  'info.infoBase.startTime-message': '请输入成立时间!'
+  'info.infoBase.startTime-message': '请输入成立时间!',
+  'info.infoBase.pickeLeader-message': '请选择审批人!',
+  'info.infoBase.codeNumber-message': '请输入验证码!'
 };

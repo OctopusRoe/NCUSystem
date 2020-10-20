@@ -83,7 +83,7 @@ const Position: React.FC<{}> = () => {
     {
       title: '职务名称',
       dataIndex: 'positionName',
-      width: '25%',
+      width: '30%',
       key: 'positionName',
       hideInSearch: true,
     },
@@ -112,7 +112,7 @@ const Position: React.FC<{}> = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: '15%',
+      width: '10%',
       render: (_, record) => (
         <>
           <a

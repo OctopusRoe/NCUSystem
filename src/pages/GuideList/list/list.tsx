@@ -2,14 +2,15 @@
 
 import React, { useState, useRef } from 'react';
 
-import { DownloadOutlined, DownOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message, Input } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { Button, message, Input } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import { queryRule, updateRule } from './service';
+import InfoModal from '@/components/InfoModal/Infomodal'
 // import styles from './student.less'
 
 /**
@@ -78,14 +79,15 @@ const List: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
+  const [showInfoModal, setShowInfoModal] = useState<boolean>(false)
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '证件照',
+      title: '社团Logo',
       dataIndex: 'photo',
+      width: '10%',
       key: 'photo',
       hideInSearch: true,
-      width: 100,
       fixed: 'left',
       render: (text, record)=>{
         const img = record.photo
@@ -97,171 +99,87 @@ const List: React.FC<{}> = () => {
       }
     },
     {
-      title: '学号',
-      dataIndex: 'studentId',
-      width: 120,
-      key: 'studentId',
-      fixed: 'left'
-    },
-    {
-      title: '姓名',
-      dataIndex: 'userName',
-      width: 80,
-      key: 'userName',
-      fixed: 'left'
-    },
-    {
-      title: '性别',
-      dataIndex: 'sex',
-      hideInSearch: true,
-      width: 100,
-      key: 'sex'
-    },
-    {
-      title: '学院',
-      dataIndex: 'college',
-      hideInSearch: true,
-      key: 'college',
-      width: 200,
-    },
-    {
-      title: '专业',
-      dataIndex: 'specialty',
-      hideInSearch: true,
-      key: 'specialty',
-      width: 150
-    },
-    {
-      title: '学制',
-      dataIndex: 'educational',
-      hideInSearch: true,
-      key: 'educational',
-      width: 150
-    },
-    {
-      title: '年级',
-      dataIndex: 'grade',
-      hideInSearch: true,
-      key: 'grade',
-      width: 150
-    },
-    {
-      title: '班级',
-      dataIndex: 'classId',
-      hideInSearch: true,
-      key: 'classId',
-      width: 150
-    },
-    {
-      title: '入学时间',
-      dataIndex: 'startTime',
-      hideInSearch: true,
-      key: 'startTime',
-      width: 150
-    },
-    {
-      title: '民族',
-      dataIndex: 'nation',
-      key: 'nation',
-      width: 150,
-      valueEnum: {
-        0: { text: '汉族'},
-        1: { text: '回族'},
-        2: { text: '维吾尔族'},
-        3: { text: '其他'},
-      },
-    },
-    {
-      title: '政治面貌',
-      dataIndex: 'political',
-      hideInSearch: true,
-      key: 'political',
-      width: 150
-    },
-    {
-      title: '籍贯',
-      dataIndex: 'birthPlace',
-      hideInSearch: true,
-      key: 'birthPlace',
-      width: 150
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'IdCard',
-      hideInSearch: true,
-      key: 'IdCard',
-      width: 150
-    },
-    {
-      title: '手机号',
-      dataIndex: 'phone',
-      key: 'phone',
-      width: 150
-    },
-    {
-      title: 'QQ号',
-      dataIndex: 'qqId',
-      hideInSearch: true,
-      key: 'qqId',
-      width: 150
-    },
-    {
-      title: '头像',
-      dataIndex: 'profile',
-      hideInSearch: true,
-      key: 'profile',
-      width: 100,
-      render: (text, record)=>{
-        const img = record.profile
+      title: '社团名称',
+      dataIndex: 'associationName',
+      width: '20%',
+      key: 'associationName',
+      fixed: 'left',
+      render: (_, record) => {
         return (
           <>
-            <img src={img} alt="" style={{width: '30px', height: '30px', borderRadius: '50%'}} />
+            <div onClick={()=>{setShowInfoModal(true)}}>{record.name}</div>
           </>
         )
       }
     },
     {
-      title: '学生状态',
-      dataIndex: 'status',
+      title: '社团类别',
+      dataIndex: 'associationType',
+      width: '15%',
+      key: 'associationType',
+      fixed: 'left',
       hideInSearch: true,
-      key: 'status',
-      width: 100,
+    },
+    {
+      title: '社团级别',
+      dataIndex: 'associationGrade',
+      width: '15%',
+      key: 'associationGrade',
       valueEnum: {
-        0: { text: '毕业', status: 'Default' },
-        1: { text: '休学', status: 'Processing' },
-        2: { text: '在校', status: 'Success' },
-        3: { text: '退学', status: 'Error' },
-      },
-    }
+        0: {text: '级别1'},
+        1: {text: '级别2'},
+        2: {text: '级别3'},
+        3: {text: '级别4'},
+        4: {text: '级别5'},
+        5: {text: '级别6'},
+      }
+    },
+    {
+      title: '业务指导单位',
+      dataIndex: 'department',
+      width: '15%',
+      key: 'department',
+      valueEnum: {
+        0: {text: '单位1'},
+        1: {text: '单位2'},
+        2: {text: '单位3'},
+        3: {text: '单位4'},
+        4: {text: '单位5'},
+        5: {text: '单位6'},
+      }
+    },
+    {
+      title: '成立时间',
+      dataIndex: 'startTime',
+      width: '15%',
+      key: 'startTime',
+      hideInSearch: true,
+    },
+    {
+      title: '社团成员数(最高)',
+      dataIndex: 'persons',
+      width: '10%',
+      key: 'persons',
+      hideInSearch: true,
+    },
   ];
 
   return (
     <div>
       <ProTable<TableListItem>
-        scroll={{x: "1800"}}
-        // headerTitle="学生列表"
+        headerTitle="社团列表"
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() => handleModalVisible(true)} size={'small'}>
-            <UploadOutlined /> 导入
-          </Button>,
-          <Button type="default" onClick={() => handleModalVisible(true)} size={'small'}>
+          <Button type="default" onClick={() => handleModalVisible(true)} size={'middle'}>
             <DownloadOutlined /> 导出
           </Button>
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-          <div>
-            已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
-            <span>
-              服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
-            </span>
-          </div>
-        )}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
-        // rowSelection={{}}
+        rowSelection={{}}
       />
+      <InfoModal modalVisible={showInfoModal} onCancel={()=>{setShowInfoModal(false)}} />
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm

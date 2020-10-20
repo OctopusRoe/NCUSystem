@@ -38,26 +38,35 @@ const FormListCom: React.FC<FormListComProps> = (props) => {
   const { info, onFinish } = props
 
   const [ inputList, setInputList ] = useState<Group[]>([])
+  const [ listLength, setListLength ] = useState(0)
 
   useEffect(() => {
     setInputList(props.inputList)
+    setListLength(props.inputList.length - 1)
   },[])
 
   const returnValue = (e: any) => {
+    console.log(e)
     const back = e.valueList.filter((item: any) => item !== undefined)
     onFinish(back)
   }
 
   const add = () => {
-    const index = inputList.length
-    const list: Group[] = [{
-      name: index + 1,
-      key: index + 1,
-      fieldKey: index + 1,
+    let length = 0
+    if (inputList.length !==0) {
+      length = listLength + 1
+    }
+
+    const list = [{
+      name: length,
+      key: length,
+      fieldKey: length,
       value: {}
     }]
+
     const newList = [...inputList, ...list]
     setInputList(newList)
+    setListLength(length)
   }
 
   const remove = (e: any) => {

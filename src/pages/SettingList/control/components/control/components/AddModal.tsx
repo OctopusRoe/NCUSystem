@@ -51,7 +51,7 @@ const AddModal: React.FC<AddModalFormProps> = (porps) => {
         <Form labelCol={{ span: 7 }} wrapperCol={{ span: 15 }}>
           <Row>
             <Col span={24}>
-              <FormItem name="img" label="图标">
+              <FormItem label="图标">
                 <Upload listType="picture-card" className="avatar-uploader" showUploadList={false}>
                   <div>
                     <PlusOutlined />

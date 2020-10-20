@@ -32,8 +32,7 @@ class ControlPage extends Component<SettingsProps, SettingsState> {
     super(props);
     const menuMap = {
       control: <FormattedMessage id="setting.menuMap.control" defaultMessage="Basic Settings" />,
-      category: 
-        <FormattedMessage id="setting.menuMap.category" defaultMessage="Department Settings" />,
+      category: <FormattedMessage id="setting.menuMap.category" defaultMessage="Department Settings" />,
     };
     this.state = {
       mode: 'inline',
@@ -88,6 +87,8 @@ class ControlPage extends Component<SettingsProps, SettingsState> {
         return <Control />;
       case 'category':
         return <Category />;
+      default:
+        break;
     }
     return null;
   };

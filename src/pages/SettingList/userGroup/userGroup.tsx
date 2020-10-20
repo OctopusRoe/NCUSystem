@@ -85,14 +85,14 @@ const UserGroup: React.FC<{}> = () => {
     {
       title: '用户组名称',
       dataIndex: 'name',
-      width: 250,
+      width: 200,
       key: 'name',
-      fixed: 'left',
+      fixed: 'left'
     },
     {
       title: '权限详情',
       dataIndex: 'infomation',
-      width: 300,
+      width: 250,
       key: 'infomation',
       hideInSearch: true,
       // 使用 antd Tree 组件
@@ -107,16 +107,9 @@ const UserGroup: React.FC<{}> = () => {
       render: (text, record) => <></>,
     },
     {
-      title: '用户组所有者',
-      dataIndex: 'userGroupHas',
-      width: 150,
-      key: 'userGroupHas',
-      hideInSearch: true,
-    },
-    {
       title: '描述',
       dataIndex: 'desc',
-      width: 450,
+      width: 550,
       hideInSearch: true,
       key: 'desc',
     },

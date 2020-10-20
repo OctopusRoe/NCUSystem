@@ -26,7 +26,7 @@ export default {
   'menu.guide.teacherleader': '指导老师',
   'menu.guide.list': '社团列表',
   'menu.guide.memberlist': '成员列表',
-  'menu.guide.registerapproval': '登记审批',
+  'menu.guide.registerapproval': '注册审批',
   'menu.guide.uplevel': '升级审批',
   'menu.guide.logoutapproval': '注销审批',
   'menu.guide.outsideapproval': '外出审批',

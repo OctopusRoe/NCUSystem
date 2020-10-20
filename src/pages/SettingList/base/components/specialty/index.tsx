@@ -138,7 +138,7 @@ const Specialty: React.FC<{}> = () => {
         actionRef={actionRef}
         headerTitle={'专业设置'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton />,
+          <Search enterButton placeholder={'请输入专业名称'} />,
           <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>
             <PlusOutlined /> 新增
           </Button>,

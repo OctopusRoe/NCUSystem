@@ -126,12 +126,13 @@ const SetClass: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
+        onExpandedRowsChange={(e)=>{console.log(e)}}
         rowKey="key"
         search={false}
         actionRef={actionRef}
         headerTitle={'班级设置'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton />,
+          <Search enterButton placeholder={'请输入班级名称'} />,
           <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>
             <PlusOutlined /> 新增
           </Button>,

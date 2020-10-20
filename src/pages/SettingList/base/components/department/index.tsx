@@ -153,7 +153,7 @@ const Department: React.FC<{}> = () => {
         actionRef={actionRef}
         headerTitle={'单位列表'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton />,
+          <Search enterButton placeholder={'请输入部门名称'} />,
           <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>
             <PlusOutlined /> 新增
           </Button>,
