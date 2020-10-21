@@ -1,175 +1,142 @@
 // 社团成员列表 组件
 
-import React, { useRef } from 'react';
-import { Button } from 'antd';
+import React, { useRef, useState } from 'react';
+import { Button, Divider } from 'antd';
 import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
-
+import Infomodal from '@/components/InfoModal/Infomodal';
 
 const Member: React.FC<{}> = () => {
-
   const actionRef = useRef<ActionType>();
+  const [infomodalVisible, setinfomodalVisible] = useState(false);
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '证件照',
-      dataIndex: 'number',
-      width: 150,
-      key: 'number',
-      hideInSearch: true,
-      fixed: 'left',
+      title: '届数',
+      dataIndex: 'period',
+      key: 'peri od',
+      valueEnum: {
+        0: { text: '2017', status: '2017' },
+        1: { text: '2018', status: '2018' },
+        2: { text: '2019', status: '2019' },
+        3: { text: '2020', status: '2020' },
+      },
     },
     {
-      title: '学号',
-      dataIndex: 'logo',
-      width: 100,
-      key: 'logo',
-      fixed: 'left',
+      title: '证件照',
+      dataIndex: 'img',
+      // width: 150,
+      key: 'img',
+      hideInSearch: true,
+      // fixed: 'left',
+      render: (_, record) => {
+        return (
+          <>
+            <img
+              src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              onClick={() => {
+                setinfomodalVisible(true);
+              }}
+              style={{ borderRadius: '50%', height: '30px', width: '30px' }}
+            />
+          </>
+        );
+      },
     },
     {
       title: '姓名',
       dataIndex: 'chinesename',
-      width: 150,
+      // width: 150,
       key: 'chinesename',
-      fixed: 'left',
+      // fixed: 'left',
     },
     {
-      title: '所在社团',
-      dataIndex: 'unit',
-      width: 200,
-      key: 'unit',
-      hideInSearch: true,
-    },
-    {
-      title: '社团部门',
-      dataIndex: 'count',
-      width: 200,
-      key: 'count',
-      hideInSearch: true,
-    },
-    {
-      title: '社团职务',
-      dataIndex: 'initiator',
-      width: 200,
-      key: 'initiator',
-      hideInSearch: true,
-    },
-    {
-      title: '社团骨干',
-      dataIndex: 'memberVIP',
-      width: 200,
-      key: 'memberVIP',
-      hideInSearch: true,
-
-    },
-    {
-      title: '起止日期',
-      dataIndex: 'start',
-      width: 200,
-      key: 'start',
-    },
-    {
-      title: '在岗状态',
-      dataIndex: 'staus',
-      width: 200,
-      key: 'staus',
-      hideInSearch: true,
+      title: '学号',
+      dataIndex: 'logo',
+      // width: 100,
+      key: 'logo',
+      // fixed: 'left',
     },
     {
       title: '性别',
       dataIndex: 'sex',
-      width: 200,
+      // width: 200,
       key: 'sex',
       hideInSearch: true,
+      filters: [
+        { text: '男', value: '1' },
+        { text: '女', value: '2' },
+      ],
     },
-    {
-      title: '学院',
-      dataIndex: 'college',
-      width: 100,
-      key: 'college',
-      hideInSearch: true,
-    },
-    {
-      title: '专业',
-      dataIndex: 'specialty',
-      width: 150,
-      key: 'specialty',
-      hideInSearch: true,
-    },
-    {
-      title: '学制',
-      dataIndex: 'educational',
-      width: 150,
-      key: 'educational',
-      hideInSearch: true,
 
+    {
+      title: '所在社团',
+      dataIndex: 'unit',
+      // width: 200,
+      key: 'unit',
+      hideInSearch: true,
+      filters: [
+        { text: 'A', value: 'a' },
+        { text: 'B', value: 'b' },
+        { text: 'C', value: 'c' },
+        { text: 'D', value: 'd' },
+        { text: 'E', value: 'e' },
+      ],
     },
     {
-      title: '班级',
-      dataIndex: 'class',
-      width: 100,
-      key: 'class',
-    },
-    {
-      title: '年级',
-      dataIndex: 'grade',
-      width: 100,
-      key: 'grade',
+      title: '部门-职务',
+      dataIndex: 'initiator',
+      // width: 200,
+      key: 'initiator',
       hideInSearch: true,
     },
+    // {
+    //   title: '社团负责人',
+    //   dataIndex: 'principal',
+    //   key: 'principal',
+    //   hideInSearch:true,
+    // },
     {
-      title: '入学时间',
-      dataIndex: 'startTime',
-      width: 150,
-      key: 'startTime',
+      title: '社团骨干',
+      dataIndex: 'memberVIP',
+      // width: 200,
+      key: 'memberVIP',
       hideInSearch: true,
-      sorter: true,
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'IdCard',
-      width: 100,
-      key: 'IdCard'
-    },
-    {
-      title: '籍贯',
-      dataIndex: 'birthPlace',
-      width: 150,
-      key: 'birthPlace',
-      hideInSearch: true,
-    },
-    {
-      title: '民族',
-      dataIndex: 'nation',
-      width: 100,
-      key: 'nation',
-      hideInSearch: true,
+      filters: [
+        { text: '是', value: 'True' },
+        { text: '否', value: 'False' },
+      ],
     },
     {
       title: '政治面貌',
       dataIndex: 'political',
-      width: 100,
+      // width: 100,
       key: 'political',
       hideInSearch: true,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
-      width: 150,
-      key: 'phone'
+      // width: 150,
+      key: 'phone',
+      hideInSearch: true,
     },
-    {
-      title: 'QQ号',
-      dataIndex: 'QQ',
-      width: 150,
-      key: 'QQ'
-    },
-
+    // {
+    //   title: '操作',
+    //   dataIndex: 'option',
+    //   valueType: 'option',
+    //   width: '10%',
+    //   fixed: 'right',
+    //   render: (_, record) => (
+    //     <>
+    //       <a>调整</a>
+    //       <Divider type="vertical" />
+    //       <a>删除</a>
+    //     </>
+    //   ),
+    // },
   ];
-
-
-
 
   return (
     <>
@@ -183,11 +150,11 @@ const Member: React.FC<{}> = () => {
           return className;
         }}
         toolBarRender={(_action, { selectedRows }) => [
-          <Button type="default" size={'small'}>
+          <Button type="default">
             <DownloadOutlined /> 导出
-        </Button>,
+          </Button>,
           selectedRows && selectedRows.length > 0 && (
-            <Button size={"small"}>
+            <Button size={'small'}>
               <DownloadOutlined /> 批量导出
             </Button>
           ),
@@ -196,6 +163,12 @@ const Member: React.FC<{}> = () => {
         columns={columns}
         rowSelection={{}}
         scroll={{ x: 1500 }}
+      />
+      <Infomodal
+        modalVisible={infomodalVisible}
+        onCancel={() => {
+          setinfomodalVisible(false);
+        }}
       />
     </>
   );

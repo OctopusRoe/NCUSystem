@@ -8,6 +8,9 @@ import { ModalState } from './model';
 import { CurrentUser } from './data.d';
 import styles from './Center.less';
 
+import ShowImage from '@/components/ShowImgView'
+import CropImgView from '@/components/CropImgview'
+
 const operationTabList = [
   {
     key: 'userInfo',
@@ -85,9 +88,9 @@ class UserPage extends Component<CenterProps, CenterState> {
   renderChildrenByTabKey = (tabKey: CenterState['tabKey']) => {
     switch (tabKey) {
       case 'userInfo':
-        return <div>1</div>;
+        return <ShowImage src={'1111'} style={{width: '102px', height: '102px'}} id={'testone'} />;
       case 'accountSetting':
-        return <div>2</div>;
+        return <CropImgView id={'testCropImg'} />;
       case 'associationReport':
         return <div>3</div>;
       default:
@@ -109,8 +112,9 @@ class UserPage extends Component<CenterProps, CenterState> {
                 <div>
                   <div className={styles.avatarHolder}>
                     {/* <img alt="" src={currentUser.avatar} /> */}
-                    <img alt="" style={{width: '100px', height: '140px'}} src={'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2538550834,1060610502&fm=26&gp=0.jpg'}  />
-                    <div className={styles.name}>{currentUser.name}</div>
+                    <img alt="" style={{width: '100px', height: '140px'}} src={'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4043543360,109021256&fm=26&gp=0.jpg'}  />
+                    {/* <div className={styles.name}>{currentUser.name}</div> */}
+                    <div className={styles.name}>章棚</div>
                     <div>学生 - 信息工程学院</div>
                   </div>
                   <Divider dashed />
