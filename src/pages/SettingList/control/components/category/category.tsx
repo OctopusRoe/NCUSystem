@@ -1,111 +1,41 @@
-// 应用类别管理组件
+import React from 'react'
 
-import React, { FC } from 'react';
-import { Card, Form } from 'antd';
+import { Row, Col} from 'antd';
+import FormListCom, { Group } from '@/components/FormListCom/formlistcom'
+const Category: React.FC<{}> = (props) => {
+  // 启动页面后默认存在两个数据
+  const inputList: Group[] = [
+    {name: 0, key: 0, fieldKey: 0, value: {one: '腾讯'}},
+    {name: 1, key: 1, fieldKey: 1, value: {one: '网易'}},
+  ]
 
-import { connect, Dispatch } from 'umi';
-import TableForm from './components/TableForm';
-
-const tableData = [
-  {
-    key: '1',
-    iconID: '00001',
-    typeName: '注册登记',
-    sort: 1
-  },
-  {
-    key: '2',
-    iconID: '00002',
-    typeName: '社团管理',
-    sort: 2
-  },
-  {
-    key: '3',
-    iconID: '00003',
-    typeName: '成员管理',
-    sort: 3
-  },
-  {
-    key: '4',
-    iconID: '00004',
-    typeName: '考核管理',
-    sort: 4
-  },
-  {
-    key: '5',
-    iconID: '00005',
-    typeName: '活动管理',
-    sort: 5
-  },
-  {
-    key: '6',
-    iconID: '00006',
-    typeName: '新媒体管理',
-    sort: 6
-  },
-  {
-    key: '7',
-    iconID: '00007',
-    typeName: '经费管理',
-    sort: 7
-  },
-  {
-    key: '8',
-    iconID: '00008',
-    typeName: '个人页',
-    sort: 8
-  },
-  {
-    key: '9',
-    iconID: '00009',
-    typeName: '社团大数据',
-    sort: 9
-  },
-  {
-    key: '10',
-    iconID: '00010',
-    typeName: '系统设置',
-    sort: 10
-  },
-];
-
-// interface AdvancedFormProps {
-//   dispatch: Dispatch;
-//   submitting: boolean;
-// }
-
-const Category: FC<{}> = ({ }) => {
-  const [form] = Form.useForm();
-
-  const onFinish = (values: { [key: string]: any }) => {
-    // dispatch({
-    //   type: 'category/submitAdvancedForm',
-    //   payload: values,
-    // });
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    
-  };
-
+  // input 输入框属性
+  const info = {
+    one: {
+      name: 'name',
+      message: '请输入应用类别!',
+      placeHodel: '请输入应用类别',
+    }
+  }
+  
+  const onFinish = (e: any) => {
+    console.log(e)
+  }
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      hideRequiredMark
-      initialValues={{ members: tableData }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
-      <Card  bordered={false}>
-        <Form.Item name="members">
-          <TableForm />
-        </Form.Item>
-      </Card>
-    </Form>
-  );
-};
+    <Row style={{paddingTop: '12px'}}>
+      <Col span={6} >
+        <Row justify={'end'} style={{marginRight: '8px', height: '32px'}} align={'middle'}>
+          <div>应用类别:</div>
+        </Row>
+      </Col>
+      <Col span={12}>
+        {/* inputTwo inputThree 属性默认为false */}
+        <FormListCom inputList={inputList} info={info} onFinish={onFinish} />
+      </Col>
+      <Col span={6}>
+      </Col>
+    </Row>
+  )
+}
 
-export default connect()(Category);
-
-
+export default Category

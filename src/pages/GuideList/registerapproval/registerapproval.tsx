@@ -166,7 +166,6 @@ const RegisterApproval: React.FC<{}> = () => {
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
-        scroll={{ x: 1500 }}
       />
       <Infomodal
         onCancel={() => {

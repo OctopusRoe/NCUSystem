@@ -8,6 +8,7 @@ import { ModalState } from './model';
 import { CurrentUser } from './data.d';
 import styles from './Center.less';
 
+import UserInfo from './components/userInfo'
 import ShowImage from '@/components/ShowImgView'
 import CropImgView from '@/components/CropImgview'
 
@@ -88,7 +89,7 @@ class UserPage extends Component<CenterProps, CenterState> {
   renderChildrenByTabKey = (tabKey: CenterState['tabKey']) => {
     switch (tabKey) {
       case 'userInfo':
-        return <ShowImage src={'1111'} style={{width: '102px', height: '102px'}} id={'testone'} />;
+        return <UserInfo />;
       case 'accountSetting':
         return <CropImgView id={'testCropImg'} />;
       case 'associationReport':
@@ -120,7 +121,11 @@ class UserPage extends Component<CenterProps, CenterState> {
                   <Divider dashed />
                   <div className={styles.team}>
                     <div className={styles.teamTitle}>所在社团</div>
-                    <Row gutter={36}>
+                    <div style={{display: 'flex'}}>
+                      <img src={'111'} />
+                      <div style={{marginLeft: '10px'}} >社团名称</div>
+                    </div>
+                    {/* <Row gutter={36}>
                       {currentUser.notice &&
                         currentUser.notice.map((item) => (
                           <Col key={item.id} lg={24} xl={12}>
@@ -130,7 +135,7 @@ class UserPage extends Component<CenterProps, CenterState> {
                             </Link>
                           </Col>
                         ))}
-                    </Row>
+                    </Row> */}
                   </div>
                 </div>
               {/* )} */}

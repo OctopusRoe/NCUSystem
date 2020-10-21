@@ -1,6 +1,6 @@
 //
 
-import { Button, message } from 'antd';
+import { Button, Divider, message } from 'antd';
 
 import React, { useRef, useState } from 'react';
 import { queryRule, updateRule } from './service';
@@ -8,7 +8,6 @@ import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
-
 
 /**
  * 更新节点
@@ -32,171 +31,126 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-
-
 const MemberCom: React.FC<{}> = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: '届数',
+      dataIndex: 'period',
+      // width: 200,
+      key: 'period',
+      fixed: 'left',
+      valueEnum: {
+        0: { text: 'A', status: 'a' },
+        1: { text: 'B', status: 'b' },
+        2: { text: 'C', status: 'c' },
+        3: { text: 'D', status: 'd' },
+      },
+    },
+    {
       title: '证件照',
-      dataIndex: 'number',
-      width: 150,
-      key: 'number',
+      dataIndex: 'photo',
+      // width: 150,
+      key: 'photo',
       hideInSearch: true,
+      fixed: 'left',
+      render: (text, record) => {
+        const img = record.photo;
+        return (
+          <>
+            <img src={img} alt="" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
+          </>
+        );
+      },
+    },
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      // width: 150,
+      key: 'name',
       fixed: 'left',
     },
     {
       title: '学号',
-      dataIndex: 'logo',
-      width: 100,
-      key: 'logo',
+      dataIndex: 'stuid',
+      // width: 100,
+      key: 'stuid',
       fixed: 'left',
-    },
-    {
-      title: '姓名',
-      dataIndex: 'chinesename',
-      width: 150,
-      key: 'chinesename',
-      fixed: 'left',
-    },
-    {
-      title: '所在社团',
-      dataIndex: 'unit',
-      width: 200,
-      key: 'unit',
-      hideInSearch: true,
-    },
-    {
-      title: '社团部门',
-      dataIndex: 'count',
-      width: 200,
-      key: 'count',
-      hideInSearch: true,
-    },
-    {
-      title: '社团职务',
-      dataIndex: 'initiator',
-      width: 200,
-      key: 'initiator',
-      hideInSearch: true,
-    },
-    {
-      title: '社团骨干',
-      dataIndex: 'memberVIP',
-      width: 200,
-      key: 'memberVIP',
-      hideInSearch: true,
-
-    },
-    {
-      title: '起止日期',
-      dataIndex: 'start',
-      width: 200,
-      key: 'start',
-    },
-    {
-      title: '在岗状态',
-      dataIndex: 'staus',
-      width: 200,
-      key: 'staus',
       hideInSearch: true,
     },
     {
       title: '性别',
       dataIndex: 'sex',
-      width: 200,
+      // width: 200,
       key: 'sex',
       hideInSearch: true,
     },
-    {
-      title: '学院',
-      dataIndex: 'college',
-      width: 100,
-      key: 'college',
-      hideInSearch: true,
-    },
-    {
-      title: '专业',
-      dataIndex: 'specialty',
-      width: 150,
-      key: 'specialty',
-      hideInSearch: true,
-    },
-    {
-      title: '学制',
-      dataIndex: 'educational',
-      width: 150,
-      key: 'educational',
-      hideInSearch: true,
 
-    },
     {
-      title: '班级',
-      dataIndex: 'class',
-      width: 100,
-      key: 'class',
-    },
-    {
-      title: '年级',
-      dataIndex: 'grade',
-      width: 100,
-      key: 'grade',
+      title: '所在部门',
+      dataIndex: 'department',
+      // width: 200,
+      key: 'department',
       hideInSearch: true,
     },
     {
-      title: '入学时间',
-      dataIndex: 'startTime',
-      width: 150,
-      key: 'startTime',
-      hideInSearch: true,
-      sorter: true,
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'IdCard',
-      width: 100,
-      key: 'IdCard'
-    },
-    {
-      title: '籍贯',
-      dataIndex: 'birthPlace',
-      width: 150,
-      key: 'birthPlace',
+      title: '职务',
+      dataIndex: 'position',
+      // width: 200,
+      key: 'position',
       hideInSearch: true,
     },
-    {
-      title: '民族',
-      dataIndex: 'nation',
-      width: 100,
-      key: 'nation',
-      hideInSearch: true,
-    },
-    {
-      title: '政治面貌',
-      dataIndex: 'political',
-      width: 100,
-      key: 'political',
-      hideInSearch: true,
-    },
+    // {
+    //   title: '社团负责人',
+    //   dataIndex: 'principal',
+    //   width: 200,
+    //   key: 'principal',
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '社团骨干',
+    //   dataIndex: 'memberVIP',
+    //   width: 200,
+    //   key: 'memberVIP',
+    // },
+    // {
+    //   title: '政治面貌',
+    //   dataIndex: 'political',
+    //   // width: 100,
+    //   key: 'political',
+    //   hideInSearch: true,
+    // },
     {
       title: '手机号',
       dataIndex: 'phone',
-      width: 150,
-      key: 'phone'
+      // width: 150,
+      key: 'phone',
+      hideInSearch: true,
     },
     {
       title: 'QQ号',
       dataIndex: 'QQ',
-      width: 150,
-      key: 'QQ'
+      // width: 150,
+      key: 'QQ',
+      hideInSearch: true,
     },
-
+    {
+      title: '操作',
+      dataIndex: 'option',
+      valueType: 'option',
+      width: 150,
+      fixed: 'right',
+      render: (_, record) => (
+        <>
+          <a>调整</a>
+          <Divider type="vertical" />
+          <a>删除</a>
+        </>
+      ),
+    },
   ];
-
-
-
 
   return (
     <>
@@ -210,11 +164,11 @@ const MemberCom: React.FC<{}> = () => {
           return className;
         }}
         toolBarRender={(_action, { selectedRows }) => [
-          <Button type="default" size={'small'}>
+          <Button type="default">
             <DownloadOutlined /> 导出
-        </Button>,
+          </Button>,
           selectedRows && selectedRows.length > 0 && (
-            <Button size={"small"}>
+            <Button>
               <DownloadOutlined /> 批量导出
             </Button>
           ),

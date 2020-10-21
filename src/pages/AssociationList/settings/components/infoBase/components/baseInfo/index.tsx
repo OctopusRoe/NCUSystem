@@ -145,7 +145,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
         <Form
           layout={"horizontal"}
           onFinish={this.handleFinish}
-          initialValues={currentUser}
+          // initialValues={currentUser}
           autoComplete={'off'}
           hideRequiredMark
         >
@@ -154,7 +154,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
             name={"logo"}
             label={formatMessage({ id: 'info.infoBase.logo'})}
           >
-            <UploadView id="logoImg" name="logo" title="学校LOGO" onChange={this.testOne.bind(this)} />
+            <UploadView id="associationLogo" onChange={this.testOne.bind(this)} />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -285,7 +285,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
             name={"syssimpleimg"}
             label={formatMessage({ id: 'info.infoBase.syssimpleimg' })}
           >
-            <UploadView id="backgroundImg" name="background" title="登录页背景" />
+            <UploadView id="syssimpleimg" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}

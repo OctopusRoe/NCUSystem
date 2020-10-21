@@ -1,7 +1,7 @@
 // 应用管理组件
 
 import React, {  useRef, useState,  } from 'react';
-import { Button, Divider } from 'antd';
+import { Button, Divider, Input } from 'antd';
 import { TableListItem } from './data.d';
 import { connect } from 'umi';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
@@ -9,6 +9,7 @@ import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
 import { queryRule } from '../service';
 import AddModal from './components/AddModal';
 
+const { Search } = Input
 
 const Control: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
@@ -42,7 +43,7 @@ const Control: React.FC<{}> = () => {
       key: 'sex',
     },
     {
-      title: '连接地址',
+      title: '链接地址',
       dataIndex: 'IdCard',
       key: 'IdCard',
     },
@@ -70,6 +71,7 @@ const Control: React.FC<{}> = () => {
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, { selectedRows }) => [
+          <Search enterButton/>,
           <Button type="primary" onClick={()=>handAddmodalVisible(true)}>
             <PlusOutlined /> 新增
           </Button>,

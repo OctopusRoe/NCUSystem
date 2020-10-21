@@ -162,7 +162,6 @@ const Member: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{}}
-        scroll={{ x: 1500 }}
       />
       <Infomodal
         modalVisible={infomodalVisible}
