@@ -24,15 +24,18 @@ const associationData: FileType = {
     'apply',
     'settings',
     'member',
-    'recruitment',
+    'recruitment',  
+    'recruitmentsquare',
+    'active',
+    'activesquare',
+    'addresslist',
     'upgrade',
     'delete',
-    'dynamics',
-    'active',
     'outlay',
     'outregistration',
     'homepage',
-    // 'changeoffice'
+    // 'dynamics',          // 社团动态取消
+    // 'changeoffice'       // 换届申请取消
   ]
 }
 
@@ -42,18 +45,19 @@ const guideData: FileType = {
   path: 'guide',
   icon: 'solution',
   children: [
-    'studentleader',
-    'teacherleader',
+    'registerapproval',
     'list',
     'memberlist',
-    'registerapproval',
+    'recruitmentapproval',
+    'studentleader',
+    'teacherleader',
     'uplevel',
     'logoutapproval',
     'outsideapproval',
     'outlayapproval',
     'activeapproval',
-    'dynamicsapproval',
-    'changeapproval'
+    // 'dynamicsapproval',    // 活动审批取消
+    // 'changeapproval'       // 换届审批取消
   ]
 }
 

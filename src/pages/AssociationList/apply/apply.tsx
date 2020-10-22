@@ -11,7 +11,6 @@ import styles from './style.less';
 import Success from './components/result/success';
 import Fail from './components/result/fail';
 
-//git合并测试
 const { Step } = Steps;
 
 interface StepFormProps {
