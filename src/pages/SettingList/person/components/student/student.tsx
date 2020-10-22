@@ -9,30 +9,7 @@ import CreateForm from '@/components/CreateForm/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
 import { queryRule, updateRule } from './service';
-import ModalForm from '../student/components/ModalForm'
-
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
+import ModalForm from './components/ModalForm'
 
 const Student: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -142,7 +119,6 @@ const Student: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
-        scroll={{ x: '1800' }}
         headerTitle="用户列表"
         actionRef={actionRef}
         rowKey="key"
@@ -151,14 +127,6 @@ const Student: React.FC<{}> = () => {
             <PlusOutlined /> 新增
           </Button>,       
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-          <div>
-            已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
-            <span>
-              服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
-            </span>
-          </div>
-        )}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
         // rowSelection={{}}

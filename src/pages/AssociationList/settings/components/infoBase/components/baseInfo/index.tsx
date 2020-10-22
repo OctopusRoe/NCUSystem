@@ -6,7 +6,7 @@ import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons'
 import { FormattedMessage, formatMessage} from 'umi';
 
 import { CurrentUser } from '../data.d';
-import UploadView from '@/components/UploadView/uploadView'
+import CropImgView from '@/components/CropImgview'
 import styles from './BaseView.less';
 
 interface FormInfo {
@@ -154,7 +154,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
             name={"logo"}
             label={formatMessage({ id: 'info.infoBase.logo'})}
           >
-            <UploadView id="associationLogo" onChange={this.testOne.bind(this)} />
+            <CropImgView id="associationLogo" onChange={this.testOne.bind(this)} />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
@@ -285,7 +285,7 @@ class BaseInfo extends Component<BaseViewProps, BaseViewState> {
             name={"syssimpleimg"}
             label={formatMessage({ id: 'info.infoBase.syssimpleimg' })}
           >
-            <UploadView id="syssimpleimg" />
+            <CropImgView id="syssimpleimg" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}

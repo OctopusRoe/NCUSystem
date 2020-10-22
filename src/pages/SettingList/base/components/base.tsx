@@ -143,28 +143,28 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
             name={"logo"}
             label={formatMessage({ id: 'setting.basic.logo'})}
           >
-            <UploadView id="logoImg" name="logo" title="学校LOGO" onChange={this.testOne.bind(this)} />
+            <UploadView id="logoImg" onChange={this.testOne.bind(this)} />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
             name={"favicon"}
             label={formatMessage({ id: 'setting.basic.favicon' })}
           >
-            <UploadView id="faviconImg" name="favicon" title="Favicon" />
+            <UploadView id="faviconImg" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
             name={"background"}
             label={formatMessage({ id: 'setting.basic.background' })}
           >
-            <UploadView id="backgroundImg" name="background" title="登录页背景" />
+            <UploadView id="backgroundImg" />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
             name={"logonLogo"}
             label={formatMessage({ id: 'setting.basic.logonLogo' })}
           >
-            <UploadView id="logonLogoImg" name="logonLogo" title="登录页LOGO" />
+            <UploadView id="logonLogoImg" />
           </Form.Item>
           <Form.Item
             {...submitFormLayout}
@@ -188,8 +188,4 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
   }
 }
 
-export default connect(
-  ({ accountAndsettings }: { accountAndsettings: { currentUser: CurrentUser } }) => ({
-    currentUser: accountAndsettings.currentUser,
-  }),
-)(BaseView);
+export default connect()(BaseView);

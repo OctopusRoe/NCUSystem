@@ -104,15 +104,6 @@ class Base extends Component<SettingsProps, SettingsState> {
     };
   }
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'accountAndsettings/fetchCurrent',
-    });
-    window.addEventListener('resize', this.resize);
-    this.resize();
-  }
-
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
   }
@@ -220,8 +211,4 @@ class Base extends Component<SettingsProps, SettingsState> {
   }
 }
 
-export default connect(
-  ({ accountAndsettings }: { accountAndsettings: { currentUser: CurrentUser } }) => ({
-    currentUser: accountAndsettings.currentUser,
-  }),
-)(Base);
+export default connect()(Base);

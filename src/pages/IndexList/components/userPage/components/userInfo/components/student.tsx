@@ -1,23 +1,28 @@
 // 学生的个人资料组件
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Form, Input, Select, DatePicker, Button } from 'antd'
 
-import UploadView from '@/components/UploadView/uploadView'
 import CropImgView from '@/components/CropImgview'
+import GeographicView from '@/components/GeographicView/GeographicView'
 
 export interface Student {
+  studentName: string
+  studentID: string
+  studentSex: string
+  cardID: string
+  educational: string
+
   nation: string[]
-  birthPlace: string[]
   college: string[]
   className: string[]
   specialty: string[]
-  educational: string[]
 }
 
 export interface StudentInfoProps {
   info: Student
+  political: string[]
 }
 
 const FormItem = Form.Item
@@ -44,11 +49,30 @@ const submitFormLayout = {
 
 const StudentInfo: React.FC<StudentInfoProps> = (props) => {
 
-  const { info } = props
-  const { nation, birthPlace , college, className, specialty, educational } = info
+  const { info, political } = props
+  const {studentName, studentID, studentSex, cardID, nation , college, className, specialty, educational } = info
 
-  const onFinish = () => {
+  const [ geographicList, setGeographicList ] = useState<string[]>([])
 
+  const [ birthPlaceError, setBirthPlaceError ] = useState<any>('')
+  const [ birthPlaceStr, setBirthPlaceStr ] = useState<string|null>(null)
+
+  const onFinish = (e: any) => {
+    
+    console.log(e)
+  }
+
+  const getGeographicValue = (e: any) => {
+    setGeographicList(e)
+    setBirthPlaceError('')
+    setBirthPlaceStr(null)
+  }
+
+  const checkOut = () => {
+    if (geographicList.length === 0 ) {
+      setBirthPlaceError('error')
+      setBirthPlaceStr('请选择籍贯!')
+    }
   }
 
   return (
@@ -57,28 +81,37 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
         layout={"horizontal"}
         onFinish={onFinish}
         autoComplete={'off'}
+        hideRequiredMark
       >
         <FormItem
-          {...formItemLayout}
           label={'姓名'}
+          {...formItemLayout}
+          name={'studentName'}
+          initialValue={studentName}
         >
           <Input disabled />
         </FormItem>
         <FormItem
-          {...formItemLayout}
           label={'学号'}
+          {...formItemLayout}
+          name={'studentID'}
+          initialValue={studentID}
         >
           <Input disabled />
         </FormItem>
         <FormItem
-          {...formItemLayout}
           label={'性别'}
+          {...formItemLayout}
+          name={'studentSex'}
+          initialValue={studentSex}
         >
           <Input disabled />
         </FormItem>
         <FormItem
-          {...formItemLayout}
           label={'身份证'}
+          {...formItemLayout}
+          name={'cardID'}
+          initialValue={cardID}
         >
           <Input disabled />
         </FormItem>
@@ -93,7 +126,7 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
             }
           ]}
         >
-          <UploadView id="userInfo-Photo" />
+          <CropImgView id="userInfo-Photo" />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -121,23 +154,10 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
           {...formItemLayout}
           name={'birthPlace'}
           label={'籍贯'}
-          rules={[
-            {
-              required: true,
-              message: '请选择籍贯!'
-            }
-          ]}
+          validateStatus={birthPlaceError}
+          help={birthPlaceStr}
         >
-          <Select
-            showSearch
-            placeholder={'请选择'}
-          >
-            {
-              birthPlace.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
-              ))
-            }
-          </Select>
+          <GeographicView onFinish={getGeographicValue} />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -207,25 +227,11 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          name={'educational'}
           label={'学制'}
-          rules={[
-            {
-              required: true,
-              message: '请选择学制!'
-            }
-          ]}
+          name={'educational'}
+          initialValue={educational}
         >
-          <Select
-            showSearch
-            placeholder={'请选择'}
-          >
-            {
-              educational.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
-              ))
-            }
-          </Select>
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -238,7 +244,7 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
             }
           ]}
         >
-          <DatePicker picker="month" />
+          <DatePicker style={{width: '100%'}} picker="month" />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -273,11 +279,20 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '政治面貌!'
+              message: '请选择政治面貌!'
             }
           ]}
         >
-          <Input placeholder={'政治面貌'} />
+          <Select
+            showSearch
+            placeholder={'请选择'}
+          >
+            {
+              political.map((item: any, index: number) => (
+                <Option value={item} key={index}>{item}</Option>
+              ))
+            }
+          </Select>
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -295,7 +310,7 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
         <FormItem
           {...submitFormLayout}
         >
-          <Button type={'primary'} size={'large'}>保存</Button>
+          <Button type={'primary'} size={'large'} htmlType={'submit'} onClick={checkOut}>保存</Button>
         </FormItem>
       </Form>
     </>

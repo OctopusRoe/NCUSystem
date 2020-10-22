@@ -2,23 +2,27 @@
 
 import React from 'react'
 
-import StudentInfo from './components/student'
-import WorkerInfo from './components/worker'
+import StudentInfo, { Student } from './components/student'
+import WorkerInfo, { Worker } from './components/worker'
 
-const info = {
-  nation: ['汉族', '满族', '其他族'],
-  birthPlace: ['江西', '中国', '亚洲'],
-  college: ['信息工程学院', '医学院', '建筑工程学院'],
-  className: ['班级1', '班级2', '班级3', '班级4'],
-  specialty: ['专业1', '专业2', '专业3'],
-  educational: ['4年制', '3年制']
+const politicalList = ['中共党员', '中共预备党员', '共青团员', '群众', '其他']
+
+export interface UserInfoProps {
+  isStudent: boolean
+  info: Student | Worker | any
 }
 
-const UserInfo: React.FC<{}> = (props) => {
+const UserInfo: React.FC<UserInfoProps> = (props) => {
 
   return (
     <>
-      <StudentInfo info={info} />
+      {/* <StudentInfo info={studentInfo} political={politicalList} /> */}
+      {
+        props.isStudent ?
+          <StudentInfo info={props.info} political={politicalList} />
+          :
+          <WorkerInfo info={props.info} />
+      }
     </>
   )
 }

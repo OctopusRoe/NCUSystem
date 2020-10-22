@@ -17,6 +17,7 @@ export interface ShowImageProps {
 
 export interface CorpImgViewProps {
   id: string
+  aspect?: number
   onChange?: (file: Blob) => void
   onPreview?: () => void
 }
@@ -94,7 +95,7 @@ const CorpImgView: React.FC<CorpImgViewProps> = (props) => {
   return (
     <>
       <div style={{display: showImg ? 'none' : 'block'}}>
-        <ImgCrop>
+        <ImgCrop aspect={props.aspect}>
           <Upload
             listType={'picture-card'}
             accept={'image/jpg, image/jpeg, image/png'}

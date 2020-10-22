@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Avatar, Card, Col, Divider, Input, Row } from 'antd';
+import { Card, Col, Divider, Input, Row, Alert } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import { Link, connect, Dispatch } from 'umi';
 import { RouteChildrenProps } from 'react-router';
@@ -9,8 +9,35 @@ import { CurrentUser } from './data.d';
 import styles from './Center.less';
 
 import UserInfo from './components/userInfo'
-import ShowImage from '@/components/ShowImgView'
+import EditableLinkGroup from './components/EditableLinkGroup'
 import CropImgView from '@/components/CropImgview'
+
+const links = [
+  {
+    title: '操作一',
+    href: '',
+  },
+  {
+    title: '操作二',
+    href: '',
+  },
+  {
+    title: '操作三',
+    href: '',
+  },
+  {
+    title: '操作四',
+    href: '',
+  },
+  {
+    title: '操作五',
+    href: '',
+  },
+  {
+    title: '操作六',
+    href: '',
+  },
+];
 
 const operationTabList = [
   {
@@ -32,6 +59,29 @@ const operationTabList = [
     ),
   },
 ];
+
+const studentInfo = {
+  studentName: '章棚',
+  studentID: '123123123123',
+  studentSex: '男',
+  cardID: '360102190001011216',
+  educational: '4年制',
+  nation: ['汉族', '满族', '其他族'],
+  college: ['信息工程学院', '医学院', '建筑工程学院'],
+  className: ['班级1', '班级2', '班级3', '班级4'],
+  specialty: ['专业1', '专业2', '专业3'],
+}
+
+const workerInfo = {
+  workerName: '章棚',
+  workerID: '123123123123',
+  workderSex: '男',
+  cardID: '360102190001011216',
+  nation: ['汉族', '满族', '其他族'],
+  college: ['信息工程学院', '医学院', '建筑工程学院'],
+  department: ['科室1', '科室2', '科室3', '科室4'],
+}
+
 
 interface CenterProps extends RouteChildrenProps {
   dispatch: Dispatch;
@@ -89,7 +139,7 @@ class UserPage extends Component<CenterProps, CenterState> {
   renderChildrenByTabKey = (tabKey: CenterState['tabKey']) => {
     switch (tabKey) {
       case 'userInfo':
-        return <UserInfo />;
+        return <UserInfo isStudent={false} info={workerInfo} />;
       case 'accountSetting':
         return <CropImgView id={'testCropImg'} />;
       case 'associationReport':
@@ -121,10 +171,11 @@ class UserPage extends Component<CenterProps, CenterState> {
                   <Divider dashed />
                   <div className={styles.team}>
                     <div className={styles.teamTitle}>所在社团</div>
-                    <div style={{display: 'flex'}}>
+                    <Alert message="未加入社团" type="error" />
+                    {/* <div style={{display: 'flex'}}>
                       <img src={'111'} />
                       <div style={{marginLeft: '10px'}} >社团名称</div>
-                    </div>
+                    </div> */}
                     {/* <Row gutter={36}>
                       {currentUser.notice &&
                         currentUser.notice.map((item) => (
@@ -139,6 +190,14 @@ class UserPage extends Component<CenterProps, CenterState> {
                   </div>
                 </div>
               {/* )} */}
+            </Card>
+            <Card
+              style={{ marginBottom: 24 }}
+              title="快速开始 / 便捷导航"
+              bordered={false}
+              bodyStyle={{ padding: 0 }}
+            >
+              <EditableLinkGroup onAdd={() => {}} links={links} linkElement={Link} />
             </Card>
           </Col>
           <Col lg={17} md={24}>

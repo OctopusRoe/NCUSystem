@@ -162,8 +162,4 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
   }
 }
 
-export default connect(
-  ({ accountAndsettings }: { accountAndsettings: { currentUser: CurrentUser } }) => ({
-    currentUser: accountAndsettings.currentUser,
-  }),
-)(InfoBase);
+export default connect()(InfoBase);
