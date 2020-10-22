@@ -1,7 +1,5 @@
 // 学生的个人资料组件
 
-// 测试合并用GIT
-
 import React from 'react'
 
 import { Form, Input, Select, DatePicker, Button } from 'antd'
