@@ -1,6 +1,5 @@
 // 招新广场 组件
 
-
 import React, { useState, useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ShowImgView from '@/components/ShowImgView'
@@ -99,7 +98,7 @@ const RecruitmentSquareCom: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
-        headerTitle="用户列表"
+        headerTitle="社团列表"
         actionRef={actionRef}
         rowKey="key"
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}

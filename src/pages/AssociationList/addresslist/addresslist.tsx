@@ -2,8 +2,13 @@
 
 import React from 'react';
 
+import { PageHeaderWrapper } from '@ant-design/pro-layout'
+import AddressListCom from './components'
+
+
+
 const AddressList: React.FC<{}> = () => {
-  return <div>社团通讯录</div>;
+  return <PageHeaderWrapper><AddressListCom  /></PageHeaderWrapper>;
 };
 
 export default AddressList;
