@@ -48,7 +48,6 @@ const OnlinePlatform: React.FC<{}> = (props) => {
   const remove = (e: number) => {
     const list = inputList.filter((item: any, index: number) => (item.name !== e))
     setInputList(list)
-    console.log(inputList)
   }
 
   return (

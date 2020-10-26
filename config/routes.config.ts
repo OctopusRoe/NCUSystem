@@ -24,10 +24,6 @@ const associationData: FileType = {
     'apply',
     'settings',
     'member',
-    'recruitment',  
-    'recruitmentsquare',
-    'active',
-    'activesquare',
     'addresslist',
     'upgrade',
     'delete',
@@ -41,7 +37,7 @@ const associationData: FileType = {
 const recruitment: FileType = {
   fileName: 'RecruitmentList',
   path: 'recruitment',
-  icon: '',
+  icon: 'smile',
   children: [
     'square', // 招新广场
     'setting', // 招新设置
@@ -53,8 +49,8 @@ const recruitment: FileType = {
 // 活动管理
 const active: FileType = {
   fileName: 'ActiveList',
-  path: 'actinve',
-  icon: '',
+  path: 'active',
+  icon: 'contacts',
   children: [
     'square', // 活动广场
   ]
