@@ -139,7 +139,7 @@ class UserPage extends Component<CenterProps, CenterState> {
   renderChildrenByTabKey = (tabKey: CenterState['tabKey']) => {
     switch (tabKey) {
       case 'userInfo':
-        return <UserInfo isStudent={false} info={workerInfo} />;
+        return <UserInfo isStudent={true} info={studentInfo} />;
       case 'accountSetting':
         return <CropImgView id={'testCropImg'} />;
       case 'associationReport':
@@ -193,7 +193,7 @@ class UserPage extends Component<CenterProps, CenterState> {
             </Card>
             <Card
               style={{ marginBottom: 24 }}
-              title="快速开始 / 便捷导航"
+              title="便捷导航"
               bordered={false}
               bodyStyle={{ padding: 0 }}
             >

@@ -34,8 +34,29 @@ const associationData: FileType = {
     'outlay',
     'outregistration',
     'homepage',
-    // 'dynamics',          // 社团动态取消
-    // 'changeoffice'       // 换届申请取消
+  ]
+}
+
+// 招新管理
+const recruitment: FileType = {
+  fileName: 'RecruitmentList',
+  path: 'recruitment',
+  icon: '',
+  children: [
+    'square', // 招新广场
+    'setting', // 招新设置
+    'admin', // 招新管理
+    'statistic', // 招新统计
+  ]
+}
+
+// 活动管理
+const active: FileType = {
+  fileName: 'ActiveList',
+  path: 'actinve',
+  icon: '',
+  children: [
+    'square', // 活动广场
   ]
 }
 
@@ -56,8 +77,6 @@ const guideData: FileType = {
     'outsideapproval',
     'outlayapproval',
     'activeapproval',
-    // 'dynamicsapproval',    // 活动审批取消
-    // 'changeapproval'       // 换届审批取消
   ]
 }
 
@@ -140,6 +159,10 @@ export default [{
       CreateRouter(indexData),
       // 社团管理 router
       CreateRouter(associationData),
+      // 招新管理 router
+      CreateRouter(recruitment),
+      // 活动管理 router
+      CreateRouter(active),
       // 社团指导 router
       CreateRouter(guideData),
       // 考核管理 router

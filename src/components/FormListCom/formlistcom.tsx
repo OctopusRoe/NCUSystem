@@ -30,49 +30,47 @@ interface FormListComProps {
   onFinish: (e: any) => void
   inputTwo?: boolean
   inputThree?: boolean
+  add: () => void
+  remove: (e: number) => void
 }
 
 const FormListCom: React.FC<FormListComProps> = (props) => {
+  console.log(props.inputList)
 
   const { info, onFinish } = props
-
-  const [ inputList, setInputList ] = useState<Group[]>(props.inputList)
-  const [ listLength, setListLength ] = useState<number>(props.inputList.length)
-
-  // useEffect(() => {
-  //   setInputList(props.inputList.concat())
-  //   setListLength(props.inputList.concat().length - 1)
-  // },[])
+  const { inputList } = props
 
   const returnValue = (e: any) => {
     const back = e.valueList.filter((item: any) => item !== undefined)
     onFinish(back)
   }
 
-  const add = () => {
-    let length = 0
-    if (inputList.length !== 0) {
-      length = listLength + 1
-    }
-    const item: Group[] = [{
-      name: length,
-      key: length,
-      fieldKey: length,
-      value: {}
-    }]
+  const { add, remove } = props
 
-    const list = [...inputList, ...item]
-    setInputList(list)
-    setListLength(list.length)
-    console.log(inputList)
-  }
+  // const add = () => {
+  //   let length = 0
+  //   if (inputList.length !== 0) {
+  //     length = listLength + 1
+  //   }
+  //   const item: Group[] = [{
+  //     name: length,
+  //     key: length,
+  //     fieldKey: length,
+  //     value: {}
+  //   }]
 
-  const remove = (e: any) => {
-    const list = inputList.filter((item: any, index: number) => item.name !== e)
-    setInputList(list)
-    setListLength(list.length)
-    console.log(inputList)
-  }
+  //   const list = [...inputList, ...item]
+  //   setInputList(list)
+  //   setListLength(list.length)
+  //   console.log(inputList)
+  // }
+
+  // const remove = (e: any) => {
+  //   const list = inputList.filter((item: any, index: number) => item.name !== e)
+  //   setInputList(list)
+  //   setListLength(list.length)
+  //   console.log(inputList)
+  // }
 
   return (
     <Form name="dynamic_form_nest_item" onFinish={returnValue} autoComplete={"off"}  >

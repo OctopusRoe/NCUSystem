@@ -126,7 +126,7 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
             }
           ]}
         >
-          <CropImgView id="userInfo-Photo" />
+          <CropImgView aspect={1/1.25} id="userInfo-Photo" />
         </FormItem>
         <FormItem
           {...formItemLayout}

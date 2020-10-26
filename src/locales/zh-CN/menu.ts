@@ -20,6 +20,17 @@ export default {
   'menu.association.outregistration': '外出登记',
   'menu.association.homepage': '社团主页',
 
+  // 招新管理
+  'menu.recruitment': '招新管理',
+  'menu.recruitment.square': '招新广场',
+  'menu.recruitment.setting': '招新设置',
+  'menu.recruitment.admin': '招新管理',
+  'menu.recruitment.statistic': '招新统计',
+
+  // 活动管理
+  'menu.active': '活动管理',
+  'menu.active.square': '活动广场',
+
   // 社团指导菜单
   'menu.guide': '社团指导',
   'menu.guide.registerapproval': '注册审批',
