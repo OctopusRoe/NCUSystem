@@ -7,6 +7,8 @@ import { Form, Input, Select, DatePicker, Button } from 'antd'
 import CropImgView from '@/components/CropImgview'
 import GeographicView from '@/components/GeographicView/GeographicView'
 
+const ethnicity = require('@/assets/ethnicity.json')
+
 export interface Student {
   studentName: string
   studentID: string
@@ -48,6 +50,7 @@ const submitFormLayout = {
 };
 
 const StudentInfo: React.FC<StudentInfoProps> = (props) => {
+  console.log(ethnicity)
 
   const { info, political } = props
   const {studentName, studentID, studentSex, cardID, nation , college, className, specialty, educational } = info
@@ -144,8 +147,8 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
             placeholder={'请选择'}
           >
             {
-              nation.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
+              ethnicity.data.map((item: any, index: number) => (
+                <Option value={item.name} key={index}>{item.name}</Option>
               ))
             }
           </Select>

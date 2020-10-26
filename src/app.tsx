@@ -12,3 +12,14 @@ export function patchRoutes({ routes }: any) {
   //   component: require('@/pages/404').default,
   // });
 }
+
+
+// 关闭 dva 开发时候接口访问报错提醒
+export const dva = {
+  config: {
+    onError(e: any) {
+      e.preventDefault();
+      console.error(e.message);
+    },
+  },
+};

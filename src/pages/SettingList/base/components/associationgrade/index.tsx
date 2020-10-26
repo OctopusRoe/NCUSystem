@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { Row, Col} from 'antd';
-import FormListCom, { Group } from '@/components/FormListCom/formlistcom'
+import FormListCom, { Group, InputInfo } from '@/components/FormListCom/formlistcom'
 
 const AssociationGrade: React.FC<{}> = (props) => {
   // 启动页面后默认存在两个数据
@@ -13,9 +13,9 @@ const AssociationGrade: React.FC<{}> = (props) => {
   ]
 
   // input 输入框属性
-  const info = {
+  const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
     one: {
-      name: 'name',
+      name: 'one',
       message: '请输入社团级别!',
       placeHodel: '请输入社团级别',
     }

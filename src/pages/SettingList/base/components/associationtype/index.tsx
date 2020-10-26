@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { Row, Col} from 'antd';
-import FormListCom, { Group } from '@/components/FormListCom/formlistcom'
+import FormListCom, { Group, InputInfo } from '@/components/FormListCom/formlistcom'
 
 const AssociationType: React.FC<{}> = (props) => {
 
@@ -14,9 +14,9 @@ const AssociationType: React.FC<{}> = (props) => {
   ]
 
   // input 输入框属性
-  const info = {
+  const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
     one: {
-      name: 'name',
+      name: 'one',
       message: '请输入社团类别!',
       placeHodel: '请输入社团类别',
     }

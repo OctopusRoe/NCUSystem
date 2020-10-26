@@ -9,6 +9,8 @@ import { Form, Input, Select, Button } from 'antd'
 import CropImgView from '@/components/CropImgview'
 import GeographicView from '@/components/GeographicView/GeographicView'
 
+const ethnicity = require('@/assets/ethnicity.json')
+
 export interface Worker {
   workerName: string
   workerID: string
@@ -141,8 +143,8 @@ const WorkerInfo: React.FC<WorkerInfoProps> = (props) => {
             placeholder={'请选择'}
           >
             {
-              nation.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
+              ethnicity.data.map((item: any, index: number) => (
+                <Option value={item.name} key={index}>{item.name}</Option>
               ))
             }
           </Select>

@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import { Row, Col, Card} from 'antd';
-import FormListCom, { Group } from '@/components/FormListCom/formlistcom'
+import { Row, Col } from 'antd';
+import FormListCom, { Group, InputInfo } from '@/components/FormListCom/formlistcom'
 
 const DepartmentType: React.FC<{}> = (props) => {
   // 启动页面后默认存在两个数据
@@ -13,9 +13,9 @@ const DepartmentType: React.FC<{}> = (props) => {
   ]
 
   // input 输入框属性
-  const info = {
+  const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
     one: {
-      name: 'name',
+      name: 'one',
       message: '请输入单位类别!',
       placeHodel: '请输入单位类别',
     }

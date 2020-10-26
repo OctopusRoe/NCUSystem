@@ -1,8 +1,10 @@
 // 基础设置 页面
 
-import { Button, Input, Form, message, Modal } from 'antd';
-import { connect, FormattedMessage, formatMessage, useIntl} from 'umi';
 import React, { Component } from 'react';
+
+import { Button, Input, Form, message, Modal, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons'
+import { connect, FormattedMessage, formatMessage, useIntl} from 'umi';
 
 import { CurrentUser } from '../data.d';
 import UploadView from '@/components/UploadView/uploadView'
@@ -140,8 +142,32 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           </Form.Item>
           <Form.Item
             {...formItemLayout}
+            name={"help"}
+            label={formatMessage({ id: 'setting.basic.help'})}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'setting.basic.help-message' }, {}),
+              },
+            ]}
+          >
+            <Upload
+              accept={"application/pdf"}
+              showUploadList={false}
+            >
+              <Button icon={<UploadOutlined />}>选择文件</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            {...formItemLayout}
             name={"logo"}
             label={formatMessage({ id: 'setting.basic.logo'})}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'setting.basic.logo-message' }, {}),
+              },
+            ]}
           >
             <UploadView id="logoImg" onChange={this.testOne.bind(this)} />
           </Form.Item>
@@ -149,6 +175,12 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
             {...formItemLayout}
             name={"favicon"}
             label={formatMessage({ id: 'setting.basic.favicon' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'setting.basic.favicon-message' }, {}),
+              },
+            ]}
           >
             <UploadView id="faviconImg" />
           </Form.Item>
@@ -156,6 +188,12 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
             {...formItemLayout}
             name={"background"}
             label={formatMessage({ id: 'setting.basic.background' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'setting.basic.background-message' }, {}),
+              },
+            ]}
           >
             <UploadView id="backgroundImg" />
           </Form.Item>
@@ -163,6 +201,12 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
             {...formItemLayout}
             name={"logonLogo"}
             label={formatMessage({ id: 'setting.basic.logonLogo' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'setting.basic.logonLogo-message' }, {}),
+              },
+            ]}
           >
             <UploadView id="logonLogoImg" />
           </Form.Item>

@@ -42,7 +42,7 @@ const recruitment: FileType = {
     'square', // 招新广场
     'setting', // 招新设置
     'admin', // 招新管理
-    'statistic', // 招新统计
+    // 'statistic', // 招新统计
   ]
 }
 
@@ -105,7 +105,8 @@ const settingData: FileType = {
     'base',
     'control',
     'person',
-    'userGroup'
+    'userGroup',
+    'message'
   ]
 }
 

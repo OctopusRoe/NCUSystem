@@ -18,7 +18,7 @@ export interface Group {
 
 // 每行 input 的参数设置
 export interface InputInfo {
-  name: string
+  name: 'one' | 'two' | 'three'
   message: string
   placeHodel: string
   disabled?: boolean
@@ -30,50 +30,53 @@ interface FormListComProps {
   onFinish: (e: any) => void
   inputTwo?: boolean
   inputThree?: boolean
-  add: () => void
-  remove: (e: number) => void
 }
 
 const FormListCom: React.FC<FormListComProps> = (props) => {
-  console.log(props.inputList)
 
   const { info, onFinish } = props
-  const { inputList } = props
+
+  const [ listLength, setListLength ] = useState<number>(20)    // 此处因为 diff 算法问题，如果传入的 inputList.length >= listLength 所设定的数字，会产生bug
+  const [ inputList, setInputList ] = useState<Group[]>([])
+  const [ defaultList, setDefaultList ] = useState<any[]>([])
+
+  useEffect(() => {
+    setInputList(props.inputList)
+    const defaultValue = props.inputList.map((item: Group) => {
+      if (item.value) {
+        return item.value.one
+      }
+      return
+    })
+    setDefaultList(defaultValue)
+  },[])
 
   const returnValue = (e: any) => {
-    const back = e.valueList.filter((item: any) => item !== undefined)
+    const back = e.valueList.filter((item: any) => item !== undefined && item.one !== null && defaultList.indexOf(item.one) < 0)
     onFinish(back)
   }
 
-  const { add, remove } = props
+  const add = () => {
 
-  // const add = () => {
-  //   let length = 0
-  //   if (inputList.length !== 0) {
-  //     length = listLength + 1
-  //   }
-  //   const item: Group[] = [{
-  //     name: length,
-  //     key: length,
-  //     fieldKey: length,
-  //     value: {}
-  //   }]
+    const item: Group[] = [{
+      name: listLength,
+      key: listLength,
+      fieldKey: listLength,
+      value: {}
+    }]
 
-  //   const list = [...inputList, ...item]
-  //   setInputList(list)
-  //   setListLength(list.length)
-  //   console.log(inputList)
-  // }
+    const list = [...inputList, ...item]
+    setInputList(list)
+    setListLength(listLength + 1)
+  }
 
-  // const remove = (e: any) => {
-  //   const list = inputList.filter((item: any, index: number) => item.name !== e)
-  //   setInputList(list)
-  //   setListLength(list.length)
-  //   console.log(inputList)
-  // }
+  const remove = (e: any) => {
+    const list = inputList.filter((item: any, index: number) => item.name !== e)
+    setInputList(list)
+  }
 
   return (
-    <Form name="dynamic_form_nest_item" onFinish={returnValue} autoComplete={"off"}  >
+    <Form name="formListCom" onFinish={returnValue} autoComplete={"off"}  >
       <FormList name="valueList">
         {() => {
           return (
@@ -81,7 +84,6 @@ const FormListCom: React.FC<FormListComProps> = (props) => {
               {inputList.map((item: any, index: number)=> (
                 <div key={item.key} style={{ display: 'flex', marginBottom: 8}}>
                   <FormItem
-                    // {...field}
                     initialValue={item.value.one ? item.value.one : null}
                     name={[item.name, info.one.name]}
                     fieldKey={[item.fieldKey, info.one.name]}
@@ -94,7 +96,6 @@ const FormListCom: React.FC<FormListComProps> = (props) => {
                     props.inputTwo
                     ?
                     (<FormItem
-                      // {...field}
                       initialValue={item.value.two}
                       name={[item.name, info.two?.name]}
                       fieldKey={[item.fieldKey, info.two?.name]}
@@ -110,7 +111,6 @@ const FormListCom: React.FC<FormListComProps> = (props) => {
                     props.inputThree
                     ?
                     (<FormItem
-                      // {...field}
                       initialValue={item.value.three}
                       name={[item.name, info.three?.name]}
                       fieldKey={[item.fieldKey, info.three?.name]}

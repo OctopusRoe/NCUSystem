@@ -61,4 +61,5 @@ export default {
   'menu.setting.control': '应用管理',
   'menu.setting.person': '用户管理',
   'menu.setting.userGroup': '用户组管理',
+  'menu.setting.message': '短信统计'
 };

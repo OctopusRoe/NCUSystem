@@ -1,11 +1,10 @@
 // 社团设置 组件
 
-import { Avatar, List, Skeleton } from 'antd';
+import { Avatar, Skeleton } from 'antd';
 import React, { Component } from 'react';
 
 import { Dispatch, connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import moment from 'moment';
 import { ModalState } from '@/models/userInfoHead';
 import styles from './style.less';
 import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data';
@@ -68,38 +67,6 @@ class Settings extends Component<WorkplaceProps> {
       type: 'dashboardAndworkplace/clear',
     });
   }
-
-  renderActivities = (item: ActivitiesType) => {
-    const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
-      if (item[key]) {
-        return (
-          <a href={item[key].link} key={item[key].name}>
-            {item[key].name}
-          </a>
-        );
-      }
-      return key;
-    });
-    return (
-      <List.Item key={item.id}>
-        <List.Item.Meta
-          avatar={<Avatar src={item.user.avatar} />}
-          title={
-            <span>
-              <a className={styles.username}>{item.user.name}</a>
-              &nbsp;
-              <span className={styles.event}>{events}</span>
-            </span>
-          }
-          description={
-            <span className={styles.datetime} title={item.updatedAt}>
-              {moment(item.updatedAt).fromNow()}
-            </span>
-          }
-        />
-      </List.Item>
-    );
-  };
 
   render() {
     const { currentUser } = this.props;
