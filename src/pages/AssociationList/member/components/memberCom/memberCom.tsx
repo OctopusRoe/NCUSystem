@@ -1,40 +1,18 @@
 //
 
-import { Button, Divider, message } from 'antd';
+import { Button, Divider } from 'antd';
 
 import React, { useRef, useState } from 'react';
-import { queryRule, updateRule } from './service';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
+import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
-
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
+import ShowImgView from '@/components/ShowImgView';
+import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
 const MemberCom: React.FC<{}> = () => {
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
+  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '届数',
@@ -57,11 +35,12 @@ const MemberCom: React.FC<{}> = () => {
       hideInSearch: true,
       fixed: 'left',
       render: (text, record) => {
-        const img = record.photo;
         return (
-          <>
-            <img src={img} alt="" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
-          </>
+          <ShowImgView
+            id={record.name}
+            src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
+            style={{ width: '30px', height: '30px' }}
+          />
         );
       },
     },
@@ -71,6 +50,9 @@ const MemberCom: React.FC<{}> = () => {
       // width: 150,
       key: 'name',
       fixed: 'left',
+      render: (text, record) => {
+        return <span onClick={() => setDetailsModalVisible(true)}>{record.name}</span>;
+      },
     },
     {
       title: '学号',
@@ -87,9 +69,22 @@ const MemberCom: React.FC<{}> = () => {
       key: 'sex',
       hideInSearch: true,
     },
-
     {
-      title: '所在部门',
+      title: '学院',
+      dataIndex: 'college',
+      // width: 200,
+      key: 'college',
+      hideInSearch: true,
+    },
+    {
+      title: '班级',
+      dataIndex: 'class',
+      // width: 200,
+      key: 'class',
+      hideInSearch: true,
+    },
+    {
+      title: '部门',
       dataIndex: 'department',
       // width: 200,
       key: 'department',
@@ -102,47 +97,13 @@ const MemberCom: React.FC<{}> = () => {
       key: 'position',
       hideInSearch: true,
     },
-    // {
-    //   title: '社团负责人',
-    //   dataIndex: 'principal',
-    //   width: 200,
-    //   key: 'principal',
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '社团骨干',
-    //   dataIndex: 'memberVIP',
-    //   width: 200,
-    //   key: 'memberVIP',
-    // },
-    // {
-    //   title: '政治面貌',
-    //   dataIndex: 'political',
-    //   // width: 100,
-    //   key: 'political',
-    //   hideInSearch: true,
-    // },
-    {
-      title: '手机号',
-      dataIndex: 'phone',
-      // width: 150,
-      key: 'phone',
-      hideInSearch: true,
-    },
-    {
-      title: 'QQ号',
-      dataIndex: 'QQ',
-      // width: 150,
-      key: 'QQ',
-      hideInSearch: true,
-    },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       width: 150,
       fixed: 'right',
-      render: (_, record) => (
+      render: (_) => (
         <>
           <a>调整</a>
           <Divider type="vertical" />
@@ -178,26 +139,10 @@ const MemberCom: React.FC<{}> = () => {
         rowSelection={{}}
         scroll={{ x: 1500 }}
       />
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
+      <DetailsModal
+        modalVisible={DetailsModalVisible}
+        onCancel={() => setDetailsModalVisible(false)}
+      />
     </>
   );
 };

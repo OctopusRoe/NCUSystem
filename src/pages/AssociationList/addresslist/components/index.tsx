@@ -58,7 +58,7 @@ const RecruitmentSquareCom: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: '所在部门',
+      title: '部门',
       dataIndex: 'department',
       width: '',
       key: 'department',

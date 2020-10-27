@@ -36,7 +36,7 @@ const SettingModal: React.FC<SettingModalProps> = (props) => {
     >
       <Form labelCol={{ span: 7 }} wrapperCol={{ span: 15 }}>
         <FormItem name="img" label="招新海报" >
-          <UploadView id="posters" name={'posters'} title={'招新海报'} />
+          <UploadView id="posters"  />
         </FormItem>
         <FormItem name="slogan" label="宣传语">
           <TextArea showCount maxLength={100} rows={3}/>
