@@ -1,15 +1,17 @@
 // 招新广场 组件
 
-import React, { FC, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Card, Col, Form, List, Row, Select, Typography, Input, Tag, Modal } from 'antd';
+import { Card, Col, Form, List, Row, Select, Typography, Input, Tag, Space } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons'
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, Dispatch } from 'umi';
 import { StateType } from './model';
 import { ListItemDataType } from './data';
+
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
+import CardInfo from './components/cardInfo'
 import styles from './style.less';
 
 const { Option } = Select;
@@ -22,23 +24,25 @@ interface ProjectsProps {
   loading: boolean;
 }
 
-const Square: FC<ProjectsProps> = ({
+const Square: React.FC<ProjectsProps> = ({
   dispatch,
   listAndsearchAndprojects: { list = [] },
   loading,
 }) => {
 
+  const [ visible, setVisible ] = useState(false)
+  const [ dataInfo, setDataInfo ] = useState<any>()
 
-  const mainSearch = (
-    <div style={{ textAlign: 'center' }}>
-      <Input.Search
-        placeholder="请输入"
-        enterButton="搜索"
-        size="large"
-        style={{ maxWidth: 522, width: '100%' }}
-      />
-    </div>
-  )
+  // const mainSearch = (
+  //   <div style={{ textAlign: 'center' }}>
+  //     <Input.Search
+  //       placeholder="请输入"
+  //       enterButton="搜索"
+  //       size="large"
+  //       style={{ maxWidth: 522, width: '100%' }}
+  //     />
+  //   </div>
+  // )
 
   useEffect(() => {
     dispatch({
@@ -48,6 +52,7 @@ const Square: FC<ProjectsProps> = ({
       },
     });
   }, []);
+
   const cardList = list && (
     <List<ListItemDataType>
       rowKey="id"
@@ -64,7 +69,7 @@ const Square: FC<ProjectsProps> = ({
       dataSource={list}
       renderItem={(item) => (
         <List.Item>
-          <Card className={styles.card} hoverable cover={<img alt={item.title} src={item.cover} />}>
+          <Card className={styles.card} hoverable cover={<img alt={item.title} src={item.cover} onClick={()=>{showModal(item)}} />}>
             <Card.Meta
               title={<a>{item.title}</a>}
               description={
@@ -87,6 +92,11 @@ const Square: FC<ProjectsProps> = ({
     />
   );
 
+  const showModal = (item: any) => {
+    setVisible(true)
+    setDataInfo(item)
+  }
+
   const formItemLayout = {
     wrapperCol: {
       xs: { span: 24 },
@@ -96,8 +106,8 @@ const Square: FC<ProjectsProps> = ({
 
   return (
     <PageContainer
-      tabList={[{ tab: '招新列表' }]}
-      content={mainSearch}
+      // tabList={[{ tab: '招新列表' }]}
+      // content={mainSearch}
     >
       <div className={styles.coverCardList}>
         <Card bordered={false}>
@@ -123,23 +133,28 @@ const Square: FC<ProjectsProps> = ({
                 </TagSelect>
               </FormItem>
             </StandardFormRow>
-            <StandardFormRow title="其它选项" grid last>
-              <Row gutter={16}>
-                <Col lg={8} md={10} sm={10} xs={24}>
-                  <FormItem {...formItemLayout} label="排序" name="author">
-                    <Select placeholder="不限" style={{ width: '100px' }}>
+            <StandardFormRow grid last>
+              <Row>
+                <Col xl={5} lg={10} md={12} sm={24} xs={24}>
+                  <FormItem {...formItemLayout} name="rate" label={'指导单位'}>
+                    <Select  defaultValue={'full'} style={{ width: '200px' }}>
+                      <Option value="full">全部</Option>
+                      <Option value="school">校团委</Option>
+                      <Option value="normal">信息工程学院</Option>
+                    </Select>
+                  </FormItem>
+                </Col>
+                <Col xl={4} lg={10} md={12} sm={24} xs={24}>
+                  <FormItem {...formItemLayout} name="author" label={'排序方式'} style={{width: '200px'}}>
+                    <Select defaultValue={'time'} style={{ width: '100px' }}>
                       <Option value="time" >按时间</Option>
                       <Option value="hot">按热度</Option>
                     </Select>
                   </FormItem>
                 </Col>
-                <Col lg={8} md={10} sm={10} xs={24}>
-                  <FormItem {...formItemLayout} label="业务指导单位" name="rate">
-                    <Select placeholder="不限" style={{ width: '200px' }}>
-                      <Option value="full">全部</Option>
-                      <Option value="school">校团委</Option>
-                      <Option value="normal">信息工程学院</Option>
-                    </Select>
+                <Col xl={5} lg={10} md={12} sm={24} xs={24}>
+                  <FormItem {...formItemLayout} name="author" label={'关键字'}>
+                    <Input.Search placeholder={'请输入'} style={{width: '250px'}} enterButton={"搜索"} />
                   </FormItem>
                 </Col>
               </Row>
@@ -148,6 +163,7 @@ const Square: FC<ProjectsProps> = ({
         </Card>
         <div className={styles.cardList}>{cardList}</div>
       </div>
+      <CardInfo onCancel={()=>{setVisible(false)}} dataInfo={dataInfo} visible={visible} />
     </PageContainer>
   );
 };
