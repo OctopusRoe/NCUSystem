@@ -2,14 +2,12 @@
 
 import { Avatar, List, Skeleton } from 'antd';
 import React, { Component } from 'react';
-
 import { Dispatch, connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import { ModalState } from '@/models/userInfoHead';
 import styles from './style.less';
 import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data';
-
 import MemberCom from './components/memberCom/memberCom'
 
 interface WorkplaceProps {

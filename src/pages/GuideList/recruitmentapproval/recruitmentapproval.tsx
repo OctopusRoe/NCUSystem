@@ -7,7 +7,7 @@ import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
 import Infomodal from '@/components/InfoModal/Infomodal';
-import ShowImgView from '@/components/ShowImgView'
+import ShowImgView from '@/components/ShowImgView';
 
 const RecruitmentApproval: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
@@ -16,30 +16,32 @@ const RecruitmentApproval: React.FC<{}> = () => {
     {
       title: '证件照',
       dataIndex: 'img',
-      width: '5%',
       key: 'img',
       hideInSearch: true,
       render: (_, record) => {
-        return (<ShowImgView id={record.name} src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'} style={{width: '30px', height: '30px'}} />)
+        return (
+          <ShowImgView
+            id={record.name}
+            src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
+            style={{ width: '30px', height: '30px' }}
+          />
+        );
       },
     },
     {
       title: '姓名',
       dataIndex: 'name',
-      width: '10%',
       key: 'name',
     },
     {
       title: '学号',
       dataIndex: 'studentID',
-      width: '10%',
       key: 'studentID',
       hideInSearch: true,
     },
     {
       title: '性别',
       dataIndex: 'sex',
-      width: '5%',
       key: 'sex',
       hideInSearch: true,
       filters: [
@@ -50,15 +52,37 @@ const RecruitmentApproval: React.FC<{}> = () => {
     {
       title: '届数',
       dataIndex: 'numberOf',
-      width: '10%',
       key: 'numberOf',
       hideInSearch: true,
     },
     {
       title: '所在社团',
       dataIndex: 'association',
-      width: '15%',
       key: 'association',
+      hideInSearch: true,
+    },
+    {
+      title: '部门',
+      dataIndex: 'department',
+      key: 'department',
+      valueEnum: {
+        0: { text: '级别1' },
+        1: { text: '级别2' },
+        2: { text: '级别3' },
+        3: { text: '级别4' },
+        4: { text: '级别5' },
+        5: { text: '级别6' },
+      },
+    },
+    {
+      title: '职务',
+      dataIndex: 'position',
+      key: 'position',
+    },
+    {
+      title: '政治面貌',
+      dataIndex: 'political',
+      key: 'political',
       hideInSearch: true,
       filters: [
         { text: 'A', value: 'a' },
@@ -69,30 +93,8 @@ const RecruitmentApproval: React.FC<{}> = () => {
       ],
     },
     {
-      title: '部门-职务',
-      dataIndex: 'department',
-      width: '10%',
-      key: 'department',
-      valueEnum: {
-        0: {text: '级别1'},
-        1: {text: '级别2'},
-        2: {text: '级别3'},
-        3: {text: '级别4'},
-        4: {text: '级别5'},
-        5: {text: '级别6'},
-      }
-    },
-    {
-      title: '政治面貌',
-      dataIndex: 'political',
-      width: '10%',
-      key: 'political',
-      hideInSearch: true,
-    },
-    {
       title: '手机号',
       dataIndex: 'phone',
-      width: '10%',
       key: 'phone',
     },
     {
@@ -142,4 +144,3 @@ const RecruitmentApproval: React.FC<{}> = () => {
 };
 
 export default RecruitmentApproval;
-

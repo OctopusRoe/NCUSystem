@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, Input, Row, Col, Button, Space, Select, Radio, Tabs, Upload } from 'antd';
+import { Modal, Form, Row, Col, Button, Space, Tabs, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 interface CreateFormProps {
@@ -51,9 +51,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             <Row justify="center">
               <Col span={24}>
                 <FormItem name="upload" label="上传">
-                  <Upload
-                    showUploadList={false}
-                  >
+                  <Upload showUploadList={false}>
                     <Button icon={<UploadOutlined />}>选择文件</Button>
                   </Upload>
                 </FormItem>

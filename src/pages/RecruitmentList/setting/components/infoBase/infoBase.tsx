@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import { FormattedMessage, Dispatch, connect } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
+// import { CurrentUser } from './data';
 import styles from './base.less';
 
 // 菜单组件
-import BaseInfo from './components/baseInfo/index'
-import NewMedia from './components/newMedia'
-import Organization from './components/organization/index'
-import Position from './components/position/index'
+// import BaseInfo from './components/baseInfo/index'
+// import NewMedia from './components/newMedia'
+// import Organization from './components/organization/index'
+// import Position from './components/position/index'
 
 const { Item } = Menu;
 
@@ -27,32 +28,25 @@ interface SettingsState {
   selectKey: SettingsStateKeys;
 }
 
-
-const formInfo = {
-  teacherValue: [{name: '名字1', phone: '11011211911'},{name: '名字2', phone: '11011211119'}],
-  associationType: ['类别1', '类别2', '类别3', '类别4'],
-  associationGrade: ['级别1', '级别2', '级别3', '级别4'],
-  department: ['部门1', '部门2', '部门3', '部门4']
-}
+// const formInfo = {
+//   teacherValue: [{name: '名字1', phone: '11011211911'},{name: '名字2', phone: '11011211119'}],
+//   associationType: ['类别1', '类别2', '类别3', '类别4'],
+//   associationGrade: ['级别1', '级别2', '级别3', '级别4'],
+//   department: ['部门1', '部门2', '部门3', '部门4']
+// }
 
 class InfoBase extends Component<SettingsProps, SettingsState> {
-  main: HTMLDivElement | undefined = undefined
+  main: HTMLDivElement | undefined = undefined;
 
   constructor(props: SettingsProps) {
     super(props);
     const menuMap = {
-      baseInfo: (
-        <FormattedMessage id="info.menuMap.baseInfo" defaultMessage="BaseInfo Info" />
-      ),
+      baseInfo: <FormattedMessage id="info.menuMap.baseInfo" defaultMessage="BaseInfo Info" />,
       organization: (
         <FormattedMessage id="info.menuMap.organization" defaultMessage="Organization Info" />
       ),
-      position: (
-        <FormattedMessage id="info.menuMap.position" defaultMessage="Position Info" />
-      ),
-      newmedia: (
-        <FormattedMessage id="info.menuMap.newMedia" defaultMessage="NewMedia Info" />
-      ),
+      position: <FormattedMessage id="info.menuMap.position" defaultMessage="Position Info" />,
+      newmedia: <FormattedMessage id="info.menuMap.newMedia" defaultMessage="NewMedia Info" />,
     };
     this.state = {
       mode: 'inline',
@@ -112,23 +106,23 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
     });
   };
 
-  renderChildren = () => {
-    const { selectKey } = this.state;
-    switch (selectKey) {
-      case 'baseInfo':
-        return <BaseInfo formInfo={formInfo} />;
-      case 'organization':
-        return <Organization />;
-      case 'position':
-        return <Position />;
-      case 'newmedia':
-        return <NewMedia />;
-      default:
-        break;
-    }
+  // renderChildren = () => {
+  //   const { selectKey } = this.state;
+  //   switch (selectKey) {
+  //     case 'baseInfo':
+  //       return <BaseInfo formInfo={formInfo} />;
+  //     case 'organization':
+  //       return <Organization />;
+  //     case 'position':
+  //       return <Position />;
+  //     case 'newmedia':
+  //       return <NewMedia />;
+  //     default:
+  //       break;
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
 
   render() {
     const { mode, selectKey } = this.state;
@@ -153,7 +147,7 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
           </div>
           <div className={styles.right}>
             {/* <div className={styles.title}>{this.getRightTitle()}</div> */}
-            {this.renderChildren()}
+            {/* {this.renderChildren()} */}
           </div>
         </div>
       </GridContent>

@@ -15,7 +15,7 @@ const Member: React.FC<{}> = () => {
     {
       title: '届数',
       dataIndex: 'period',
-      key: 'peri od',
+      key: 'period',
       valueEnum: {
         0: { text: '2017', status: '2017' },
         1: { text: '2018', status: '2018' },
@@ -76,27 +76,20 @@ const Member: React.FC<{}> = () => {
       // width: 200,
       key: 'unit',
       hideInSearch: true,
-      filters: [
-        { text: 'A', value: 'a' },
-        { text: 'B', value: 'b' },
-        { text: 'C', value: 'c' },
-        { text: 'D', value: 'd' },
-        { text: 'E', value: 'e' },
-      ],
     },
     {
-      title: '部门-职务',
+      title: '部门',
       dataIndex: 'initiator',
       // width: 200,
       key: 'initiator',
       hideInSearch: true,
     },
-    // {
-    //   title: '社团负责人',
-    //   dataIndex: 'principal',
-    //   key: 'principal',
-    //   hideInSearch:true,
-    // },
+    {
+      title: '职务',
+      dataIndex: 'position',
+      key: 'position',
+      hideInSearch: true,
+    },
     {
       title: '社团骨干',
       dataIndex: 'memberVIP',
@@ -114,6 +107,13 @@ const Member: React.FC<{}> = () => {
       // width: 100,
       key: 'political',
       hideInSearch: true,
+      filters: [
+        { text: 'A', value: 'a' },
+        { text: 'B', value: 'b' },
+        { text: 'C', value: 'c' },
+        { text: 'D', value: 'd' },
+        { text: 'E', value: 'e' },
+      ],
     },
     {
       title: '手机号',
@@ -154,7 +154,7 @@ const Member: React.FC<{}> = () => {
             <DownloadOutlined /> 导出
           </Button>,
           selectedRows && selectedRows.length > 0 && (
-            <Button size={'small'}>
+            <Button type="default">
               <DownloadOutlined /> 批量导出
             </Button>
           ),
