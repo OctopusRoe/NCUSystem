@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { FormattedMessage, Dispatch, connect } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
-import { CurrentUser } from './data';
 import styles from './base.less';
 
 // 菜单组件
@@ -16,7 +15,7 @@ const { Item } = Menu;
 
 interface SettingsProps {
   dispatch: Dispatch;
-  currentUser: CurrentUser;
+  // currentUser: CurrentUser;
 }
 
 type SettingsStateKeys = 'baseInfo' | 'organization' | 'position' | 'newmedia';
