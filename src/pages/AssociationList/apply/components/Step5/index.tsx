@@ -1,5 +1,5 @@
 import { PlusOutlined, PrinterOutlined } from '@ant-design/icons';
-import { Button, Divider, Form, Input, Radio, Result, Upload } from 'antd';
+import { Button, Form, Input, Radio, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
@@ -65,11 +65,12 @@ const Step5: React.FC<Step3Props> = (props) => {
   useEffect(() => {
     if (count > 0 && count < 60) {
       setBtnContent(`${count}S后重发`);
-    } else {
+    } else if (count === 0 || count === 60) {
       clearInterval(timeChange);
       setLiked(false);
       setCount(60);
       setBtnContent('获取验证码');
+      console.log(count);
     }
   }, [count]);
 
@@ -159,7 +160,7 @@ const Step5: React.FC<Step3Props> = (props) => {
               style={{ width: '25%' }}
               onClick={countDown}
               disabled={liked}
-              type={liked ? 'default':'primary'}
+              type={liked ? 'default' : 'primary'}
             >
               {/* {liked ? '获取验证码' : `${count}秒后重试`} */}
               {btnContent}

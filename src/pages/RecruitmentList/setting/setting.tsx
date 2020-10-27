@@ -1,19 +1,20 @@
 // 招新设置 组件
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
-import { Button, Input, Divider, DatePicker } from 'antd';
+import { Button, DatePicker } from 'antd';
 import { connect } from 'umi';
-import { DownloadOutlined, QrcodeOutlined, SettingOutlined } from '@ant-design/icons';
+import { QrcodeOutlined, SettingOutlined } from '@ant-design/icons';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import { TableListItem } from './data.d';
 import { queryRule } from './service';
+import SettingModal from './components/SettingModal';
 
-const { Search } = Input;
 
 const Statistic: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
+  const [settingmodalVisible,setSettingmodalVisible]=useState(false)
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '部门',
@@ -74,7 +75,7 @@ const Statistic: React.FC<{}> = () => {
           toolBarRender={(action, {}) => [
             // <Search enterButton />,
             <DatePicker picker="year" />,
-            <Button type="primary">
+            <Button type="primary" onClick={()=>setSettingmodalVisible(true)}>
               <SettingOutlined />
               设置
             </Button>,
@@ -86,6 +87,7 @@ const Statistic: React.FC<{}> = () => {
           request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
           columns={columns}
         />
+        <SettingModal modalVisible={settingmodalVisible} onCancel={()=>setSettingmodalVisible(false)}/>
     </div>
   );
 };
