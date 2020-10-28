@@ -157,7 +157,7 @@ const UserGroup: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
-        scroll={{ x: '1500' }}
+        // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
         headerTitle="权限列表"
         actionRef={actionRef}
         rowKey="key"

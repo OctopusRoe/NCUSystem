@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';
-import { Button, Input, Divider } from 'antd';
+import { Button, Input, Divider, Switch } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import CreateForm from './components/CreateForm';
@@ -19,21 +19,21 @@ const Admin: React.FC<{}> = () => {
   const [] = useState({});
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
-    {
-      title: '证件照',
-      dataIndex: 'photo',
-      key: 'photo',
-      hideInSearch: true,
-      render: (text, item) => {
-        return (
-          <ShowImgView
-            src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-            style={{width: '30px', height: '30px'}}
-            id={item.name}
-          />
-        );
-      },
-    },
+    // {
+    //   title: '证件照',
+    //   dataIndex: 'photo',
+    //   key: 'photo',
+    //   hideInSearch: true,
+    //   render: (text, item) => {
+    //     return (
+    //       <ShowImgView
+    //         src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+    //         style={{width: '30px', height: '30px'}}
+    //         id={item.name}
+    //       />
+    //     );
+    //   },
+    // },
     {
       title: '姓名',
       dataIndex: 'name',
@@ -59,10 +59,16 @@ const Admin: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
+      // 班级
+    },
+    {
       title: '申请部门',
       dataIndex: 'department',
       key: 'department',
       hideInSearch: true,
+    },
+    {
+      // 申请职务
     },
     {
       title: '手机号',
@@ -70,18 +76,18 @@ const Admin: React.FC<{}> = () => {
       key: 'phone',
       hideInSearch: true,
     },
-    {
-      title: '申请理由',
-      dataIndex: 'reason',
-      key: 'reason',
-      hideInSearch: true,
-    },
-    {
-      title: '报名状态',
-      dataIndex: 'state',
-      key: 'state',
-      hideInSearch: true,
-    },
+    // {
+    //   title: '申请理由',
+    //   dataIndex: 'reason',
+    //   key: 'reason',
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '报名状态',
+    //   dataIndex: 'state',
+    //   key: 'state',
+    //   hideInSearch: true,
+    // },
     {
       title: '操作',
       dataIndex: 'option',
@@ -89,7 +95,7 @@ const Admin: React.FC<{}> = () => {
       width: '10%',
       render: (_) => (
         <>
-          <a>录用</a>
+          <Switch checkedChildren="已录用" unCheckedChildren="未录用" />
           <Divider type="vertical" />
           <a >删除</a>
         </>

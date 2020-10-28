@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Card, Col, Form, List, Row, Select, Typography, Input, Tag } from 'antd';
 
-import { CheckCircleOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons'
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, Dispatch } from 'umi';
 import { StateType } from './model';
@@ -82,8 +82,8 @@ const Square: React.FC<ProjectsProps> = ({
             <div className={styles.cardItemContent}>
               <span>{'已报名数: 10'}</span>
               <div className={styles.avatarList}>
-              <Tag icon={<CheckCircleOutlined />} color="success">
-                招新中
+              <Tag icon={<ClockCircleOutlined />} color={"blue"}>
+                截止时间：2020-10-29
               </Tag>
               </div>
             </div>
@@ -137,8 +137,8 @@ const Square: React.FC<ProjectsProps> = ({
             <StandardFormRow grid last>
               <Row>
                 <Col xl={5} lg={10} md={12} sm={24} xs={24}>
-                  <FormItem {...formItemLayout} name="rate" label={'指导单位'}>
-                    <Select  defaultValue={'full'} style={{ width: '200px' }}>
+                  <FormItem {...formItemLayout} name="department" label={'指导单位'} initialValue={'full'}>
+                    <Select style={{ width: '200px' }}>
                       <Option value="full">全部</Option>
                       <Option value="school">校团委</Option>
                       <Option value="normal">信息工程学院</Option>
@@ -146,15 +146,15 @@ const Square: React.FC<ProjectsProps> = ({
                   </FormItem>
                 </Col>
                 <Col xl={4} lg={10} md={12} sm={24} xs={24}>
-                  <FormItem {...formItemLayout} name="author" label={'排序方式'} style={{width: '200px'}}>
-                    <Select defaultValue={'time'} style={{ width: '100px' }}>
+                  <FormItem {...formItemLayout} name="time" label={'排序方式'} style={{width: '200px'}} initialValue={'time'}>
+                    <Select style={{ width: '100px' }}>
                       <Option value="time" >按时间</Option>
                       <Option value="hot">按热度</Option>
                     </Select>
                   </FormItem>
                 </Col>
                 <Col xl={5} lg={10} md={12} sm={24} xs={24}>
-                  <FormItem {...formItemLayout} name="author" label={'关键字'}>
+                  <FormItem {...formItemLayout} name="searchInput" label={'关键字'} initialValue={''}>
                     <Input.Search placeholder={'请输入'} style={{width: '250px'}} enterButton={"搜索"} />
                   </FormItem>
                 </Col>

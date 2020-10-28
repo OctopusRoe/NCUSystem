@@ -1,6 +1,6 @@
 export default {
   'setting.menuMap.basic': '系统信息',
-  'setting.menuMap.department': '单位设置',
+  'setting.menuMap.department': '指导单位设置',
   'setting.menuMap.academicyear': '学年设置',
   'setting.menuMap.specialty': '专业设置',
   'setting.menuMap.setclass': '班级设置',
