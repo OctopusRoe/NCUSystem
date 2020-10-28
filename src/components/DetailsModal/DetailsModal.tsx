@@ -1,6 +1,7 @@
-import { Button, Col, Row, Space, Table, Tabs } from 'antd';
+import { Button, Col, Row, Space, Table, Tabs, Typography } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import Modal from 'antd/lib/modal/Modal';
+import Paragraph from 'antd/lib/skeleton/Paragraph';
 import React from 'react';
 
 interface DetailsModalProps {
@@ -29,29 +30,28 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
     {
       title: '年份',
       dataIndex: 'time',
-      key:'time'
+      key: 'time',
     },
     {
       title: '社团名称',
       dataIndex: 'name',
-      key:'name'
+      key: 'name',
     },
     {
       title: '部门',
       dataIndex: 'department',
-      key:'department'
+      key: 'department',
     },
     {
       title: '职务',
       dataIndex: 'position',
-      key:'position'
+      key: 'position',
     },
     {
       title: '考核结果',
       dataIndex: ' result',
-      key:'result'
+      key: 'result',
     },
-  
   ];
 
   const columns2 = [
@@ -76,7 +76,6 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
       dataIndex: 'time',
     },
   ];
-
 
   const data = [
     {
@@ -109,9 +108,8 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
       age: 42,
       address: 'London No. 1 Lake Park',
     },
-    
   ];
-
+  const { Paragraph } = Typography;
 
   return (
     <Modal
@@ -130,190 +128,249 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
               src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4043543360,109021256&fm=26&gp=0.jpg"
             />
           </Col>
-          <Col span={2}>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>姓名：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>学号/工号：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>性别：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>身份证号：</p>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={3}>
+          <Col span={20}>
             <Row>
-              <Col>
-                <p>曲丽丽</p>
+              <Col span={6}>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>姓名：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>曲丽丽</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>学号：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                      <Paragraph copyable={{ tooltips: false }}>Hide Copy tooltips.</Paragraph>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>性别：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>女</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>身份证号：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                      <Paragraph copyable={{ tooltips: false }}>Hide Copy tooltips.</Paragraph>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
               </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>32564315135</p>
+              <Col span={6}>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>籍贯：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>汉族</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>民族：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>新疆维吾尔自治区</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>学院：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>群众</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>班级：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>20XXXX2X</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
               </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>女</p>
+              <Col span={6}>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>专业：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>XXXXXXXX</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>学制：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>4年制</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>入学时间：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>2020-09-10</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>政治面貌：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                        <p>26533325699</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
               </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>269854122369874445</p>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={2}>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>民族：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>籍贯：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>班级：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>专业：</p>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={3}>
-            <Row>
-              <Col>
-                <p>汉族</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>上海</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>20信息技术9班</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>信息技术</p>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={2}>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>学制：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>入学时间：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>手机号：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>QQ号：</p>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={3}>
-            <Row>
-              <Col>
-                <p>4年制</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>2020.09.01</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>36262626321</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p>565452999</p>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={2}>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}>政治面貌：</p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}></p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}></p>
-              </Col>
-            </Row>
-            <Row justify="end">
-              <Col>
-                <p style={{ color: '#00000073' }}></p>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={3}>
-            <Row>
-              <Col>
-                <p>预备党员</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p></p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p></p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <p></p>
+              <Col span={6}>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>手机号：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                      <Paragraph copyable={{ tooltips: false }}>1231312313222</Paragraph>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <Row justify="end">
+                      <Col>
+                        <p style={{ color: '#939393' }}>QQ号：</p>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={14}>
+                    <Row>
+                      <Col>
+                      <Paragraph copyable={{ tooltips: false }}>32123132111</Paragraph>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Col>
         </Row>
-
         <Tabs defaultActiveKey="1" onChange={callback} style={{ marginTop: '20px' }}>
           <TabPane tab="社团档案" key="1">
             <Table columns={columns1} dataSource={data} size="middle" />
           </TabPane>
           <TabPane tab="活动档案" key="2">
-          <Table columns={columns2} dataSource={data} size="middle" />
+            <Table columns={columns2} dataSource={data} size="middle" />
           </TabPane>
         </Tabs>
       </div>

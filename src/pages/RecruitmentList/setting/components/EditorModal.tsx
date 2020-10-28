@@ -33,7 +33,7 @@ const EditorModal: React.FC<EditorModalProps> = (props) => {
       onCancel={() => onCancel()}
       footer={<TestList />}
     >
-      <Form labelCol={{ span: 7 }} wrapperCol={{ span: 15 }}>
+      <Form labelCol={{ span: 5 }} wrapperCol={{ span: 16 }}>
         <FormItem name="requirements" label="招新要求">
           <TextArea showCount maxLength={100} rows={3} />
         </FormItem>

@@ -24,7 +24,6 @@ const Step5: React.FC<Step3Props> = (props) => {
   const [radioValue, setradioValue] = useState(0); //单选按钮组
   const [liked, setLiked] = useState(false); //倒计时按钮是否可用
   const [count, setCount] = useState(60); //倒计时时间计数
-  const [btnContent, setBtnContent] = useState('获取验证码');
   const [form] = Form.useForm();
   if (!data) {
     return null;
@@ -58,27 +57,43 @@ const Step5: React.FC<Step3Props> = (props) => {
     setradioValue(e.target.value);
   };
 
-  useEffect(() => {
-    clearInterval(timeChange);
-  }, []);
+  // useEffect(() => {
+  //   clearInterval(timeChange);
+  // }, []);
 
-  useEffect(() => {
-    if (count > 0 && count < 60) {
-      setBtnContent(`${count}S后重发`);
-    } else if (count === 0 || count === 60) {
-      clearInterval(timeChange);
-      setLiked(false);
-      setCount(60);
-      setBtnContent('获取验证码');
-      console.log(count);
+  // useEffect(() => {
+  //   if (count > 0 && count < 60) {
+  //     setBtnContent(`${count}S后重发`);
+  //   } else if (count === 0 || count === 60) {
+  //     clearInterval(timeChange);
+  //     setLiked(false);
+  //     setCount(60);
+  //     setBtnContent('获取验证码');
+  //     console.log(count);
+  //   }
+  // }, [count]);
+
+  // let timeChange: NodeJS.Timeout;
+  // const countDown = () => {
+  //   timeChange = setInterval(() => setCount((t: number) => --t), 1000);
+  //   setLiked(true);
+  // };
+
+
+  const countDown=()=>{
+    setLiked(false)
+    setCount(60)
+  }
+
+  useEffect(()=>{
+    if(count>1){
+      setTimeout(() => {
+        setCount(count-1)
+      }, 1000);
+    }else{
+      setLiked(true)
     }
-  }, [count]);
-
-  let timeChange: NodeJS.Timeout;
-  const countDown = () => {
-    timeChange = setInterval(() => setCount((t: number) => --t), 1000);
-    setLiked(true);
-  };
+  },[count])
 
   return (
     <>
@@ -162,8 +177,7 @@ const Step5: React.FC<Step3Props> = (props) => {
               disabled={liked}
               type={liked ? 'default' : 'primary'}
             >
-              {/* {liked ? '获取验证码' : `${count}秒后重试`} */}
-              {btnContent}
+              {liked ? '获取验证码' : `${count}秒后重试`}
             </Button>
           </div>
         </Form.Item>

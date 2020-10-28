@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Form, Input, message, Modal, Radio, Space } from 'antd';
+import { Button, Checkbox, Divider, Drawer, Form, Input, message, Modal, Radio, Space } from 'antd';
 
 // 审批页面
 
@@ -8,14 +8,12 @@ import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { MinusCircleOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
 import Infomodal from '@/components/InfoModal/Infomodal';
+import ApprovalDrawer from './components/approvalDrawer';
 
 const RegisterApproval: React.FC<{}> = () => {
   const [visible, setVisible] = useState(false);
-  const [rulevisible, setRulevisible] = useState(false);
-  const [checkValue, setcheckValue] = useState({});
   const [infomodalVisible, setinfomodalVisible] = useState(false);
-  const [reasondisplay, setReasondisplay] = useState('none');
-  const [radiovalue, setRadiovalue] = useState(1);
+  const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -117,7 +115,7 @@ const RegisterApproval: React.FC<{}> = () => {
         <>
           <a
             onClick={() => {
-              setVisible(true);
+              setApprovalDrawerVisible(true);
             }}
           >
             审核
@@ -129,41 +127,17 @@ const RegisterApproval: React.FC<{}> = () => {
     },
   ];
 
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 16 },
-  };
-
-  const radioOnchange = (e: any) => {
-    setRadiovalue(e.target.value);
-    if (e.target.value === 1) {
-      setReasondisplay('none');
-    } else if (e.target.value === 2) {
-      setReasondisplay('');
-    }
-  };
-
-  const onOk = () => {
-    console.log(checkValue);
-    if (checkValue == {}) {
-      message.warning('请选择拒绝理由');
-    } else {
-      console.log(2);
-      setVisible(false);
-    }
-  };
-
   return (
     <div>
       <ProTable<TableListItem>
         headerTitle="社团列表"
         actionRef={actionRef}
         rowKey="key"
-        toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() => setRulevisible(true)}>
-            <ToolOutlined /> 设置
-          </Button>,
-        ]}
+        // toolBarRender={(action, { selectedRows }) => [
+        //   <Button type="primary" onClick={() => setRulevisible(true)}>
+        //     <ToolOutlined /> 设置
+        //   </Button>,
+        // ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
@@ -173,112 +147,10 @@ const RegisterApproval: React.FC<{}> = () => {
         }}
         modalVisible={infomodalVisible}
       />
-      <Modal
-        destroyOnClose
-        title="审批"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={onOk}
-      >
-        <div>
-          <Form {...layout} name="basic">
-            <Form.Item label="请选择" name="examination" rules={[{ required: true }]}>
-              <Radio.Group onChange={radioOnchange} defaultValue={radiovalue}>
-                <Radio value={1}>通过</Radio>
-                <Radio value={2}>拒绝</Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item
-              label="拒绝理由"
-              name="reason"
-              style={{ display: reasondisplay }}
-              rules={[{ required: true, message: '请选择拒绝理由' }]}
-            >
-              <Checkbox.Group
-                style={{ width: '100%' }}
-                onChange={(value) => {
-                  setcheckValue(value);
-                }}
-              >
-                <Checkbox value="A" style={{ lineHeight: '32px' }}>
-                  Awqeqeweqeq
-                </Checkbox>
-                <br />
-                <Checkbox value="B" style={{ lineHeight: '32px' }}>
-                  B
-                </Checkbox>
-                <br />
-                <Checkbox value="C" style={{ lineHeight: '32px' }}>
-                  C
-                </Checkbox>
-                <br />
-                <Checkbox value="D" style={{ lineHeight: '32px' }}>
-                  D
-                </Checkbox>
-                <br />
-                <Checkbox value="E" style={{ lineHeight: '32px' }}>
-                  E
-                </Checkbox>
-              </Checkbox.Group>
-            </Form.Item>
-          </Form>
-        </div>
-      </Modal>
-      <Modal
-        destroyOnClose
-        title="添加"
-        visible={rulevisible}
-        onCancel={() => setRulevisible(false)}
-        onOk={() => {
-          setRulevisible(false);
-        }}
-      >
-        <Form {...layout} name="basic">
-          <Form.Item label="添加理由" name="examination" rules={[{ required: true }]}>
-            <Form.List name="teacher">
-              {(fields, { add, remove }) => {
-                return (
-                  <div>
-                    {fields.map((field) => (
-                      <Space
-                        key={field.key}
-                        style={{ display: 'flex', marginBottom: 8 }}
-                        align="start"
-                      >
-                        <Form.Item
-                          {...field}
-                          name={[field.name, 'first']}
-                          fieldKey={[field.fieldKey, 'first']}
-                          rules={[{ required: true }]}
-                        >
-                          <Input placeholder="" style={{ width: '314px' }} />
-                        </Form.Item>
-                        <MinusCircleOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      </Space>
-                    ))}
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => {
-                          add();
-                        }}
-                        block
-                      >
-                        <PlusOutlined /> 点击添加
-                      </Button>
-                    </Form.Item>
-                  </div>
-                );
-              }}
-            </Form.List>
-          </Form.Item>
-        </Form>
-      </Modal>
+      <ApprovalDrawer
+        drawerVisible={ApprovalDrawerVisible}
+        oncancel={() => setApprovalDrawerVisible(false)}
+      />
     </div>
   );
 };

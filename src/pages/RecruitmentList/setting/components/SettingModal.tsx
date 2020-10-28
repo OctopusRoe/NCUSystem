@@ -34,20 +34,18 @@ const SettingModal: React.FC<SettingModalProps> = (props) => {
       onCancel={() => onCancel()}
       footer={<TestList />}
     >
-      <Form labelCol={{ span: 7 }} wrapperCol={{ span: 15 }}>
+      <Form labelCol={{ span: 5 }} wrapperCol={{ span: 16 }}>
         <FormItem name="img" label="招新海报" >
           <UploadView id="posters"  />
         </FormItem>
         <FormItem name="slogan" label="宣传语">
           <TextArea showCount maxLength={100} rows={3}/>
         </FormItem>
-        <FormItem name="time" label="报名时间">
-          <RangePicker
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD HH:mm"
-            // onChange={onChange}
-            // onOk={onOk}
-          />
+        <FormItem name="time" label="截止时间">        
+        <DatePicker  />
+        </FormItem>
+        <FormItem name="QQnumber" label="招新QQ群">        
+        <Input />
         </FormItem>
         <FormItem name="setting" label="设置">
           <Switch checkedChildren="开启" unCheckedChildren="关闭" defaultChecked />

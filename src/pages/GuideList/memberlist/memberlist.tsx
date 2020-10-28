@@ -24,44 +24,18 @@ const Member: React.FC<{}> = () => {
       },
     },
     {
-      title: '证件照',
-      dataIndex: 'img',
-      // width: 150,
-      key: 'img',
-      hideInSearch: true,
-      // fixed: 'left',
-      render: (_, record) => {
-        return (
-          <>
-            <img
-              src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-              onClick={() => {
-                setinfomodalVisible(true);
-              }}
-              style={{ borderRadius: '50%', height: '30px', width: '30px' }}
-            />
-          </>
-        );
-      },
-    },
-    {
       title: '姓名',
       dataIndex: 'chinesename',
-      // width: 150,
       key: 'chinesename',
-      // fixed: 'left',
     },
     {
       title: '学号',
       dataIndex: 'logo',
-      // width: 100,
       key: 'logo',
-      // fixed: 'left',
     },
     {
       title: '性别',
       dataIndex: 'sex',
-      // width: 200,
       key: 'sex',
       hideInSearch: true,
       filters: [
@@ -73,14 +47,12 @@ const Member: React.FC<{}> = () => {
     {
       title: '所在社团',
       dataIndex: 'unit',
-      // width: 200,
       key: 'unit',
       hideInSearch: true,
     },
     {
       title: '部门',
       dataIndex: 'initiator',
-      // width: 200,
       key: 'initiator',
       hideInSearch: true,
     },
@@ -93,7 +65,6 @@ const Member: React.FC<{}> = () => {
     {
       title: '社团骨干',
       dataIndex: 'memberVIP',
-      // width: 200,
       key: 'memberVIP',
       hideInSearch: true,
       filters: [
@@ -104,7 +75,6 @@ const Member: React.FC<{}> = () => {
     {
       title: '政治面貌',
       dataIndex: 'political',
-      // width: 100,
       key: 'political',
       hideInSearch: true,
       filters: [
@@ -118,24 +88,9 @@ const Member: React.FC<{}> = () => {
     {
       title: '手机号',
       dataIndex: 'phone',
-      // width: 150,
       key: 'phone',
       hideInSearch: true,
     },
-    // {
-    //   title: '操作',
-    //   dataIndex: 'option',
-    //   valueType: 'option',
-    //   width: '10%',
-    //   fixed: 'right',
-    //   render: (_, record) => (
-    //     <>
-    //       <a>调整</a>
-    //       <Divider type="vertical" />
-    //       <a>删除</a>
-    //     </>
-    //   ),
-    // },
   ];
 
   return (

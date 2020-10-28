@@ -147,7 +147,7 @@ const Step1: React.FC<Step1Props> = (props) => {
           name="scale"
           rules={[{ required: true, message: '请输入成员数量' }]}
         >
-          <Input style={{ width: '100px' }} suffix="人" />
+          <Input style={{ width: '100px' }} suffix={<div style={{color: '#bfbfbf'}}>人</div>} />
         </Form.Item>
         {/* <Form.Item
           label="社团成立时间"

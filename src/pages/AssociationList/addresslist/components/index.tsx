@@ -6,6 +6,8 @@ import ShowImgView from '@/components/ShowImgView'
 
 import { TableListItem } from './data.d';
 import { queryRule } from './service';
+import { Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const RecruitmentSquareCom: React.FC<{}> = () => {
 
@@ -18,18 +20,18 @@ const RecruitmentSquareCom: React.FC<{}> = () => {
       key: 'numberOf',
       hideInSearch: true,
     },
-    {
-      title: '证件照',
-      dataIndex: 'photo',
-      hideInSearch: true,
-      key: 'photo',
-      width: '',
-      render: (text, record) => {
-        return (
-          <ShowImgView id={record.name} src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'} style={{width: '30px', height: '30px'}} />
-        )
-      }
-    },
+    // {
+    //   title: '证件照',
+    //   dataIndex: 'photo',
+    //   hideInSearch: true,
+    //   key: 'photo',
+    //   width: '',
+    //   render: (text, record) => {
+    //     return (
+    //       <ShowImgView id={record.name} src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'} style={{width: '30px', height: '30px'}} />
+    //     )
+    //   }
+    // },
     {
       title: '姓名',
       dataIndex: 'name',
@@ -101,6 +103,13 @@ const RecruitmentSquareCom: React.FC<{}> = () => {
         rowKey="key"
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
+        toolBarRender={(_action, { selectedRows }) => [
+          <Button type="default">
+            <DownloadOutlined /> 导出
+          </Button>,
+        
+          
+        ]}
       />
     </div>
   );

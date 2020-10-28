@@ -27,23 +27,23 @@ const MemberCom: React.FC<{}> = () => {
         3: { text: 'D', status: 'd' },
       },
     },
-    {
-      title: '证件照',
-      dataIndex: 'photo',
-      // width: 150,
-      key: 'photo',
-      hideInSearch: true,
-      fixed: 'left',
-      render: (text, record) => {
-        return (
-          <ShowImgView
-            id={record.name}
-            src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
-            style={{ width: '30px', height: '30px' }}
-          />
-        );
-      },
-    },
+    // {
+    //   title: '证件照',
+    //   dataIndex: 'photo',
+    //   // width: 150,
+    //   key: 'photo',
+    //   hideInSearch: true,
+    //   fixed: 'left',
+    //   render: (text, record) => {
+    //     return (
+    //       <ShowImgView
+    //         id={record.name}
+    //         src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
+    //         style={{ width: '30px', height: '30px' }}
+    //       />
+    //     );
+    //   },
+    // },
     {
       title: '姓名',
       dataIndex: 'name',
