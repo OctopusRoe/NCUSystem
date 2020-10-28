@@ -1,5 +1,6 @@
 import { Button, Col, Drawer, Row, Table, Tabs } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
+import FalseModal from './FalseModal';
 
 interface ApprovalDrawerProps {
   drawerVisible: boolean;
@@ -8,7 +9,7 @@ interface ApprovalDrawerProps {
 
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
   const { drawerVisible, oncancel } = props;
-
+  const [FalseModalVisible, setFalseModalVisible] = useState(false);
   const Tab1 = () => {
     return (
       <>
@@ -138,7 +139,6 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     );
   };
 
-
   const Tab2 = () => {
     const columns = [
       {
@@ -159,14 +159,11 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     ];
     return (
       <>
-        <Table columns={columns} size="small"/>
+        <Table columns={columns} size="small" />
       </>
     );
   };
 
-
-
-  const { TabPane } = Tabs;
   return (
     <Drawer
       title="注册审批"
@@ -181,17 +178,18 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
           }}
         >
           <Button onClick={() => oncancel()} type="primary" style={{ marginRight: 8 }}>
-            通过审批
+            审批通过
           </Button>
-          <Button onClick={() => oncancel()} type="primary">
-            拒绝审批
+          <Button onClick={() => setFalseModalVisible(true)} type="primary" danger>
+            拒绝通过
           </Button>
         </div>
       }
     >
       <div>
-      <Tab1 /> <Tab2/>
+        <Tab1 /> <Tab2 />
       </div>
+      <FalseModal modalVisible={FalseModalVisible} onCancel={() => setFalseModalVisible(false)} />
     </Drawer>
   );
 };
