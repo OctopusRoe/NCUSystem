@@ -85,7 +85,7 @@ const Admin: React.FC<{}> = () => {
         <>
           <Switch checkedChildren="已报送" unCheckedChildren="未报送" onChange={(bool: boolean) => {agree(bool, record)}}  />
           <Divider type="vertical" />
-          <a >删除</a>
+          <a>删除</a>
         </>
       ),
     },

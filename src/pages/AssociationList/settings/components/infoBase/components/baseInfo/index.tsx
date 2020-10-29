@@ -64,26 +64,9 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     console.log(e)
   };
 
-  const test = (e: any) => {
-    console.log(e)
-  }
-
   // 获取图片数据
   const testOne = (e: any) => {
     console.log(e)
-  }
-
-  // 获取验证码的方法
-  const getCode = async (e: any) => {
-    if (getTeacherPhone !== '') {
-      countDown()
-      console.log('以获取电话号码', getTeacherPhone)
-    } else {
-      message.warning({
-        content: '请选择审批老师',
-        duration: 5
-      })
-    }
   }
 
   // 选择审批老师电话
@@ -287,7 +270,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           ]}
         >
           <div>
-            <Input style={{ width: '35%' }} placeholder={'请输入验证码'} />
+            <Input style={{ width: '35%', borderRight: 'none' }} placeholder={'请输入验证码'} />
             <Button
               style={{width: '25%'}}
               onClick={countDown}
