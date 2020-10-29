@@ -1,4 +1,4 @@
-import { Col, Row, Image, Table, Tabs, Typography } from 'antd';
+import { Col, Row, Image, Table, Tabs } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
 import FormatGrid from './FormatGrid';
@@ -91,9 +91,8 @@ const TeachDetailsModal: React.FC<TeachDetailsModalProps> = (props) => {
       title="详情信息"
       footer={null}
       visible={modalVisible}
-      onCancel={() => onCancel()}
-      width="1200px"
-      bodyStyle={{ height: '600px' }}
+      onCancel={onCancel}
+      width={"1200px"}
     >
       <div>
         <Row>
@@ -129,10 +128,10 @@ const TeachDetailsModal: React.FC<TeachDetailsModalProps> = (props) => {
         </Row>
         <Tabs defaultActiveKey="1" onChange={callback} style={{ marginTop: '20px' }}>
           <TabPane tab="社团档案" key="1">
-            <Table columns={columns1} dataSource={data1} size="middle" />
+            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: (a,b)=>false}} />
           </TabPane>
           <TabPane tab="活动档案" key="2">
-            <Table columns={columns1} dataSource={data1} size="middle" />
+            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: (a,b)=>false}}/>
           </TabPane>
         </Tabs>
       </div>

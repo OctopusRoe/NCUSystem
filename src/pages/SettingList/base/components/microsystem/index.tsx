@@ -3,7 +3,7 @@
 import React from 'react'
 
 import { Form, Input } from 'antd'
-import { connect, FormattedMessage, formatMessage, useIntl} from 'umi';
+import { connect, FormattedMessage, useIntl} from 'umi';
 
 const formItemLayout = {
   labelCol: {
@@ -25,6 +25,9 @@ const submitFormLayout = {
 };
 
 const MicroSystem: React.FC<{}> = (props) => {
+
+  const intl = useIntl()
+
   return (
     <>
       <Form
@@ -33,11 +36,11 @@ const MicroSystem: React.FC<{}> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"microsystem"}
-          label={formatMessage({ id: 'setting.basic.microsystem' })}
+          label={intl.formatMessage({ id: 'setting.basic.microsystem' })}
           rules={[
             {
               required: true,
-              message: formatMessage({ id: 'setting.basic.microsystem-message' }, {}),
+              message: intl.formatMessage({ id: 'setting.basic.microsystem-message' }, {}),
             },
           ]}
         >

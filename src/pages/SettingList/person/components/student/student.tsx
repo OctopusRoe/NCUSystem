@@ -27,27 +27,6 @@ const Student: React.FC<{}> = () => {
       fixed: 'left',
     },
     {
-      title: '证件照',
-      dataIndex: 'photo',
-      key: 'photo',
-      hideInSearch: true,
-      width: 100,
-      fixed: 'left',
-      render: (text, record) => {
-        const img = record.photo;
-        return (
-          <>
-            <img
-              src={img}
-              alt=""
-              style={{ width: '30px', height: '30px', borderRadius: '50%' }}
-              onClick={() => handleinfomodalModalVisible(true)}
-            />
-          </>
-        );
-      },
-    },
-    {
       title: '姓名',
       dataIndex: 'userName',
       width: 80,
@@ -125,7 +104,7 @@ const Student: React.FC<{}> = () => {
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新增
-          </Button>,       
+          </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
@@ -136,26 +115,6 @@ const Student: React.FC<{}> = () => {
         modalVisible={infomodalModalVisible}
       />
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} form={<ModalForm/>}/>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
     </div>
   );
 };

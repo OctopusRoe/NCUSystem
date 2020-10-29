@@ -1,10 +1,10 @@
 // 基础设置 页面
 
-import React, { Component } from 'react';
+import React from 'react';
 
-import { Button, Input, Form, message, Modal, Upload } from 'antd';
+import { Button, Input, Form, message,  Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons'
-import { connect, FormattedMessage, formatMessage, useIntl} from 'umi';
+import { connect, FormattedMessage,  useIntl} from 'umi';
 
 import { CurrentUser } from '../data.d';
 import UploadView from '@/components/UploadView/uploadView'
@@ -12,11 +12,6 @@ import styles from './BaseView.less';
 
 interface BaseViewProps {
   currentUser?: CurrentUser;
-}
-
-interface BaseViewState {
-  visible: boolean
-  [name: string]: any
 }
 
 const formItemLayout = {
@@ -38,18 +33,12 @@ const submitFormLayout = {
   },
 };
 
-class BaseView extends Component<BaseViewProps, BaseViewState> {
-  view: HTMLDivElement | undefined = undefined;
+const BaseView: React.FC<BaseViewProps> = (props) => {
 
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      visible: false
-    }
-  }
+  const intl = useIntl()
 
-  getAvatarURL() {
-    const { currentUser } = this.props;
+  const getAvatarURL = () => {
+    const { currentUser } = props;
     if (currentUser) {
       if (currentUser.avatar) {
         return currentUser.avatar;
@@ -60,42 +49,33 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
     return '';
   }
 
-  getViewDom = (ref: HTMLDivElement) => {
-    this.view = ref;
-  };
-
-  handleFinish = (e:any) => {
-    message.success(formatMessage({ id: 'setting.basic.update.success' }));
-    console.log(e)
-  };
-
-  test = (e: any) => {
+  const handleFinish = (e:any) => {
+    message.success(intl.formatMessage({ id: 'setting.basic.update.success' }));
     console.log(e)
   }
 
-  testOne = (e: any) => {
+  const testOne = (e: any) => {
     console.log(e)
   }
 
-  render() {
-    const { currentUser } = this.props;
+    const { currentUser } = props;
 
     return (
-      <div className={styles.baseView} ref={this.getViewDom}>
+      <div className={styles.baseView}>
         <Form
           layout={"horizontal"}
-          onFinish={this.handleFinish}
+          onFinish={handleFinish}
           initialValues={currentUser}
           hideRequiredMark
         >
           <Form.Item
             {...formItemLayout}
             name={"fullname"}
-            label={formatMessage({ id: 'setting.basic.fullname' })}
+            label={intl.formatMessage({ id: 'setting.basic.fullname' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.fullname-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.fullname-message' }, {}),
               },
             ]}
           >
@@ -104,11 +84,11 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form.Item
             {...formItemLayout}
             name={"syssimplename"}
-            label={formatMessage({ id: 'setting.basic.syssimplename' })}
+            label={intl.formatMessage({ id: 'setting.basic.syssimplename' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.syssimplename-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.syssimplename-message' }, {}),
               },
             ]}
           >
@@ -117,11 +97,11 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form.Item
             {...formItemLayout}
             name={"sysfullname"}
-            label={formatMessage({ id: 'setting.basic.sysfullname' })}
+            label={intl.formatMessage({ id: 'setting.basic.sysfullname' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.profile-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.profile-message' }, {}),
               },
             ]}
           >
@@ -130,11 +110,11 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form.Item
             {...formItemLayout}
             name={"copyright"}
-            label={formatMessage({ id: 'setting.basic.copyright' })}
+            label={intl.formatMessage({ id: 'setting.basic.copyright' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.copyright-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.copyright-message' }, {}),
               },
             ]}
           >
@@ -143,17 +123,18 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form.Item
             {...formItemLayout}
             name={"help"}
-            label={formatMessage({ id: 'setting.basic.help'})}
+            label={intl.formatMessage({ id: 'setting.basic.help'})}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.help-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.help-message' }, {}),
               },
             ]}
           >
             <Upload
               accept={"application/pdf"}
               showUploadList={false}
+              fileList={[]}
             >
               <Button icon={<UploadOutlined />}>选择文件</Button>
             </Upload>
@@ -161,24 +142,24 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form.Item
             {...formItemLayout}
             name={"logo"}
-            label={formatMessage({ id: 'setting.basic.logo'})}
+            label={intl.formatMessage({ id: 'setting.basic.logo'})}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.logo-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.logo-message' }, {}),
               },
             ]}
           >
-            <UploadView id="logoImg" onChange={this.testOne.bind(this)} />
+            <UploadView id="logoImg" onChange={testOne} />
           </Form.Item>
           <Form.Item
             {...formItemLayout}
             name={"favicon"}
-            label={formatMessage({ id: 'setting.basic.favicon' })}
+            label={intl.formatMessage({ id: 'setting.basic.favicon' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.favicon-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.favicon-message' }, {}),
               },
             ]}
           >
@@ -187,11 +168,11 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form.Item
             {...formItemLayout}
             name={"background"}
-            label={formatMessage({ id: 'setting.basic.background' })}
+            label={intl.formatMessage({ id: 'setting.basic.background' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.background-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.background-message' }, {}),
               },
             ]}
           >
@@ -200,11 +181,11 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
           <Form.Item
             {...formItemLayout}
             name={"logonLogo"}
-            label={formatMessage({ id: 'setting.basic.logonLogo' })}
+            label={intl.formatMessage({ id: 'setting.basic.logonLogo' })}
             rules={[
               {
                 required: true,
-                message: formatMessage({ id: 'setting.basic.logonLogo-message' }, {}),
+                message: intl.formatMessage({ id: 'setting.basic.logonLogo-message' }, {}),
               },
             ]}
           >
@@ -223,13 +204,9 @@ class BaseView extends Component<BaseViewProps, BaseViewState> {
             </div>
           </Form.Item>
         </Form>
-        <Modal
-          visible={this.state.visible}
-        >
-        </Modal>
       </div>
     );
-  }
 }
+
 
 export default connect()(BaseView);

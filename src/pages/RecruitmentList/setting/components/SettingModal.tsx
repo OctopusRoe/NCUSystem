@@ -1,9 +1,12 @@
-import UploadView from '@/components/UploadView/uploadView';
-import { Button, DatePicker, Form, Input,  Space, Switch } from 'antd';
+// 招新设置 组件
+
+import { Button, DatePicker, Form, Input, Space, Switch } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import TextArea from 'antd/lib/input/TextArea';
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
+
+import CropImgview from '@/components/CropImgview'
 
 interface SettingModalProps {
   modalVisible: boolean;
@@ -24,6 +27,7 @@ const TestList = () => {
 };
 
 const SettingModal: React.FC<SettingModalProps> = (props) => {
+  const { RangePicker } = DatePicker;
   const { modalVisible, onCancel } = props;
   return (
     <Modal
@@ -35,13 +39,16 @@ const SettingModal: React.FC<SettingModalProps> = (props) => {
     >
       <Form labelCol={{ span: 5 }} wrapperCol={{ span: 16 }}>
         <FormItem name="img" label="招新海报" >
-          <UploadView id="posters"  />
+          <CropImgview id="posters" aspect={400/240} />
         </FormItem>
         <FormItem name="slogan" label="宣传语">
-          <TextArea showCount maxLength={100} rows={3}/>
+          <TextArea showCount={true} maxLength={100} rows={3}/>
         </FormItem>
         <FormItem name="time" label="截止时间">        
-        <DatePicker  />
+        <DatePicker
+          format="YYYY-MM-DD HH:mm:ss"
+          showTime={true}
+        />
         </FormItem>
         <FormItem name="QQnumber" label="招新QQ群">        
         <Input />

@@ -30,6 +30,7 @@ const associationData: FileType = {
     'outlay',
     'outregistration',
     'homepage',
+    'chronicle'
   ]
 }
 

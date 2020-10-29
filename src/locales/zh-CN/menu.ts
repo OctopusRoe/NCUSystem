@@ -19,12 +19,13 @@ export default {
   'menu.association.outlay': '经费管理',
   'menu.association.outregistration': '外出登记',
   'menu.association.homepage': '社团主页',
+  'menu.association.chronicle': '大事记',
 
   // 招新管理
   'menu.recruitment': '招新管理',
   'menu.recruitment.square': '招新广场',
   'menu.recruitment.setting': '招新设置',
-  'menu.recruitment.admin': '招新管理',
+  'menu.recruitment.admin': '录用管理',
   'menu.recruitment.statistic': '招新统计',
 
   // 活动管理
@@ -39,6 +40,7 @@ export default {
   'menu.guide.recruitmentapproval': '招新审批',
   'menu.guide.studentleader': '学生负责人',
   'menu.guide.teacherleader': '指导老师',
+  'menu.guide.address': '通讯录',
   'menu.guide.uplevel': '升级审批',
   'menu.guide.logoutapproval': '注销审批',
   'menu.guide.outsideapproval': '外出审批',

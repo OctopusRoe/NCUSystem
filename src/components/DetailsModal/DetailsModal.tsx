@@ -98,13 +98,13 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
       address: 'Sidney No. 1 Lake Park',
     },
     {
-      key: '1',
+      key: '4',
       name: 'John Brown',
       age: 32,
       address: 'New York No. 1 Lake Park',
     },
     {
-      key: '2',
+      key: '5',
       name: 'Jim Green',
       age: 42,
       address: 'London No. 1 Lake Park',
@@ -125,11 +125,10 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
   return (
     <Modal
       title="详情信息"
-      footer={<TestList />}
+      footer={null}
       visible={modalVisible}
-      onCancel={() => onCancel()}
+      onCancel={onCancel}
       width="1200px"
-      bodyStyle={{ height: '600px' }}
     >
       <div>
       <Row>
@@ -165,10 +164,10 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
         </Row>
         <Tabs defaultActiveKey="1" onChange={callback} style={{ marginTop: '20px' }}>
           <TabPane tab="社团档案" key="1">
-            <Table columns={columns1} dataSource={data1} size="middle" />
+            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: (a,b)=>false}}/>
           </TabPane>
           <TabPane tab="活动档案" key="2">
-            <Table columns={columns2} dataSource={data1} size="middle" />
+            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: (a,b)=>false}}/>
           </TabPane>
         </Tabs>
       </div>

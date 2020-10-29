@@ -7,31 +7,17 @@ import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
 import Infomodal from '@/components/InfoModal/Infomodal';
-import ShowImgView from '@/components/ShowImgView';
+import DetailsModal from '@/components/DetailsModal/DetailsModal'
 
 const RecruitmentApproval: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
-  const [infomodalVisible, setinfomodalVisible] = useState(false);
+  const [Visible, setVisible] = useState(false);
   const columns: ProColumns<TableListItem>[] = [
-    {
-      title: '证件照',
-      dataIndex: 'img',
-      key: 'img',
-      hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <ShowImgView
-            id={record.name}
-            src={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
-            style={{ width: '30px', height: '30px' }}
-          />
-        );
-      },
-    },
     {
       title: '姓名',
       dataIndex: 'name',
       key: 'name',
+      render: (text, record) => (<Button type={'link'} size={'small'} onClick={()=>{setVisible(true)}}>{text}</Button>)
     },
     {
       title: '学号',
@@ -133,10 +119,10 @@ const RecruitmentApproval: React.FC<{}> = () => {
         columns={columns}
         rowSelection={{}}
       />
-      <Infomodal
-        modalVisible={infomodalVisible}
+      <DetailsModal
+        modalVisible={Visible}
         onCancel={() => {
-          setinfomodalVisible(false);
+          setVisible(false);
         }}
       />
     </>

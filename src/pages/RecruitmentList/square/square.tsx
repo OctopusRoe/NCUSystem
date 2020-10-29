@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Card, Col, Form, List, Row, Select, Typography, Input, Tag } from 'antd';
 
-import { CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons'
+import { ClockCircleOutlined } from '@ant-design/icons'
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, Dispatch } from 'umi';
 import { StateType } from './model';
@@ -33,17 +33,6 @@ const Square: React.FC<ProjectsProps> = ({
 
   const [ visible, setVisible ] = useState(false)
   const [ dataInfo, setDataInfo ] = useState<any>()
-
-  // const mainSearch = (
-  //   <div style={{ textAlign: 'center' }}>
-  //     <Input.Search
-  //       placeholder="请输入"
-  //       enterButton="搜索"
-  //       size="large"
-  //       style={{ maxWidth: 522, width: '100%' }}
-  //     />
-  //   </div>
-  // )
 
   useEffect(() => {
     dispatch({

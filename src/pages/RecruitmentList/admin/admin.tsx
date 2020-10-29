@@ -2,11 +2,10 @@
 
 import React, { useState, useRef } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';
-import { Button, Input, Divider, Switch } from 'antd';
+import { Button, Input, Divider, Switch, message, } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
-import CreateForm from './components/CreateForm';
-import ShowImgView from '@/components/ShowImgView'
+import DetailsModal from '@/components/DetailsModal/DetailsModal'
 import { TableListItem } from './data.d';
 import { queryRule } from './service';
 import { connect } from 'umi';
@@ -14,31 +13,26 @@ import { connect } from 'umi';
 const { Search } = Input;
 
 const Admin: React.FC<{}> = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [] = useState<boolean>(false);
-  const [] = useState({});
+
+  message.config({
+    maxCount: 1
+  })
+
+  const [ visible, setVisible ] = useState<boolean>(false);
+
   const actionRef = useRef<ActionType>();
+
   const columns: ProColumns<TableListItem>[] = [
-    // {
-    //   title: '证件照',
-    //   dataIndex: 'photo',
-    //   key: 'photo',
-    //   hideInSearch: true,
-    //   render: (text, item) => {
-    //     return (
-    //       <ShowImgView
-    //         src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-    //         style={{width: '30px', height: '30px'}}
-    //         id={item.name}
-    //       />
-    //     );
-    //   },
-    // },
     {
       title: '姓名',
       dataIndex: 'name',
       key: 'name',
       hideInSearch: true,
+      render: (text, record) => {
+        return (
+          <Button type={'link'} size={'small'} onClick={()=>{setVisible(true)}}>{text}</Button>
+        )
+      }
     },
     {
       title: '学号',
@@ -59,7 +53,10 @@ const Admin: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      // 班级
+      title: '班级',
+      dataIndex: 'class',
+      key: 'class',
+      hideInSearch: true,
     },
     {
       title: '申请部门',
@@ -68,7 +65,10 @@ const Admin: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      // 申请职务
+      title: '申请职务',
+      dataIndex: 'apply',
+      key: 'apply',
+      hideInSearch: true,
     },
     {
       title: '手机号',
@@ -76,32 +76,36 @@ const Admin: React.FC<{}> = () => {
       key: 'phone',
       hideInSearch: true,
     },
-    // {
-    //   title: '申请理由',
-    //   dataIndex: 'reason',
-    //   key: 'reason',
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '报名状态',
-    //   dataIndex: 'state',
-    //   key: 'state',
-    //   hideInSearch: true,
-    // },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       width: '10%',
-      render: (_) => (
+      render: (e, record) => (
         <>
-          <Switch checkedChildren="已录用" unCheckedChildren="未录用" />
+          <Switch checkedChildren="已报送" unCheckedChildren="未报送" onChange={(bool: boolean) => {agree(bool, record)}}  />
           <Divider type="vertical" />
           <a >删除</a>
         </>
       ),
     },
   ];
+
+  // 录用的方法
+  const agree = (bool: boolean, record: any) => {
+    if (!bool) {
+      message.warning({
+        content: '未录用',
+        duration: 5
+      })
+      return
+    }
+
+    message.success({
+      content: '已录用',
+      duration: 5
+    })
+  }
 
   return (
     <div>
@@ -111,7 +115,7 @@ const Admin: React.FC<{}> = () => {
         actionRef={actionRef}
         headerTitle={'报名列表'}
         toolBarRender={(action, {}) => [
-          <Search enterButton />,
+          <Search enterButton placeholder={'请输入'} />,
           <Button type="default">
             <DownloadOutlined /> 导出
           </Button>,
@@ -119,7 +123,7 @@ const Admin: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
+      <DetailsModal modalVisible={visible} onCancel={()=>{setVisible(false)}} />
     </div>
   );
 };

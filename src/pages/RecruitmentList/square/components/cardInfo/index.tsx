@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Modal, Row, Col, Divider, Image, Switch, Table, Popover, message, Tag } from 'antd'
+import { Modal, Row, Col, Divider, Image, Switch, Table, Popover, message, Tag, Button } from 'antd'
 import { ClockCircleOutlined } from '@ant-design/icons'
 
 import FormatGrid from './formartgrid'
@@ -13,6 +13,11 @@ interface CardInfoProps {
   visible: boolean
   onCancel: () => void
   dataInfo: any
+}
+
+// 改变鼠标样式
+const changeMouseStyle = {
+  cursor: 'pointer'
 }
 
 const testData = () => {
@@ -36,9 +41,16 @@ const testData = () => {
   
 }
 
+const clickMe = () => {
+  message.error({
+    content: '测试用方法',
+    duration: 5
+  })
+}
+
 // 社团详细信息测试数据
 const data = [
-  [{title: '社团类别', value: '测试类别1'},{title: '成立时间', value: '2010-01-01'},{title: '社团章程', value: <Tag color={"blue"}>在线查看</Tag>}],
+  [{title: '社团类别', value: '测试类别1'},{title: '成立时间', value: '2010-01-01'},{title: '社团章程', value: <Tag onClick={clickMe} color={"blue"} style={changeMouseStyle} >在线查看</Tag>}],
   [{title: '社团级别', value: '测试级别1'},{title: '学生负责人', value: '测试人员'},{title: '招新QQ群', value: '6655778899',copy: true}],
   [{title: '指导单位', value: '信息工程学院'},{title: '指导老师', value: '测试人员'}]
 ]
@@ -47,7 +59,7 @@ const data = [
 const CardInfo: React.FC<CardInfoProps> = (props) => {
 
   message.config({
-    maxCount: 1
+    maxCount: 1,
   })
 
   // 每列属性
@@ -82,8 +94,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
         return (
           <div>
             <Popover content={text} trigger={'click'}>
-              {/* <div style={{width:'300px'}} className={styles['text-omitted']}>{record.requirement}</div> */}
-              <Tag color={"blue"}>查看</Tag>
+              <Tag color={"blue"} style={changeMouseStyle}>查看</Tag>
             </Popover>
           </div>
         )
@@ -106,16 +117,16 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
       dataIndex: 'option',
       width: '10%',
       key: 'option',
-      render: (a, record) => (
+      render: (e, record) => (
         <>
-          <Switch checkedChildren="已报名" unCheckedChildren="未报名" onChange={(event)=>{sginUp(event, a, record)}} />
+          <Switch checkedChildren="已报名" unCheckedChildren="未报名" onChange={(event)=>{sginUp(event, e, record)}} />
         </>
       ),
     },
   ]
 
   // Switch 组件的报名方法
-  const sginUp = (event: boolean,a: any, record: any) => {
+  const sginUp = (event: boolean, e: any, record: any) => {
     if (!event) {
       message.warning({
         content: '取消成功',
