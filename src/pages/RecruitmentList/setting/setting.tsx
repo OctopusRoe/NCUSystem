@@ -26,6 +26,12 @@ const Statistic: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
+      title: '职务',
+      dataIndex: 'department',
+      key: 'department',
+      hideInSearch: true,
+    },
+    {
       title: '招新要求',
       dataIndex: 'requirements',
       key: 'requirements',

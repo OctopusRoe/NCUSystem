@@ -1,5 +1,5 @@
 import UploadView from '@/components/UploadView/uploadView';
-import { Button, Col, DatePicker, Form, Input, Row, Space, Switch } from 'antd';
+import { Button, DatePicker, Form, Input,  Space, Switch } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import TextArea from 'antd/lib/input/TextArea';
 import Modal from 'antd/lib/modal/Modal';
@@ -24,7 +24,6 @@ const TestList = () => {
 };
 
 const SettingModal: React.FC<SettingModalProps> = (props) => {
-  const { RangePicker } = DatePicker;
   const { modalVisible, onCancel } = props;
   return (
     <Modal

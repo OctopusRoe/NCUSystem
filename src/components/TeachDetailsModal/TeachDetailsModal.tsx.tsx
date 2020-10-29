@@ -1,31 +1,17 @@
-import { Button, Col, Row, Space, Table,Image, Tabs, Typography } from 'antd';
-import FormItem from 'antd/es/form/FormItem';
+import { Col, Row, Image, Table, Tabs, Typography } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
-import Paragraph from 'antd/lib/skeleton/Paragraph';
 import React from 'react';
 import FormatGrid from './FormatGrid';
 
-interface DetailsModalProps {
+interface TeachDetailsModalProps {
   modalVisible: boolean;
   onCancel: () => void;
 }
 
-const TestList = () => {
-  return (
-    <div>
-      <FormItem>
-        <Space>
-          <Button type="primary">关闭</Button>
-        </Space>
-      </FormItem>
-    </div>
-  );
-};
-
-const DetailsModal: React.FC<DetailsModalProps> = (props) => {
+const TeachDetailsModal: React.FC<TeachDetailsModalProps> = (props) => {
   const { modalVisible, onCancel } = props;
   const { TabPane } = Tabs;
-  const callback = (key: any) => {};
+  const callback = () => {};
 
   const columns1 = [
     {
@@ -52,29 +38,6 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
       title: '考核结果',
       dataIndex: ' result',
       key: 'result',
-    },
-  ];
-
-  const columns2 = [
-    {
-      title: '社团名称',
-      dataIndex: 'name',
-    },
-    {
-      title: '部门',
-      dataIndex: 'department',
-    },
-    {
-      title: '职务',
-      dataIndex: 'position',
-    },
-    {
-      title: '社团骨干',
-      dataIndex: ' backbone',
-    },
-    {
-      title: '在团时间',
-      dataIndex: 'time',
     },
   ];
 
@@ -122,17 +85,18 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
     [{title: '身份证号', value: '36565415255695845X',copy: true},{title: '班级', value: '20XXXXXXXXX'},{title: '政治面貌', value: '群众'}],
   ]
 
+
   return (
     <Modal
       title="详情信息"
-      footer={<TestList />}
+      footer={null}
       visible={modalVisible}
       onCancel={() => onCancel()}
       width="1200px"
       bodyStyle={{ height: '600px' }}
     >
       <div>
-      <Row>
+        <Row>
           <Col span={4} style={{ textAlign: 'center' }}>
             <Row
               justify={'center'}
@@ -168,7 +132,7 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
             <Table columns={columns1} dataSource={data1} size="middle" />
           </TabPane>
           <TabPane tab="活动档案" key="2">
-            <Table columns={columns2} dataSource={data1} size="middle" />
+            <Table columns={columns1} dataSource={data1} size="middle" />
           </TabPane>
         </Tabs>
       </div>
@@ -176,4 +140,4 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
   );
 };
 
-export default DetailsModal;
+export default TeachDetailsModal;

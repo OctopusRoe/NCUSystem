@@ -1,6 +1,6 @@
-import { Button, Col, Drawer, Row, Table, Tabs } from 'antd';
+import { Button, Col, Divider, Drawer, Row, Table, Tabs, Tag } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
-import FalseModal from './FalseModal';
 
 interface ApprovalDrawerProps {
   drawerVisible: boolean;
@@ -9,7 +9,7 @@ interface ApprovalDrawerProps {
 
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
   const { drawerVisible, oncancel } = props;
-  const [FalseModalVisible, setFalseModalVisible] = useState(false);
+  const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
   const Tab1 = () => {
     return (
       <>
@@ -114,7 +114,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>在线预览</p>
+                    <Tag color={'blue'}>在线查看</Tag>
                   </Col>
                 </Row>
               </Col>
@@ -128,7 +128,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>在线预览</p>
+                    <Tag color={'blue'}>查看正面</Tag> <Tag color={'blue'}>查看反面</Tag>
                   </Col>
                 </Row>
               </Col>
@@ -157,6 +157,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
         key: 'department',
       },
     ];
+
     return (
       <>
         <Table columns={columns} size="small" />
@@ -180,16 +181,34 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
           <Button onClick={() => oncancel()} type="primary" style={{ marginRight: 8 }}>
             审批通过
           </Button>
-          <Button onClick={() => setFalseModalVisible(true)} type="primary" danger>
+          <Button onClick={() => setChildrenDrawerVisible(true)} type="primary" danger>
             拒绝通过
           </Button>
         </div>
       }
     >
       <div>
-        <Tab1 /> <Tab2 />
+        <Tab1 />
+        <Divider style={{ fontSize: '16px' }}>组织成员信息</Divider>
+        <Tab2 />
       </div>
-      <FalseModal modalVisible={FalseModalVisible} onCancel={() => setFalseModalVisible(false)} />
+      <Drawer
+        title="拒绝理由"
+        width={400}
+        closable={false}
+        onClose={() => setChildrenDrawerVisible(false)}
+        visible={childrenDrawerVisible}
+      >
+        <TextArea rows={4} />
+        <div style={{paddingTop:'50px',textAlign:'right'}}>
+          <Button type="primary" onClick={()=>{
+            oncancel();
+            setChildrenDrawerVisible(false)
+          }}>
+            确定
+          </Button>
+        </div>
+      </Drawer>
     </Drawer>
   );
 };

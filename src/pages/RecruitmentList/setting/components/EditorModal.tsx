@@ -28,7 +28,7 @@ const EditorModal: React.FC<EditorModalProps> = (props) => {
   return (
     <Modal
       destroyOnClose
-      title="当前部门"
+      title="部门-职务"
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={<TestList />}

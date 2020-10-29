@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Drawer, Form, Input, message, Modal, Radio, Space } from 'antd';
+import { Divider } from 'antd';
 
 // 审批页面
 
@@ -6,13 +6,11 @@ import React, { useRef, useState } from 'react';
 import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { MinusCircleOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
-import Infomodal from '@/components/InfoModal/Infomodal';
-import ApprovalDrawer from './components/approvalDrawer';
+import ApprovalDrawer from './components/ApprovalDrawer';
+import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
 const RegisterApproval: React.FC<{}> = () => {
-  const [visible, setVisible] = useState(false);
-  const [infomodalVisible, setinfomodalVisible] = useState(false);
+  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
   const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
@@ -37,7 +35,7 @@ const RegisterApproval: React.FC<{}> = () => {
           <>
             <div
               onClick={() => {
-                setinfomodalVisible(true);
+                setDetailsModalVisible(true);
               }}
             >
               {record.name}
@@ -111,7 +109,7 @@ const RegisterApproval: React.FC<{}> = () => {
       valueType: 'option',
       width: '10%',
       fixed: 'right',
-      render: (_, record) => (
+      render: (_) => (
         <>
           <a
             onClick={() => {
@@ -133,19 +131,14 @@ const RegisterApproval: React.FC<{}> = () => {
         headerTitle="社团列表"
         actionRef={actionRef}
         rowKey="key"
-        // toolBarRender={(action, { selectedRows }) => [
-        //   <Button type="primary" onClick={() => setRulevisible(true)}>
-        //     <ToolOutlined /> 设置
-        //   </Button>,
-        // ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <Infomodal
+      <DetailsModal
+        modalVisible={DetailsModalVisible}
         onCancel={() => {
-          setinfomodalVisible(false);
+          setDetailsModalVisible(false);
         }}
-        modalVisible={infomodalVisible}
       />
       <ApprovalDrawer
         drawerVisible={ApprovalDrawerVisible}
