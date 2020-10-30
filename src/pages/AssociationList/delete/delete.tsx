@@ -4,6 +4,9 @@ import React,{ useState, useEffect } from 'react';
 
 import { Card, Form, Input, message, Radio, Button } from 'antd'
 
+
+import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -28,6 +31,19 @@ const radioStyle = {
   height: '30px',
   lineHeight: '30px',
 };
+
+const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
+  one: {
+    name: 'one',
+    message: '请输入成员代表学号!',
+    placeHodel: '请输入成员代表学号',
+  },
+  two: {
+    name: 'two',
+    message: '请输入成员代表学号来获取姓名!',
+    disabled: true,
+  }
+}
 
 const teacherValue = [{name: '名字1', phone: '11011211911'},{name: '名字2', phone: '11011211119'}]
 
@@ -62,6 +78,7 @@ const Delete: React.FC<{}> = () => {
     setCount(60)
   }
 
+  // 倒计时的设置
   useEffect(()=> {
     if (count > 1) {
       setTimeout(() => {setCount(count - 1)}, 1000)
@@ -81,24 +98,10 @@ const Delete: React.FC<{}> = () => {
       >
         <FormItem
           {...formItemLayout}
-          label={'学号'}
-          name={'student-ID'}
-          rules={[
-            {
-              required: true,
-              message: '请输入学号!'
-            }
-          ]}
+          label={'申请人'}
+          name={'apply-name'}
         >
-          <Input placeholder={'请输入学号'} />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'成员代表'}
-          name={'student-name'}
-          initialValue={''}
-        >
-          <Input disabled placeholder={'输入学号自动获取'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -106,7 +109,7 @@ const Delete: React.FC<{}> = () => {
           name={'association-name'}
           initialValue={''}
         >
-          <Input disabled placeholder={'输入学号自动获取'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -114,7 +117,7 @@ const Delete: React.FC<{}> = () => {
           name={'association-type'}
           initialValue={''}
         >
-          <Input disabled placeholder={'输入学号自动获取'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -122,7 +125,7 @@ const Delete: React.FC<{}> = () => {
           name={'association-grade'}
           initialValue={''}
         >
-          <Input disabled placeholder={'输入学号自动获取'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -130,7 +133,7 @@ const Delete: React.FC<{}> = () => {
           name={'department'}
           initialValue={''}
         >
-          <Input disabled placeholder={'输入学号自动获取'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -138,7 +141,7 @@ const Delete: React.FC<{}> = () => {
           name={'time'}
           initialValue={''}
         >
-          <Input disabled placeholder={'输入学号自动获取'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -155,18 +158,13 @@ const Delete: React.FC<{}> = () => {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          label={'申请人'}
-          name={'apply-name'}
-          rules={[
-            {
-              required: true,
-              message: '请输入申请人姓名!',
-            },
-          ]}
+          label={'成员代表'}
+          name={'student-member'}
         >
-          <Input placeholder={'请输入申请人姓名'} />
+          {/* 此处使用的 FormList 组件需要重新开发 */}
+          <FormListCom inputTwo inputList={[]} info={info}  onFinish={()=>{console.log('e')}} /> 
         </FormItem>
-        <Form.Item
+        <FormItem
           {...formItemLayout}
           name={"pickTeacher"}
           label={'选择审批人'}
@@ -184,7 +182,7 @@ const Delete: React.FC<{}> = () => {
               ))
             }
           </Radio.Group>
-        </Form.Item>
+        </FormItem>
         <Form.Item 
           {...submitFormLayout}
           name={'codeNumber'}

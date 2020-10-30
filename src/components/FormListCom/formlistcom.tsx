@@ -19,8 +19,8 @@ export interface Group {
 // 每行 input 的参数设置
 export interface InputInfo {
   name: 'one' | 'two' | 'three'
-  message: string
-  placeHodel: string
+  message?: string
+  placeHodel?: string
   disabled?: boolean
 }
 
