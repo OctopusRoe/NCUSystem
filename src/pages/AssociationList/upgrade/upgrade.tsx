@@ -1,125 +1,280 @@
 // 社团升级页面
-import { Avatar, List, Skeleton } from 'antd';
-import React, { Component } from 'react';
-import { connect, Dispatch } from 'umi';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { ModalState } from '@/models/userInfoHead';
-import moment from 'moment';
-import styles from './style.less';
-import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data';
 
-interface WorkplaceProps {
-  currentUser?: CurrentUser;
-  projectNotice: NoticeType[];
-  activities: ActivitiesType[];
-  radarData: RadarDataType[];
+import { Button, Card, DatePicker, Input, Form, Radio, Select, Upload } from 'antd';
+import { connect, Dispatch, formatMessage } from 'umi';
+import React, { FC, useEffect, useState } from 'react';
+import { UploadOutlined } from '@ant-design/icons';
+import Success from './components/Result/success';
+import Fail from './components/Result/fail';
+
+const FormItem = Form.Item;
+const { Option } = Select;
+
+interface BasicFormProps {
+  submitting: boolean;
   dispatch: Dispatch;
-  currentUserLoading: boolean;
-  projectLoading: boolean;
-  activitiesLoading: boolean;
 }
 
-const PageHeaderContent: React.FC<{ currentUser: CurrentUser }> = ({ currentUser }) => {
-  const loading = currentUser && Object.keys(currentUser).length;
-  if (!loading) {
-    return <Skeleton avatar paragraph={{ rows: 1 }} active />;
-  }
+const Upgrade: FC<BasicFormProps> = (props) => {
+  const { submitting } = props;
+  const [form] = Form.useForm();
+  const [RadioVisible, setRadioVisible] = useState(false);
+  const [, setShowPublicUsers] = React.useState(false);
+  // 倒计时按钮是否可用
+  const [canUse, setCanUse] = useState<boolean>(true);
+  // 倒计时时间倒数
+  const [count, setCount] = useState<number>(1);
+  // 保存审批电话
+  const [] = useState<string>('');
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 7 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+      md: { span: 10 },
+    },
+  };
+
+  const submitFormLayout = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 10, offset: 7 },
+    },
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    // eslint-disable-next-line no-console
+    console.log('Failed:', errorInfo);
+  };
+
+  const onValuesChange = (changedValues: { [key: string]: any }) => {
+    const { publicType } = changedValues;
+    if (publicType) setShowPublicUsers(publicType === '2');
+  };
+
+  // 倒计时递归方法
+  const countDown = () => {
+    setCanUse(false);
+    setCount(60);
+  };
+
+  useEffect(() => {
+    if (count > 1) {
+      setTimeout(() => {
+        setCount(count - 1);
+      }, 1000);
+    } else {
+      setCanUse(true);
+    }
+  }, [count]);
+
+  const radioStyle = {
+    display: 'block',
+    height: '30px',
+    lineHeight: '30px',
+  };
+
+  const RadioChange = (e: any) => {
+    setRadioVisible(e.target.value);
+  };
   return (
-    <div className={styles.pageHeaderContent}>
-      <div className={styles.avatar}>
-        <Avatar size="large" src={currentUser.avatar} />
-      </div>
-      <div className={styles.content}>
-        <div className={styles.contentTitle}>{currentUser.name}</div>
-        <div>
-          {currentUser.title} | {currentUser.group}
-        </div>
-      </div>
-    </div>
+    <Card bordered={false}>
+      <Form
+        hideRequiredMark
+        style={{ marginTop: 8 }}
+        form={form}
+        name="apply"
+        initialValues={{ public: '1' }}
+        onFinishFailed={onFinishFailed}
+        onValuesChange={onValuesChange}
+      >
+        <FormItem
+          {...formItemLayout}
+          label={'社团名称：'}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请输入社团名称',
+            },
+          ]}
+        >
+          <Input placeholder={'请输入社团名称'} />
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'社团类别'}
+          name="date"
+          rules={[
+            {
+              required: true,
+              message: '请选择社团类别',
+            },
+          ]}
+        >
+          <Select style={{ width: '50%' }} placeholder={'请选择社团类别'}>
+            <Option value="1">A</Option>
+            <Option value="2">B</Option>
+            <Option value="3">C</Option>
+            <Option value="4">D</Option>
+            <Option value="5">yiminghe</Option>
+          </Select>
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'社团级别'}
+          name="goal"
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: 'formandbasic-form.goal.required' }),
+            },
+          ]}
+        >
+          <Select style={{ width: '50%' }} placeholder={'请选择社团级别'}>
+            <Option value="1">A</Option>
+            <Option value="2">B</Option>
+            <Option value="3">C</Option>
+          </Select>
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'指导单位：'}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请输入指导单位',
+            },
+          ]}
+        >
+          <Input placeholder={'请输入指导单位'} />
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'社团成员数：'}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请输入社团成员数',
+            },
+          ]}
+        >
+          <Input style={{ width: '144px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} />
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'成立年份：'}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请选择成立年份',
+            },
+          ]}
+        >
+          <DatePicker picker="year" />
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'年审情况：'}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请选择成立年份',
+            },
+          ]}
+        ></FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'材料上传（精品项目）：'}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请上传材料',
+            },
+          ]}
+        >
+          <Upload showUploadList={false} fileList={[]}>
+            <Button icon={<UploadOutlined />}>点击上传</Button>
+          </Upload>
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={'申请人：'}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请输入申请人信息',
+            },
+          ]}
+        >
+          <Input placeholder={'请输入申请人信息'} />
+        </FormItem>
+        <Form.Item
+          {...formItemLayout}
+          name={'pickTeacher'}
+          label={'选择审批人：'}
+          rules={[
+            {
+              required: true,
+              message: '请选择审批人',
+            },
+          ]}
+        >
+          <Radio.Group onChange={RadioChange} value={RadioVisible}>
+            <Radio style={radioStyle} value={1}>
+              Option A
+            </Radio>
+            <Radio style={radioStyle} value={2}>
+              Option B
+            </Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          {...submitFormLayout}
+          name={'codeNumber'}
+          style={{ display: RadioVisible ? 'block' : 'none' }}
+          rules={[
+            {
+              required: true,
+              message: '请输入验证码',
+            },
+          ]}
+        >
+          <div>
+            <Input style={{ width: '35%', borderRight: 'none' }} placeholder={'请输入验证码'} />
+            <Button
+              style={{ width: '25%' }}
+              onClick={countDown}
+              disabled={canUse ? false : true}
+              type={canUse ? 'primary' : 'default'}
+            >
+              {canUse ? '获取验证码' : `${count}秒后重试`}
+            </Button>
+          </div>
+        </Form.Item>
+        <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+          <Button type="primary" htmlType="submit" loading={submitting}>
+            提交
+          </Button>
+          <Button style={{ marginLeft: 8 }}>取消</Button>
+        </FormItem>
+      </Form>
+      <Success />
+      <Fail/>
+    </Card>
   );
 };
 
-const ExtraContent: React.FC<{}> = () => (
-  <div className={styles.extraImg}>
-    <img
-      alt="这是一个标题"
-      src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
-    />
-  </div>
-);
-
-class Upgrade extends Component<WorkplaceProps> {
-  componentDidMount() {
-    const {dispatch}=this.props
-    dispatch({
-      type: 'dashboardAndworkplace/init',
-    });
-  }
-
-  componentWillUnmount() {
-   const {dispatch}=this.props
-    dispatch({
-      type: 'dashboardAndworkplace/clear',
-    });
-  }
-
-  renderActivities = (item: ActivitiesType) => {
-    const events = item.template.split(/@\{([^{}]*)\}/gi).map((key: React.ReactText) => {
-      if (item[key]) {
-        return (
-          <a href={item[key].link} key={item[key].name}>
-            {item[key].name}
-          </a>
-        );
-      }
-      return key;
-    });
-    return (
-      <List.Item key={item.id}>
-        <List.Item.Meta
-          avatar={<Avatar src={item.user.avatar} />}
-          title={
-            <span>
-              <a className={styles.username}>{item.user.name}</a>
-              &nbsp;
-              <span className={styles.event}>{events}</span>
-            </span>
-          }
-          description={
-            <span className={styles.datetime} title={item.updatedAt}>
-              {moment(item.updatedAt).fromNow()}
-            </span>
-          }
-        />
-      </List.Item>
-    );
-  };
-
-  render() {
-    const { currentUser } = this.props;
-    if (!currentUser || !currentUser.userid) {
-      return null;
-    }
-    return (
-      <PageHeaderWrapper
-        content={<PageHeaderContent currentUser={currentUser} />}
-        extraContent={<ExtraContent />}
-      >
-       
-      </PageHeaderWrapper>
-    );
-  }
-}
-
-export default connect(
-  ({ dashboardAndworkplace: { currentUser }, }: {
-    dashboardAndworkplace: ModalState;
-    loading: {
-      effects: {
-        [key: string]: boolean;
-      };
-    };
-  }) => ({
-    currentUser,
-  }),
-)(Upgrade);
+export default connect(({ loading }: { loading: { effects: { [key: string]: boolean } } }) => ({
+  submitting: loading.effects['formAndbasicForm/submitRegularForm'],
+}))(Upgrade);

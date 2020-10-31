@@ -10,22 +10,6 @@ import classNames from 'classnames';
 
 const { Step } = Steps;
 
-// const desc1 = (
-//   <div className={styles.title}>
-//     <div style={{ margin: '8px 0 4px' }}>
-//       <FormattedMessage id="resultandsuccess.success.step1-operator" defaultMessage="Qu Lili" />
-//     </div>
-//     <div>2016-12-12 12:32</div>
-//   </div>
-// );
-
-// const desc2 = (
-//   <div style={{ fontSize: 12 }} className={styles.title}>
-//     <div style={{ margin: '8px 0 4px' }}>
-//       <FormattedMessage id="resultandsuccess.success.step2-operator" defaultMessage="Zhou Maomao" />
-//     </div>
-//   </div>
-// );
 
 
 const desc1 = (
@@ -44,9 +28,6 @@ const desc2 = (
       周毛毛
       {/* <DingdingOutlined style={{ color: '#00A0E9', marginLeft: 8 }} /> */}
     </Fragment>
-    <div>
-      <a href="">催一下</a>
-    </div>
   </div>
 );
 
@@ -60,51 +41,6 @@ const content = (
       })}
     ></Descriptions>
     <br />
-    {/* <Steps progressDot current={2}>
-      <Step
-        title={
-          <span style={{ fontSize: 14 }}>
-            <FormattedMessage
-              id="resultandsuccess.success.step1-title"
-              defaultMessage="Create project"
-            />
-          </span>
-        }
-        description={desc1}
-      />
-      <Step
-        title={
-          <span style={{ fontSize: 14 }}>
-            <FormattedMessage
-              id="resultandsuccess.success.step2-title"
-              defaultMessage="Departmental preliminary review"
-            />
-          </span>         
-        }
-        description={desc2}
-      />
-      <Step
-        title={
-          <span style={{ fontSize: 14 }}>
-            <FormattedMessage
-              id="resultandsuccess.success.step5-title"
-              defaultMessage="Departmental preliminary review"
-            />
-          </span>
-        }
-        description={desc2}
-      />    
-      <Step
-        title={
-          <span style={{ fontSize: 14 }}>
-            <FormattedMessage
-              id="resultandsuccess.success.step4-title"
-              defaultMessage="Financial review"
-            />
-          </span>
-        }
-      />    
-    </Steps> */}
     <Steps  current={1}>
       <Step title="注册登记" description={desc1} />
       <Step title="业务指导单位" description={desc2} />
