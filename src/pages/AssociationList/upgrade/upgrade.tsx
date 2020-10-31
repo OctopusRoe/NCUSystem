@@ -1,6 +1,6 @@
 // 社团升级页面
 
-import { Button, Card, DatePicker, Input, Form, Radio, Select, Upload } from 'antd';
+import { Button, Card, DatePicker, Input, Form, Radio, Select, Upload, Table } from 'antd';
 import { connect, Dispatch, formatMessage } from 'umi';
 import React, { FC, useEffect, useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
@@ -81,6 +81,20 @@ const Upgrade: FC<BasicFormProps> = (props) => {
   const RadioChange = (e: any) => {
     setRadioVisible(e.target.value);
   };
+
+
+  const columns = [
+    {
+      title: '年审时间',
+      dataIndex: 'time',
+      key: 'time',
+    },
+    {
+      title: '年审结果',
+      dataIndex: 'result',
+      key: 'result',
+    },
+  ];
   return (
     <Card bordered={false}>
       <Form
@@ -94,103 +108,61 @@ const Upgrade: FC<BasicFormProps> = (props) => {
       >
         <FormItem
           {...formItemLayout}
+          label={'申请人：'}
+          name="name"
+        >
+          <Input disabled />
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
           label={'社团名称：'}
           name="name"
-          rules={[
-            {
-              required: true,
-              message: '请输入社团名称',
-            },
-          ]}
         >
-          <Input placeholder={'请输入社团名称'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
           label={'社团类别'}
           name="date"
-          rules={[
-            {
-              required: true,
-              message: '请选择社团类别',
-            },
-          ]}
         >
-          <Select style={{ width: '50%' }} placeholder={'请选择社团类别'}>
-            <Option value="1">A</Option>
-            <Option value="2">B</Option>
-            <Option value="3">C</Option>
-            <Option value="4">D</Option>
-            <Option value="5">yiminghe</Option>
-          </Select>
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
           label={'社团级别'}
           name="goal"
-          rules={[
-            {
-              required: true,
-              message: formatMessage({ id: 'formandbasic-form.goal.required' }),
-            },
-          ]}
         >
-          <Select style={{ width: '50%' }} placeholder={'请选择社团级别'}>
-            <Option value="1">A</Option>
-            <Option value="2">B</Option>
-            <Option value="3">C</Option>
-          </Select>
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
           label={'指导单位：'}
           name="name"
-          rules={[
-            {
-              required: true,
-              message: '请输入指导单位',
-            },
-          ]}
         >
-          <Input placeholder={'请输入指导单位'} />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
           label={'社团成员数：'}
           name="name"
-          rules={[
-            {
-              required: true,
-              message: '请输入社团成员数',
-            },
-          ]}
         >
-          <Input style={{ width: '144px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} />
+           <Input disabled />
+          {/* <Input style={{ width: '144px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} /> */}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label={'成立年份：'}
           name="name"
-          rules={[
-            {
-              required: true,
-              message: '请选择成立年份',
-            },
-          ]}
         >
-          <DatePicker picker="year" />
+          <Input disabled />
         </FormItem>
         <FormItem
           {...formItemLayout}
           label={'年审情况：'}
           name="name"
-          rules={[
-            {
-              required: true,
-              message: '请选择成立年份',
-            },
-          ]}
-        ></FormItem>
+        >
+          <Table columns={columns} bordered size='small'/>
+        </FormItem>
         <FormItem
           {...formItemLayout}
           label={'材料上传（精品项目）：'}
@@ -205,19 +177,6 @@ const Upgrade: FC<BasicFormProps> = (props) => {
           <Upload showUploadList={false} fileList={[]}>
             <Button icon={<UploadOutlined />}>点击上传</Button>
           </Upload>
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'申请人：'}
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: '请输入申请人信息',
-            },
-          ]}
-        >
-          <Input placeholder={'请输入申请人信息'} />
         </FormItem>
         <Form.Item
           {...formItemLayout}

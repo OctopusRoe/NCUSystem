@@ -42,7 +42,7 @@ const content = (
     ></Descriptions>
     <br />
     <Steps  current={1}>
-      <Step title="注册登记" description={desc1} />
+      <Step title="升级登记" description={desc1} />
       <Step title="业务指导单位" description={desc2} />
       <Step title="校团委" />
       <Step title="完成" />

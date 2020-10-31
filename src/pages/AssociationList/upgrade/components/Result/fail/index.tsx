@@ -41,7 +41,7 @@ const Fail: React.FC<SuccessProps> = () => {
           }
           style={{ marginTop: 48, marginBottom: 16 }}
         >
-          {Content}
+          {/* {Content} */}
         </Result>
       </Card>
     </GridContent>
