@@ -47,6 +47,10 @@ export default {
   'menu.guide.outlayapproval': '费用审批',
   'menu.guide.activeapproval': '活动审批',
 
+  // 指导老师管理
+  'menu.teacher': '指导老师管理',
+  'menu.teacher.list': '社团指导列表',
+
   // 考核管理菜单
   'menu.examine': '考核管理',
   'menu.examine.association': '社团年审',
@@ -63,5 +67,6 @@ export default {
   'menu.setting.control': '应用管理',
   'menu.setting.person': '用户管理',
   'menu.setting.userGroup': '用户组管理',
+  'menu.setting.punish': '违纪管理',
   'menu.setting.message': '短信统计'
 };

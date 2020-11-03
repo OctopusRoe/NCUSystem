@@ -1,4 +1,4 @@
-// 社团列表页面
+// 社团指导列表页面
 
 import React, { useState, useRef } from 'react';
 

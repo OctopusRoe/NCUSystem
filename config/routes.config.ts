@@ -64,7 +64,6 @@ const guideData: FileType = {
   icon: 'solution',
   children: [
     'registerapproval',
-    'list',
     'memberlist',
     'recruitmentapproval',
     'studentleader',
@@ -74,6 +73,16 @@ const guideData: FileType = {
     'outsideapproval',
     'outlayapproval',
     'activeapproval',
+  ]
+}
+
+// 指导老师管理
+const teacherData: FileType = {
+  fileName: 'TeacherList',
+  path: 'teacher',
+  icon: 'form',
+  children: [
+    'list'
   ]
 }
 
@@ -107,6 +116,7 @@ const settingData: FileType = {
     'control',
     'person',
     'userGroup',
+    'punish',
     'message'
   ]
 }
@@ -163,6 +173,8 @@ export default [{
       CreateRouter(active),
       // 社团指导 router
       CreateRouter(guideData),
+      // 指导老师管理 router
+      CreateRouter(teacherData),
       // 考核管理 router
       CreateRouter(examineData),
       // 社团大数据 router
