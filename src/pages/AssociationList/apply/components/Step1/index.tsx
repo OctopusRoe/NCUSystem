@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Button, Divider, Input, Select, Upload, InputNumber, Col, Row, DatePicker, Tooltip } from 'antd';
-import { connect, Dispatch, FormattedMessage } from 'umi';
+import { Form, Button, Input, Select, Upload, Tooltip } from 'antd';
+import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
 import styles from './index.less';
-import { PlusOutlined, QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons';
-import moment from 'moment'
+import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -36,12 +36,11 @@ const validateMessages = {
 const Step1: React.FC<Step1Props> = (props) => {
   const { dispatch, data } = props;
   const [form] = Form.useForm();
-  const [uploadFileList, setUploadFileList] = useState([])
+  const [uploadFileList] = useState([]);
 
   if (!data) {
     return null;
   }
-  const { validateFields } = form;
   const onValidateForm = async () => {
     // const values = await validateFields();
     if (dispatch) {
@@ -56,10 +55,7 @@ const Step1: React.FC<Step1Props> = (props) => {
     }
   };
 
-  const time = moment().format('YYYY')
-
   return (
-
     <>
       <Form
         {...formItemLayout}
@@ -70,15 +66,14 @@ const Step1: React.FC<Step1Props> = (props) => {
         validateMessages={validateMessages}
       >
         <Form.Item
-          label='社团中文全称'
+          label="社团中文全称"
           name="corporatename"
           rules={[{ required: true, message: '请输入社团全称' }]}
         >
           <Input placeholder="" />
-
         </Form.Item>
         <Form.Item
-          label='社团英文全称'
+          label="社团英文全称"
           name="corporatename"
           rules={[{ required: true, message: '请输入社团简称' }]}
         >
@@ -123,7 +118,12 @@ const Step1: React.FC<Step1Props> = (props) => {
         </Form.Item>
 
         <Form.Item
-          label="社团章程"
+          label={
+            <span>
+              社团章程
+              <span style={{ color: '#00000073' }}>（草案）</span>
+            </span>
+          }
           name="objective"
           rules={[{ required: true, message: '请上传社团章程' }]}
         >
@@ -135,19 +135,18 @@ const Step1: React.FC<Step1Props> = (props) => {
           label={
             <span>
               社团成员数
-              <span style={{ color: '#00000073' }}>（最高）
-              <Tooltip title='超过最高数后无法加入新成员'>
+              <span style={{ color: '#00000073' }}>
+                （最高）
+                <Tooltip title="超过最高数后无法加入新成员">
                   <QuestionCircleOutlined style={{ marginRight: 4 }} />
                 </Tooltip>
-
-
-              &nbsp;</span>
+              </span>
             </span>
           }
           name="scale"
           rules={[{ required: true, message: '请输入成员数量' }]}
         >
-          <Input style={{ width: '100px' }} suffix={<div style={{color: '#bfbfbf'}}>人</div>} />
+          <Input style={{ width: '100px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} />
         </Form.Item>
         {/* <Form.Item
           label="社团成立时间"
@@ -156,11 +155,6 @@ const Step1: React.FC<Step1Props> = (props) => {
         >
           <DatePicker picker="year" defaultValue={moment(time)}/>
         </Form.Item> */}
-
-
-
-
-
 
         <Form.Item
           wrapperCol={{
@@ -173,10 +167,9 @@ const Step1: React.FC<Step1Props> = (props) => {
         >
           <Button type="primary" onClick={onValidateForm}>
             下一步
-         </Button>
+          </Button>
         </Form.Item>
       </Form>
-
     </>
   );
 };

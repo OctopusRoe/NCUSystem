@@ -1,79 +1,14 @@
 // 用户管理页面
 
-import { DownloadOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message } from 'antd';
+import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Divider} from 'antd';
 import React, { useState, useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import CreateForm from './components/CreateForm';
-import ChangeAuthorization, { FormValueType } from './components/ChangeAuthorization';
 import ChangePerson from './components/ChangePerson';
 import { TableListItem } from './data';
-import { queryRule, updateRule, addRule, removeRule } from './service';
-import styles from './usergroup.less';
-
-/**
- * 添加节点
- * @param fields
- */
-const handleAdd = async (fields: TableListItem) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addRule({ ...fields });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- *
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-
-/**
- *  删除节点
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: TableListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+import { queryRule } from './service';
 
 const UserGroup: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -87,7 +22,7 @@ const UserGroup: React.FC<{}> = () => {
       dataIndex: 'name',
       width: 200,
       key: 'name',
-      fixed: 'left'
+      fixed: 'left',
     },
     {
       title: '权限详情',
@@ -96,7 +31,7 @@ const UserGroup: React.FC<{}> = () => {
       key: 'infomation',
       hideInSearch: true,
       // 使用 antd Tree 组件
-      render: (text, record) => <></>,
+      render: () => <></>,
     },
     {
       title: '用户组人数',
@@ -104,7 +39,7 @@ const UserGroup: React.FC<{}> = () => {
       width: 150,
       key: 'userGroup',
       hideInSearch: true,
-      render: (text, record) => <></>,
+      render: () => <></>,
     },
     {
       title: '描述',
@@ -161,7 +96,7 @@ const UserGroup: React.FC<{}> = () => {
         headerTitle="权限列表"
         actionRef={actionRef}
         rowKey="key"
-        toolBarRender={(action, { selectedRows }) => [
+        toolBarRender={(action, {}) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新增
           </Button>,
@@ -179,26 +114,6 @@ const UserGroup: React.FC<{}> = () => {
         updateModalVisible={changePersonVisible}
         values={stepFormValues}
       />
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <ChangeAuthorization
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
     </div>
   );
 };

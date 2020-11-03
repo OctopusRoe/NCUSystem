@@ -1,5 +1,5 @@
 import { PlusOutlined, PrinterOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Radio, Upload } from 'antd';
+import { Button, Form, Input, Radio, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
@@ -8,6 +8,7 @@ import styles from './index.less';
 interface Step3Props {
   data?: StateType['step'];
   dispatch?: Dispatch;
+  formInfo: FormInfo;
 }
 
 const formItemLayout = {
@@ -19,10 +20,16 @@ const formItemLayout = {
   },
 };
 
+interface FormInfo {
+  teacherValue: { name: string; phone: string }[];
+  associationType: string[];
+  associationGrade: string[];
+  department: string[];
+}
+
 const Step5: React.FC<Step3Props> = (props) => {
-  const { data, dispatch } = props;
-  const [radioValue, setradioValue] = useState(0); //单选按钮组
-  const [liked, setLiked] = useState(false); //倒计时按钮是否可用
+  const { data, dispatch, formInfo } = props;
+  const [canUse, setCanUse] = useState<boolean>(true); //倒计时按钮是否可用
   const [count, setCount] = useState(60); //倒计时时间计数
   const [form] = Form.useForm();
   if (!data) {
@@ -47,54 +54,23 @@ const Step5: React.FC<Step3Props> = (props) => {
     }
   };
 
-  const radioStyle = {
-    display: 'block',
-    height: '30px',
-    lineHeight: '30px',
+  const countDown = () => {
+    setCanUse(false);
+    setCount(60);
   };
 
-  const RadioChange = (e: any) => {
-    setradioValue(e.target.value);
-  };
-
-  // useEffect(() => {
-  //   clearInterval(timeChange);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (count > 0 && count < 60) {
-  //     setBtnContent(`${count}S后重发`);
-  //   } else if (count === 0 || count === 60) {
-  //     clearInterval(timeChange);
-  //     setLiked(false);
-  //     setCount(60);
-  //     setBtnContent('获取验证码');
-  //     console.log(count);
-  //   }
-  // }, [count]);
-
-  // let timeChange: NodeJS.Timeout;
-  // const countDown = () => {
-  //   timeChange = setInterval(() => setCount((t: number) => --t), 1000);
-  //   setLiked(true);
-  // };
-
-
-  const countDown=()=>{
-    setLiked(false)
-    setCount(60)
-  }
-
-  useEffect(()=>{
-    if(count>1){
+  useEffect(() => {
+    if (count > 1) {
       setTimeout(() => {
-        setCount(count-1)
+        setCount(count - 1);
       }, 1000);
-    }else{
-      setLiked(true)
+    } else {
+      setCanUse(true);
     }
-  },[count])
+  }, [count]);
 
+  const { teacherValue, associationType, associationGrade, department } = formInfo;
+  const { Option } = Select;
   return (
     <>
       <Form
@@ -134,52 +110,45 @@ const Step5: React.FC<Step3Props> = (props) => {
             </div>
           </Upload>
         </Form.Item>
-        <Form.Item
-          name="phone"
-          label="选择审批人"
-          rules={[
-            {
-              required: true,
-              message: '请选择审批人',
-            },
-          ]}
-        >
-          <Radio.Group onChange={RadioChange} value={radioValue}>
-            <Radio style={radioStyle} value={1}>
-              Option A
-            </Radio>
-            <Radio style={radioStyle} value={2}>
-              Option B
-            </Radio>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: '请输入验证码',
-            },
-          ]}
-          wrapperCol={{
-            xs: { span: 24, offset: 0 },
-            sm: {
-              span: formItemLayout.wrapperCol.span,
-              offset: formItemLayout.labelCol.span,
-            },
-          }}
-          style={{ display: radioValue === 0 ? 'none' : 'block' }}
-        >
-          <div>
-            <Input style={{ width: '35%' }} placeholder={'请输入验证码'} />
+        <Form.Item name={'pickTeacher'} label={'指导老师审批'}>
+          <Input.Group compact>
+            <Select style={{ width: '25%' }} placeholder={'请选择'}>
+              {teacherValue.map((item: any, index: number) => (
+                <Option value={item.phone} key={index}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
             <Button
               style={{ width: '25%' }}
               onClick={countDown}
-              disabled={liked}
-              type={liked ? 'default' : 'primary'}
+              disabled={canUse ? false : true}
+              type={canUse ? 'primary' : 'default'}
             >
-              {liked ? '获取验证码' : `${count}秒后重试`}
+              {canUse ? '点击获取' : `${count}秒后重试`}
             </Button>
-          </div>
+          </Input.Group>
+        </Form.Item>
+        <Form.Item name={'pickDepartment'} label={'指导部门审批'}>
+          <Input.Group compact>
+            <Select style={{ width: '25%' }} placeholder={'请选择'}>
+              {teacherValue.map((item: any, index: number) => (
+                <Option value={item.phone} key={index}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            <Button
+              style={{ width: '25%' }}
+              onClick={countDown}
+              disabled={canUse ? false : true}
+              type={canUse ? 'primary' : 'default'}
+            >
+              {canUse ? '点击获取' : `${count}秒后重试`}
+            </Button>
+          </Input.Group>
         </Form.Item>
         <Form.Item
           wrapperCol={{

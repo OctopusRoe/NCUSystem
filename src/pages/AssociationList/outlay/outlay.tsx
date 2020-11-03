@@ -40,7 +40,7 @@ class Outlay extends Component<SettingsProps, SettingsState> {
       organization: <FormattedMessage id="info.menuMap.spending" defaultMessage="spending Info" />,
       position: <FormattedMessage id="info.menuMap.account" defaultMessage="account Info" />,
       newmedia: (
-        <FormattedMessage id="info.menuMap.statistical" defaultMessage="statistical Info" />
+        <FormattedMessage id="info.menuMap.stati" defaultMessage="statistical Info" />
       ),
     };
     this.state = {

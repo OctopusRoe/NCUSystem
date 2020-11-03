@@ -127,7 +127,7 @@ const UpLevel: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
-        headerTitle="社团列表"
+        headerTitle=""
         actionRef={actionRef}
         rowKey="key"
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}

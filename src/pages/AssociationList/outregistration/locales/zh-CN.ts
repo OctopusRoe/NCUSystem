@@ -1,6 +1,6 @@
 export default {
-  'info.menuMap.income': '赞助管理',
-  'info.menuMap.spending': '支出管理',
+  'info.menuMap.apply': '申请登记',
+  'info.menuMap.list': '登记列表',
   'info.menuMap.account': '报销管理',
   'info.menuMap.stati': '经费统计',
 

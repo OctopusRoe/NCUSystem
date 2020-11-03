@@ -1,14 +1,13 @@
 // 社团升级页面
 
-import { Button, Card, DatePicker, Input, Form, Radio, Select, Upload, Table } from 'antd';
-import { connect, Dispatch, formatMessage } from 'umi';
+import { Button, Card, Input, Form, Radio, Select, Upload, Table } from 'antd';
+import { connect, Dispatch } from 'umi';
 import React, { FC, useEffect, useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
 import Success from './components/Result/success';
 import Fail from './components/Result/fail';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 interface BasicFormProps {
   submitting: boolean;
@@ -30,12 +29,12 @@ const Upgrade: FC<BasicFormProps> = (props) => {
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
-      sm: { span: 7 },
+      sm: { span: 6 },
     },
     wrapperCol: {
       xs: { span: 24 },
       sm: { span: 12 },
-      md: { span: 10 },
+      md: { span: 12 },
     },
   };
 
@@ -72,17 +71,7 @@ const Upgrade: FC<BasicFormProps> = (props) => {
     }
   }, [count]);
 
-  const radioStyle = {
-    display: 'block',
-    height: '30px',
-    lineHeight: '30px',
-  };
-
-  const RadioChange = (e: any) => {
-    setRadioVisible(e.target.value);
-  };
-
-
+  const { Option } = Select;
   const columns = [
     {
       title: '年审时间',
@@ -95,73 +84,47 @@ const Upgrade: FC<BasicFormProps> = (props) => {
       key: 'result',
     },
   ];
+
+  const teacherValue= [
+    { name: '名字1', phone: '11011211911' },
+    { name: '名字2', phone: '11011211119' },
+  ];
+
   return (
-    <Card bordered={false}>
+    <Card>
       <Form
         hideRequiredMark
-        style={{ marginTop: 8 }}
+        style={{ paddingTop: '12px' }}
         form={form}
         name="apply"
         initialValues={{ public: '1' }}
         onFinishFailed={onFinishFailed}
         onValuesChange={onValuesChange}
       >
-        <FormItem
-          {...formItemLayout}
-          label={'申请人：'}
-          name="name"
-        >
+        <FormItem {...formItemLayout} label={'申请人：'} name="name">
           <Input disabled />
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团名称：'}
-          name="name"
-        >
+        <FormItem {...formItemLayout} label={'社团名称：'} name="name">
           <Input disabled />
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团类别'}
-          name="date"
-        >
+        <FormItem {...formItemLayout} label={'社团类别'} name="date">
           <Input disabled />
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团级别'}
-          name="goal"
-        >
+        <FormItem {...formItemLayout} label={'社团级别'} name="goal">
           <Input disabled />
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'指导单位：'}
-          name="name"
-        >
+        <FormItem {...formItemLayout} label={'指导单位：'} name="name">
           <Input disabled />
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团成员数：'}
-          name="name"
-        >
-           <Input disabled />
+        <FormItem {...formItemLayout} label={'社团成员数：'} name="name">
+          <Input disabled />
           {/* <Input style={{ width: '144px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} /> */}
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'成立年份：'}
-          name="name"
-        >
+        <FormItem {...formItemLayout} label={'成立年份：'} name="name">
           <Input disabled />
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'年审情况：'}
-          name="name"
-        >
-          <Table columns={columns} bordered size='small'/>
+        <FormItem {...formItemLayout} label={'年审情况：'} name="name">
+          <Table columns={columns} bordered size="small" />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -178,48 +141,45 @@ const Upgrade: FC<BasicFormProps> = (props) => {
             <Button icon={<UploadOutlined />}>点击上传</Button>
           </Upload>
         </FormItem>
-        <Form.Item
-          {...formItemLayout}
-          name={'pickTeacher'}
-          label={'选择审批人：'}
-          rules={[
-            {
-              required: true,
-              message: '请选择审批人',
-            },
-          ]}
-        >
-          <Radio.Group onChange={RadioChange} value={RadioVisible}>
-            <Radio style={radioStyle} value={1}>
-              Option A
-            </Radio>
-            <Radio style={radioStyle} value={2}>
-              Option B
-            </Radio>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item
-          {...submitFormLayout}
-          name={'codeNumber'}
-          style={{ display: RadioVisible ? 'block' : 'none' }}
-          rules={[
-            {
-              required: true,
-              message: '请输入验证码',
-            },
-          ]}
-        >
-          <div>
-            <Input style={{ width: '35%', borderRight: 'none' }} placeholder={'请输入验证码'} />
+        <Form.Item  {...formItemLayout} name={'pickTeacher'} label={'指导老师审批'}>
+          <Input.Group compact>
+            <Select style={{ width: '25%' }} placeholder={'请选择'}>
+              {teacherValue.map((item: any, index: number) => (
+                <Option value={item.phone} key={index}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
             <Button
               style={{ width: '25%' }}
               onClick={countDown}
               disabled={canUse ? false : true}
               type={canUse ? 'primary' : 'default'}
             >
-              {canUse ? '获取验证码' : `${count}秒后重试`}
+              {canUse ? '点击获取' : `${count}秒后重试`}
             </Button>
-          </div>
+          </Input.Group>
+        </Form.Item>
+        <Form.Item  {...formItemLayout} name={'pickDepartment'} label={'指导部门审批'}>
+          <Input.Group compact>
+            <Select style={{ width: '25%' }} placeholder={'请选择'}>
+              {teacherValue.map((item: any, index: number) => (
+                <Option value={item.phone} key={index}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            <Button
+              style={{ width: '25%' }}
+              onClick={countDown}
+              disabled={canUse ? false : true}
+              type={canUse ? 'primary' : 'default'}
+            >
+              {canUse ? '点击获取' : `${count}秒后重试`}
+            </Button>
+          </Input.Group>
         </Form.Item>
         <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
           <Button type="primary" htmlType="submit" loading={submitting}>
@@ -229,7 +189,7 @@ const Upgrade: FC<BasicFormProps> = (props) => {
         </FormItem>
       </Form>
       <Success />
-      <Fail/>
+      <Fail />
     </Card>
   );
 };

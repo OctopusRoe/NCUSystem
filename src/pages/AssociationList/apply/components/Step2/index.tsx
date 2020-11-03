@@ -1,13 +1,8 @@
 import React from 'react';
-import { Form, Button, Input, Select, Upload, Divider } from 'antd';
+import { Form, Button, Input, Select, Radio } from 'antd';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
-import { PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
-
-import img from '../.../../../../../../../public/1.png'
-
-const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -30,7 +25,7 @@ const Step2: React.FC<Step2Props> = (props) => {
   if (!data) {
     return null;
   }
-  const { validateFields, getFieldsValue } = form;
+  const { getFieldsValue } = form;
   const onPrev = () => {
     if (dispatch) {
       const values = getFieldsValue();
@@ -71,17 +66,23 @@ const Step2: React.FC<Step2Props> = (props) => {
         className={styles.stepForm}
         hideRequiredMark
       >
-        <Form.Item
-          label="姓名"
-          name="name"
-        >
+        <Form.Item label="姓名" name="name">
           <Input style={{ width: '50%' }} disabled={true} />
         </Form.Item>
-        <Form.Item
-          label="学号"
-          name="stuid"
-        >
+        <Form.Item label="学号" name="stuid">
           <Input style={{ width: '50%' }} disabled={true} />
+        </Form.Item>
+        <Form.Item label="是否挂科" name="test">
+          <Radio.Group >
+            <Radio value={1}>是</Radio>
+            <Radio value={2}>否</Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          label="学习成绩班级排名"
+          name="ranking"
+        >
+          <Input style={{ width: '100px' }} suffix={<div style={{ color: '#bfbfbf' }}>%</div>} />
         </Form.Item>
         <Form.Item
           label="在校期间所获荣誉"
@@ -101,10 +102,10 @@ const Step2: React.FC<Step2Props> = (props) => {
         >
           <Button type="primary" onClick={onValidateForm} loading={submitting}>
             下一步
-        </Button>
+          </Button>
           <Button onClick={onPrev} style={{ marginLeft: 8 }}>
             上一步
-        </Button>
+          </Button>
         </Form.Item>
       </Form>
       {/* <Divider style={{ margin: '40px 0 24px' }} />

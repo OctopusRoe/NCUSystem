@@ -2,22 +2,25 @@
 
 import React, { useRef, useState } from 'react';
 
-import { Button, DatePicker, Image } from 'antd';
+import { Button, DatePicker, Divider, Image } from 'antd';
 import { connect } from 'umi';
-import { QrcodeOutlined, SettingOutlined } from '@ant-design/icons';
+import { PlusOutlined, QrcodeOutlined, SettingOutlined } from '@ant-design/icons';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import { TableListItem } from './data.d';
 import { queryRule } from './service';
 import SettingModal from './components/SettingModal';
 import EditorModal from './components/EditorModal';
+import AddModal from './components/AddModal';
 
 const Statistic: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [settingmodalVisible, setSettingmodalVisible] = useState(false);
   const [EditorModalVisible, setEditorModalVIsible] = useState(false);
-
-  const [imgPath, setImgPath] = useState<string>('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603790956805&di=f790eea405e9fa1fde821f54d7716ddf&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F25%2F04%2F20%2F16571d91951a416.jpg')
+  const [addmodalVisible, setAddmodalVisible] = useState(false);
+  const [imgPath, setImgPath] = useState<string>(
+    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603790956805&di=f790eea405e9fa1fde821f54d7716ddf&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F25%2F04%2F20%2F16571d91951a416.jpg',
+  );
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '部门',
@@ -69,6 +72,8 @@ const Statistic: React.FC<{}> = () => {
       render: (_) => (
         <>
           <a onClick={() => setEditorModalVIsible(true)}>编辑</a>
+          <Divider type="vertical" />
+          <a>删除</a>
         </>
       ),
     },
@@ -88,7 +93,16 @@ const Statistic: React.FC<{}> = () => {
             <SettingOutlined />
             设置
           </Button>,
-          <Button type="default" onClick={()=>{document.getElementById('settingQRCode')?.click()}}>
+          <Button type="primary" onClick={()=>setAddmodalVisible(true)}>
+            <PlusOutlined />
+            新增
+          </Button>,
+          <Button
+            type="default"
+            onClick={() => {
+              document.getElementById('settingQRCode')?.click();
+            }}
+          >
             <QrcodeOutlined />
             二维码
           </Button>,
@@ -104,7 +118,8 @@ const Statistic: React.FC<{}> = () => {
         modalVisible={settingmodalVisible}
         onCancel={() => setSettingmodalVisible(false)}
       />
-      <Image style={{display: 'none'}} id={'settingQRCode'} src={imgPath} />
+      <AddModal modalVisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
+      <Image style={{ display: 'none' }} id={'settingQRCode'} src={imgPath} />
     </div>
   );
 };
