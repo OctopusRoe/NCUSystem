@@ -32,7 +32,7 @@ export default {
   'menu.active': '活动管理',
   'menu.active.square': '活动广场',
   'menu.active.admin': '活动管理',
-  'menu.active.approval': '活动管理',
+  'menu.active.approval': '活动审批',
 
   // 社团指导菜单
   'menu.guide': '社团指导',
@@ -41,13 +41,13 @@ export default {
   'menu.guide.memberlist': '成员列表',
   'menu.guide.recruitmentapproval': '招新审批',
   'menu.guide.studentleader': '学生负责人',
-  'menu.guide.teacherleader': '指导老师',
   'menu.guide.address': '通讯录',
   'menu.guide.uplevel': '升级审批',
   'menu.guide.logoutapproval': '注销审批',
   'menu.guide.outsideapproval': '外出审批',
   'menu.guide.outlayapproval': '费用审批',
   'menu.guide.activeapproval': '活动审批',
+  'menu.guide.annual': '社团年审',
 
   // 指导老师管理
   'menu.teacher': '指导老师管理',

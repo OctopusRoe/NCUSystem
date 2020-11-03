@@ -69,12 +69,12 @@ const guideData: FileType = {
     'memberlist',
     'recruitmentapproval',
     'studentleader',
-    'teacherleader',
     'uplevel',
     'logoutapproval',
     'outsideapproval',
     'outlayapproval',
     'activeapproval',
+    'annual',
   ]
 }
 
@@ -88,18 +88,6 @@ const teacherData: FileType = {
     'employ',
     'list',
     'examine'
-  ]
-}
-
-// 考核管理
-const examineData: FileType = {
-  fileName: 'ExamineList',
-  path: 'examine',
-  icon: 'audit',
-  children: [
-    'association',
-    'head',
-    'teacher'
   ]
 }
 
@@ -180,8 +168,6 @@ export default [{
       CreateRouter(guideData),
       // 指导老师管理 router
       CreateRouter(teacherData),
-      // 考核管理 router
-      CreateRouter(examineData),
       // 社团大数据 router
       CreateRouter(bigdataData),
       // 系统设置 router
