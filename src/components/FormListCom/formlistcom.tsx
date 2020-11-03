@@ -96,7 +96,7 @@ const FormListCom: React.FC<FormListComProps> = (props) => {
                     props.inputTwo
                     ?
                     (<FormItem
-                      initialValue={item.value.two}
+                      initialValue={item.value.two ? item.value.two : null}
                       name={[item.name, info.two?.name]}
                       fieldKey={[item.fieldKey, info.two?.name]}
                       rules={[{ required: true, message: info.two?.message }]}
@@ -111,7 +111,7 @@ const FormListCom: React.FC<FormListComProps> = (props) => {
                     props.inputThree
                     ?
                     (<FormItem
-                      initialValue={item.value.three}
+                      initialValue={item.value.three ? item.value.three : null}
                       name={[item.name, info.three?.name]}
                       fieldKey={[item.fieldKey, info.three?.name]}
                       rules={[{ required: true, message: info.three?.message }]}

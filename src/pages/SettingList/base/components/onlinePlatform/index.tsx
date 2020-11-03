@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Row, Col} from 'antd';
+import { Row, Col } from 'antd';
 import FormListCom, { Group, InputInfo } from '@/components/FormListCom/formlistcom'
 
 const OnlinePlatform: React.FC<{}> = (props) => {

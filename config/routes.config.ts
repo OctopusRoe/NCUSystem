@@ -54,6 +54,8 @@ const active: FileType = {
   icon: 'contacts',
   children: [
     'square', // 活动广场
+    'admin',
+    'approval'
   ]
 }
 
@@ -82,7 +84,10 @@ const teacherData: FileType = {
   path: 'teacher',
   icon: 'form',
   children: [
-    'list'
+    'select',
+    'employ',
+    'list',
+    'examine'
   ]
 }
 

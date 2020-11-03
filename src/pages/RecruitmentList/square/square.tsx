@@ -13,6 +13,7 @@ import { ListItemDataType } from './data';
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
 import CardInfo from './components/cardInfo'
+import SingUp from './components/singUp'
 import styles from './style.less';
 
 const { Option } = Select;
@@ -25,6 +26,20 @@ interface ProjectsProps {
   loading: boolean;
 }
 
+// 切换按钮列表
+const tabList = [
+  {key: 'recruit', tab: '招新列表'},
+  {key: 'signUp', tab: '我的报名'}
+]
+
+const formItemLayout = {
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+
+
 const Square: React.FC<ProjectsProps> = ({
   dispatch,
   listAndsearchAndprojects: { list = [] },
@@ -33,6 +48,7 @@ const Square: React.FC<ProjectsProps> = ({
 
   const [ visible, setVisible ] = useState(false)
   const [ dataInfo, setDataInfo ] = useState<any>()
+  const [ getChildren, setGetChildren ] = useState<string>()
 
   useEffect(() => {
     dispatch({
@@ -82,77 +98,88 @@ const Square: React.FC<ProjectsProps> = ({
     />
   );
 
+  const SquareList = (
+    <div className={styles.coverCardList}>
+      <Card bordered={false}>
+        <Form
+          layout="inline"
+          onValuesChange={() => {
+            // 表单项变化时请求数据
+            // 模拟查询表单生效
+            dispatch({
+              type: 'listAndsearchAndprojects/fetch',
+              payload: {
+                count: 8,
+              },
+            });
+          }}
+        >
+          <StandardFormRow title="社团类别" block style={{ paddingBottom: 11 }}>
+            <FormItem name="category">
+              <TagSelect expandable>
+                <TagSelect.Option value="cat1">一类社团</TagSelect.Option>
+                <TagSelect.Option value="cat2">二类社团</TagSelect.Option>
+                <TagSelect.Option value="cat3">三类社团</TagSelect.Option>
+              </TagSelect>
+            </FormItem>
+          </StandardFormRow>
+          <StandardFormRow grid last>
+            <Row>
+              <Col xl={5} lg={10} md={12} sm={24} xs={24}>
+                <FormItem {...formItemLayout} name="department" label={'指导单位'} initialValue={'full'}>
+                  <Select style={{ width: '200px' }}>
+                    <Option value="full">全部</Option>
+                    <Option value="school">校团委</Option>
+                    <Option value="normal">信息工程学院</Option>
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col xl={4} lg={10} md={12} sm={24} xs={24}>
+                <FormItem {...formItemLayout} name="time" label={'排序方式'} style={{width: '200px'}} initialValue={'time'}>
+                  <Select style={{ width: '100px' }}>
+                    <Option value="time" >按时间</Option>
+                    <Option value="hot">按热度</Option>
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col xl={5} lg={10} md={12} sm={24} xs={24}>
+                <FormItem {...formItemLayout} name="searchInput" label={'关键字'} initialValue={''}>
+                  <Input.Search placeholder={'请输入'} style={{width: '250px'}} enterButton={"搜索"} />
+                </FormItem>
+              </Col>
+            </Row>
+          </StandardFormRow>
+        </Form>
+      </Card>
+      <div className={styles.cardList}>{cardList}</div>
+    </div>
+  )
+
   const showModal = (item: any) => {
     setVisible(true)
     setDataInfo(item)
   }
 
-  const formItemLayout = {
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 16 },
-    },
-  };
+  const getChildrenNode = () => {
+
+    switch (getChildren) {
+      case 'recruit':
+        return SquareList;
+      case 'signUp':
+        return <SingUp />;
+      default:
+        return SquareList;
+        break
+      }
+    return
+  }
 
   return (
     <PageContainer
-      // tabList={[{ tab: '招新列表' }]}
-      // content={mainSearch}
+      tabList={tabList}
+      onTabChange={(key)=>setGetChildren(key)}
     >
-      <div className={styles.coverCardList}>
-        <Card bordered={false}>
-          <Form
-            layout="inline"
-            onValuesChange={() => {
-              // 表单项变化时请求数据
-              // 模拟查询表单生效
-              dispatch({
-                type: 'listAndsearchAndprojects/fetch',
-                payload: {
-                  count: 8,
-                },
-              });
-            }}
-          >
-            <StandardFormRow title="社团类别" block style={{ paddingBottom: 11 }}>
-              <FormItem name="category">
-                <TagSelect expandable>
-                  <TagSelect.Option value="cat1">一类社团</TagSelect.Option>
-                  <TagSelect.Option value="cat2">二类社团</TagSelect.Option>
-                  <TagSelect.Option value="cat3">三类社团</TagSelect.Option>
-                </TagSelect>
-              </FormItem>
-            </StandardFormRow>
-            <StandardFormRow grid last>
-              <Row>
-                <Col xl={5} lg={10} md={12} sm={24} xs={24}>
-                  <FormItem {...formItemLayout} name="department" label={'指导单位'} initialValue={'full'}>
-                    <Select style={{ width: '200px' }}>
-                      <Option value="full">全部</Option>
-                      <Option value="school">校团委</Option>
-                      <Option value="normal">信息工程学院</Option>
-                    </Select>
-                  </FormItem>
-                </Col>
-                <Col xl={4} lg={10} md={12} sm={24} xs={24}>
-                  <FormItem {...formItemLayout} name="time" label={'排序方式'} style={{width: '200px'}} initialValue={'time'}>
-                    <Select style={{ width: '100px' }}>
-                      <Option value="time" >按时间</Option>
-                      <Option value="hot">按热度</Option>
-                    </Select>
-                  </FormItem>
-                </Col>
-                <Col xl={5} lg={10} md={12} sm={24} xs={24}>
-                  <FormItem {...formItemLayout} name="searchInput" label={'关键字'} initialValue={''}>
-                    <Input.Search placeholder={'请输入'} style={{width: '250px'}} enterButton={"搜索"} />
-                  </FormItem>
-                </Col>
-              </Row>
-            </StandardFormRow>
-          </Form>
-        </Card>
-        <div className={styles.cardList}>{cardList}</div>
-      </div>
+      {getChildrenNode()}
       <CardInfo onCancel={()=>{setVisible(false)}} dataInfo={dataInfo} visible={visible} />
     </PageContainer>
   );

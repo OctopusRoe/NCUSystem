@@ -31,6 +31,8 @@ export default {
   // 活动管理
   'menu.active': '活动管理',
   'menu.active.square': '活动广场',
+  'menu.active.admin': '活动管理',
+  'menu.active.approval': '活动管理',
 
   // 社团指导菜单
   'menu.guide': '社团指导',
@@ -49,7 +51,10 @@ export default {
 
   // 指导老师管理
   'menu.teacher': '指导老师管理',
+  'menu.teacher.select': '选拔申请',
+  'menu.teacher.employ': '选聘管理',
   'menu.teacher.list': '社团指导列表',
+  'menu.teacher.examine': '考核自评',
 
   // 考核管理菜单
   'menu.examine': '考核管理',

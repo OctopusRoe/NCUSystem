@@ -50,8 +50,6 @@ const { Option } = Select
 
 const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
-  // 是否显示获取验证码
-  const [ showCode, setShowCode ] = useState<boolean>(false)
   // 倒计时按钮是否可用
   const [ canUse, setCanUse ] = useState<boolean>(true)
   // 倒计时时间倒数
@@ -72,7 +70,6 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
   // 选择审批老师电话
   const changeValue = (e: any) => {
     setGetTeacherPhone(props.formInfo.teacherValue[e.target.value].phone)
-    setShowCode(true)
   }
 
   // 倒计时递归方法
@@ -201,8 +198,6 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
               <Tooltip title='超过最高数后无法加入新成员'>
                   <QuestionCircleOutlined style={{ marginRight: 4 }} />
                 </Tooltip>
-
-
               &nbsp;</span>
             </span>
           }
@@ -241,45 +236,57 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"pickTeacher"}
-          label={formatMessage({ id: 'info.infoBase.pickeLeader'})}
-          rules={[
-            {
-              required: true,
-              message: formatMessage({ id: 'info.infoBase.pickeLeader-message' }, {}),
-            },
-          ]}
+          name={'pickTeacher'}
+          label={'指导老师审批'}
         >
-          <Radio.Group onChange={changeValue}>
-            {
-              teacherValue.map((item: any, index: number) => (
-                <Radio style={radioStyle} value={index} key={index}>{`${item.name} - ${item.phone}`}</Radio>
-              ))
-            }
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item 
-          {...submitFormLayout}
-          name={'codeNumber'}
-          style={{display: showCode ? 'block' : 'none'}}
-          rules={[
-            {
-              required: true,
-              message: formatMessage({ id: 'info.infoBase.codeNumber-message' }, {}),
-            },
-          ]}
-        >
-          <div>
-            <Input style={{ width: '35%', borderRight: 'none' }} placeholder={'请输入验证码'} />
+          <Input.Group compact>
+            <Select
+              style={{width: '25%'}}
+              placeholder={'请选择'}
+            >
+              {
+                teacherValue.map((item: any, index: number) => (
+                  <Option value={item.phone} key={index}>{item.name}</Option>
+                ))
+              }
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
             <Button
               style={{width: '25%'}}
               onClick={countDown}
               disabled={canUse ? false : true}
               type={canUse? 'primary' : 'default'}
             >
-              {canUse ? '获取验证码' : `${count}秒后重试`}
+              {canUse ? '点击获取' : `${count}秒后重试`}
             </Button>
-          </div>
+          </Input.Group>
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name={'pickDepartment'}
+          label={'指导部门审批'}
+        >
+          <Input.Group compact>
+            <Select
+              style={{width: '25%'}}
+              placeholder={'请选择'}
+            >
+              {
+                teacherValue.map((item: any, index: number) => (
+                  <Option value={item.phone} key={index}>{item.name}</Option>
+                ))
+              }
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
+            <Button
+              style={{width: '25%'}}
+              onClick={countDown}
+              disabled={canUse ? false : true}
+              type={canUse? 'primary' : 'default'}
+            >
+              {canUse ? '点击获取' : `${count}秒后重试`}
+            </Button>
+          </Input.Group>
         </Form.Item>
         <Form.Item
           {...submitFormLayout}

@@ -20,6 +20,7 @@ const changeMouseStyle = {
   cursor: 'pointer'
 }
 
+// 测试数据
 const testData = () => {
 
   const valueList = []
@@ -174,7 +175,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
           }
         </Col>
         </Row>
-      <Divider dashed style={{fontSize: '14px', color: '#E57373'}} ><ClockCircleOutlined /> 报名截止时间：{new Date().toLocaleDateString()}</Divider>
+      <Divider dashed style={{fontSize: '14px', color: '#D2D2D2'}} ><ClockCircleOutlined /> 报名截止时间：{new Date().toLocaleDateString()}</Divider>
       <Row>
         <Col span={24}>
           <Table<any>
