@@ -2,11 +2,14 @@
 
 import React from 'react'
 
-import { Modal, Form, Input, Select, DatePicker, Button } from 'antd'
+import { Drawer, Form, Input, Select, DatePicker, Button, Space } from 'antd'
+
+import CroplmgView from '@/components/CropImgview'
 
 interface CreateActiveProps {
   visible: boolean
-  onCancel: () => void
+  typeList: string[]
+  onClose: () => void
 }
 
 const FormItem = Form.Item
@@ -25,28 +28,29 @@ const formItemLayout = {
   },
 };
 
-const submitFormLayout = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 12, offset: 6 },
-  },
-};
-
 const CreateActive: React.FC<CreateActiveProps> = (props) => {
   
-  const { visible, onCancel } = props
+  const { visible, typeList, onClose } = props
   
   const onFinish = (e: any) => {
     console.log(e)
   }
 
   return (
-    <Modal
+    <Drawer
       title={'发布活动'}
       visible={visible}
-      onCancel={onCancel}
+      onClose={onClose}
       width={800}
-      onOk={()=>document.getElementById('create-active-form-button')?.click}
+      bodyStyle={{paddingBottom: '0px'}}
+      footer={
+        <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end', paddingRight: '25px'}}>
+          <Space>
+            <Button onClick={onClose}>取消</Button>
+            <Button onClick={()=>document.getElementById('create-active-form-button')?.click()} type={'primary'}>提交</Button>
+          </Space>
+        </div>
+      }
     >
       <Form
         autoComplete={'off'}
@@ -78,10 +82,11 @@ const CreateActive: React.FC<CreateActiveProps> = (props) => {
           ]}
         >
           <Select placeholder={'请选择'}>
-            <Option value={'类型1'}>类型1</Option>
-            <Option value={'类型2'}>类型2</Option>
-            <Option value={'类型3'}>类型3</Option>
-            <Option value={'类型4'}>类型4</Option>
+            {
+              typeList.map((item: any, index: number) => (
+                <Option value={item} key={index}>{item}</Option>
+              ))
+            }
           </Select>
         </FormItem>
         <FormItem
@@ -160,14 +165,25 @@ const CreateActive: React.FC<CreateActiveProps> = (props) => {
             }
           ]}
         >
-          <Input.TextArea placeholder={'请输入活动详情'} maxLength={500} rows={10} showCount />
+          <Input.TextArea placeholder={'请输入活动详情'} maxLength={400} rows={10} showCount />
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          name={'image'}
+          label={'活动海报'}
+          style={{margin: '0'}}
+          extra={
+            <p>请上传1200px * 500px像素图片</p>
+          }
+        >
+          <CroplmgView id={'create-active-form-img'} />
         </FormItem>
         <FormItem style={{display:'none'}}>
           <Button id={'create-active-form-button'} htmlType={'submit'} />
         </FormItem>
         
       </Form>
-    </Modal>
+    </Drawer>
   )
 }
 

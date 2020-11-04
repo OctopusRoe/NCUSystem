@@ -46,7 +46,6 @@ export default {
   'menu.guide.logoutapproval': '注销审批',
   'menu.guide.outsideapproval': '外出审批',
   'menu.guide.outlayapproval': '费用审批',
-  'menu.guide.activeapproval': '活动审批',
   'menu.guide.annual': '社团年审',
 
   // 指导老师管理

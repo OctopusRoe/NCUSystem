@@ -73,7 +73,6 @@ const guideData: FileType = {
     'logoutapproval',
     'outsideapproval',
     'outlayapproval',
-    'activeapproval',
     'annual',
   ]
 }
