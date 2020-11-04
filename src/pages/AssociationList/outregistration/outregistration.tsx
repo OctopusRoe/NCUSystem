@@ -9,6 +9,7 @@ import styles from './base.less';
 
 // 菜单组件
 import Outregistrationform from './components/outregistrationform'
+import Outregistrationlist from './components/outregistrationlist/Outregistrationlist'
 
 const { Item } = Menu;
 
@@ -110,8 +111,8 @@ class OutRegistration extends Component<SettingsProps, SettingsState> {
     switch (selectKey) {
       case 'baseInfo':
         return <Outregistrationform/>;
-      // case 'organization':
-      //   return <Organization />;
+      case 'organization':
+        return <Outregistrationlist />;
       default:
         break;
     }

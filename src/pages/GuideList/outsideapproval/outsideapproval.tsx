@@ -6,6 +6,7 @@ import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
+import ApprovalDrawer from './components/ApprovalDrawer';
 
 const OutsideApproval: React.FC<{}> = () => {
   const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
@@ -127,6 +128,10 @@ const OutsideApproval: React.FC<{}> = () => {
         onCancel={() => {
           setDetailsModalVisible(false);
         }}
+      />
+      <ApprovalDrawer
+        drawerVisible={ApprovalDrawerVisible}
+        oncancel={() => setApprovalDrawerVisible(false)}
       />
     </div>
   );

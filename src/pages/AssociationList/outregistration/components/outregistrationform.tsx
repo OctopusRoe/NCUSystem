@@ -1,7 +1,7 @@
-// 外出登记 组件
+//登记申请 组件
 
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Input, message, Radio, Button, DatePicker, Select } from 'antd';
+import { Form, Input, message, Button, DatePicker, Select } from 'antd';
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
 
 const formItemLayout = {
@@ -22,8 +22,6 @@ const submitFormLayout = {
     sm: { span: 12, offset: 6 },
   },
 };
-
-
 
 const info: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
   one: {
@@ -56,23 +54,14 @@ const info2: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
   },
 };
 
-const teacherValue = [
-  { name: '名字1', phone: '11011211911' },
-  { name: '名字2', phone: '11011211119' },
-];
-
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
 const Outregistrationform: React.FC<{}> = () => {
-  // 是否显示获取验证码
-  const [showCode, setShowCode] = useState<boolean>(false);
   // 倒计时按钮是否可用
   const [canUse, setCanUse] = useState<boolean>(true);
   // 倒计时时间倒数
   const [count, setCount] = useState<number>(1);
-  // 保存审批电话
-  const [getTeacherPhone, setGetTeacherPhone] = useState<string>('');
 
   const handleFinish = (e: any) => {
     message.success('ok');
@@ -80,10 +69,6 @@ const Outregistrationform: React.FC<{}> = () => {
   };
 
   // 选择审批老师电话 value = e.target.value
-  const changeValue = (e: any) => {
-    setGetTeacherPhone(teacherValue[e.target.value].phone);
-    setShowCode(true);
-  };
 
   // 倒计时递归方法
   const countDown = () => {
@@ -109,117 +94,112 @@ const Outregistrationform: React.FC<{}> = () => {
   ];
 
   return (
-      <Form
-        onFinish={handleFinish}
-        style={{ paddingTop: '12px' }}
-        layout={'horizontal'}
-        autoComplete={'off'}
-        hideRequiredMark
+    <Form
+      onFinish={handleFinish}
+      style={{ paddingTop: '12px' }}
+      layout={'horizontal'}
+      autoComplete={'off'}
+      hideRequiredMark
+    >
+      <FormItem {...formItemLayout} label={'申请人'} name={'apply-name'}>
+        <Input disabled />
+      </FormItem>
+      <FormItem {...formItemLayout} label={'社团名称'} name={'association-name'} initialValue={''}>
+        <Input disabled />
+      </FormItem>
+      <FormItem {...formItemLayout} label={'社团类别'} name={'class'} initialValue={''}>
+        <Input disabled />
+      </FormItem>
+      <FormItem {...formItemLayout} label={'指导单位'} name={'department'} initialValue={''}>
+        <Input disabled />
+      </FormItem>
+      <FormItem {...formItemLayout} label={'离/返校时间'} name={'time'} initialValue={''}>
+        <RangePicker showTime />
+      </FormItem>
+      <FormItem
+        {...formItemLayout}
+        label={'外出事由'}
+        name={'cause'}
+        rules={[
+          {
+            required: true,
+            message: '请输入外出事由!',
+          },
+        ]}
       >
-        <FormItem {...formItemLayout} label={'申请人'} name={'apply-name'}>
-          <Input disabled />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团名称'}
-          name={'association-name'}
-          initialValue={''}
-        >
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'社团类别'} name={'class'} initialValue={''}>
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'指导单位'} name={'department'} initialValue={''}>
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'离/返校时间'} name={'time'} initialValue={''}>
-          <RangePicker showTime />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'外出事由'}
-          name={'cause'}
-          rules={[
-            {
-              required: true,
-              message: '请输入外出事由!',
-            },
-          ]}
-        >
-          <TextArea showCount maxLength={100} rows={6} placeholder={'请输入外出事由'} />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'外出地点'} name={'time'} initialValue={''}>
-          <Input />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'外出负责人'} name={'student-member'}>
-          <FormListCom
-            inputTwo
-            inputList={[]}
-            info={info2}
-            onFinish={() => {
-              console.log('e');
-            }}
-          />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'外出成员'} name={'student-member'}>
-          <FormListCom
-            inputTwo
-            inputThree
-            inputList={[]}
-            info={info}
-            onFinish={() => {
-              console.log('e');
-            }}
-          />
-        </FormItem>
-        <Form.Item {...formItemLayout} name={'pickTeacher'} label={'指导老师审批'}>
-          <Input.Group compact>
-            <Select style={{ width: '25%' }} placeholder={'请选择'}>
-              {teacherValue.map((item: any, index: number) => (
-                <Option value={item.phone} key={index}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            <Button
-              style={{ width: '25%' }}
-              onClick={countDown}
-              disabled={canUse ? false : true}
-              type={canUse ? 'primary' : 'default'}
-            >
-              {canUse ? '点击获取' : `${count}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
-        <Form.Item {...formItemLayout} name={'pickDepartment'} label={'指导部门审批'}>
-          <Input.Group compact>
-            <Select style={{ width: '25%' }} placeholder={'请选择'}>
-              {teacherValue.map((item: any, index: number) => (
-                <Option value={item.phone} key={index}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            <Button
-              style={{ width: '25%' }}
-              onClick={countDown}
-              disabled={canUse ? false : true}
-              type={canUse ? 'primary' : 'default'}
-            >
-              {canUse ? '点击获取' : `${count}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
-
-        <Form.Item {...submitFormLayout}>
-          <Button htmlType={'submit'} type={'primary'} size={'large'}>
-            提交
+        <TextArea showCount maxLength={100} rows={6} placeholder={'请输入外出事由'} />
+      </FormItem>
+      <FormItem {...formItemLayout} label={'外出地点'} name={'time'} initialValue={''}>
+        <Input />
+      </FormItem>
+      <FormItem {...formItemLayout} label={'外出负责人'} name={'student-member'}>
+        <FormListCom
+          inputTwo
+          inputList={[]}
+          info={info2}
+          onFinish={() => {
+            console.log('e');
+          }}
+        />
+      </FormItem>
+      <FormItem {...formItemLayout} label={'外出成员'} name={'student-member'}>
+        <FormListCom
+          inputTwo
+          inputThree
+          inputList={[]}
+          info={info}
+          onFinish={() => {
+            console.log('e');
+          }}
+        />
+      </FormItem>
+      <Form.Item {...formItemLayout} name={'pickTeacher'} label={'指导老师审批'}>
+        <Input.Group compact>
+          <Select style={{ width: '25%' }} placeholder={'请选择'}>
+            {teacherValue.map((item: any, index: number) => (
+              <Option value={item.phone} key={index}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+          <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+          <Button
+            style={{ width: '25%' }}
+            onClick={countDown}
+            disabled={canUse ? false : true}
+            type={canUse ? 'primary' : 'default'}
+          >
+            {canUse ? '点击获取' : `${count}秒后重试`}
           </Button>
-        </Form.Item>
-      </Form>
+        </Input.Group>
+      </Form.Item>
+      <Form.Item {...formItemLayout} name={'pickDepartment'} label={'指导部门审批'}>
+        <Input.Group compact>
+          <Select style={{ width: '25%' }} placeholder={'请选择'}>
+            {teacherValue.map((item: any, index: number) => (
+              <Option value={item.phone} key={index}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+          <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+          <Button
+            style={{ width: '25%' }}
+            onClick={countDown}
+            disabled={canUse ? false : true}
+            type={canUse ? 'primary' : 'default'}
+          >
+            {canUse ? '点击获取' : `${count}秒后重试`}
+          </Button>
+        </Input.Group>
+      </Form.Item>
+
+      <Form.Item {...submitFormLayout}>
+        <Button htmlType={'submit'} type={'primary'} size={'large'}>
+          提交
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

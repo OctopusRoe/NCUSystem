@@ -75,7 +75,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>指导审批人：</p>
+                    <p style={{ color: '#939393' }}>申请人：</p>
                   </Col>
                 </Row>
               </Col>
@@ -83,6 +83,20 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
                 <Row>
                   <Col>
                     <p>曲丽丽</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={8}>
+                <Row justify="end">
+                  <Col>
+                    <p style={{ color: '#939393' }}>外出事由：</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={16}>
+                <Row>
+                  <Col>
+                    <p>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
                   </Col>
                 </Row>
               </Col>
@@ -107,35 +121,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>社团成员数：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>1213</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>成立年份：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>1213</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>申请人：</p>
+                    <p style={{ color: '#939393' }}>指导审批人：</p>
                   </Col>
                 </Row>
               </Col>
@@ -143,6 +129,48 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
                 <Row>
                   <Col>
                     <p>曲丽丽</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={8}>
+                <Row justify="end">
+                  <Col>
+                    <p style={{ color: '#939393' }}>离/返校时间：</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={16}>
+                <Row>
+                  <Col>
+                    <p>2020.10.02--2020.10.03</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={8}>
+                <Row justify="end">
+                  <Col>
+                    <p style={{ color: '#939393' }}>外出地点：</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={16}>
+                <Row>
+                  <Col>
+                    <p>XXXXXXXXXXXXXXX</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={8}>
+                <Row justify="end">
+                  <Col>
+                    <p style={{ color: '#939393' }}>外出负责人：</p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={16}>
+                <Row>
+                  <Col>
+                    <p>XXX</p>
                   </Col>
                 </Row>
               </Col>
@@ -165,6 +193,11 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
         dataIndex: 'name',
         key: 'name',
       },
+      {
+        title: '学院',
+        dataIndex: 'college',
+        key: 'college',
+      },
     ];
 
     return (
@@ -176,7 +209,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
 
   return (
     <Drawer
-      title="升级审批"
+      title="外出审批"
       width={720}
       onClose={() => oncancel()}
       visible={drawerVisible}
@@ -198,7 +231,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     >
       <div>
         <Tab1 />
-        <Divider style={{ fontSize: '16px' }}>成员代表</Divider>
+        <Divider style={{ fontSize: '16px' }}>外出成员</Divider>
         <Tab2 />
       </div>
       <Drawer
