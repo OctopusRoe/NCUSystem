@@ -22,8 +22,8 @@ const { Text } = Typography
 
 // 随机选择颜色的方法
 const getColor = (index: number) => {
-  const a = index % 3
-  switch (a) {
+
+  switch (index % 3) {
     case 1:
       return 'blue';
     case 2:

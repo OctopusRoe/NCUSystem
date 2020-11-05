@@ -169,7 +169,6 @@ const Square: React.FC<ProjectsProps> = ({
         return <SingUp />;
       default:
         return SquareList;
-        break
       }
     return
   }
