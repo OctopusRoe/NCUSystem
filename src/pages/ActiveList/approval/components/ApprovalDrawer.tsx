@@ -209,7 +209,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
 
   return (
     <Drawer
-      title="外出审批"
+      title="活动审批"
       width={720}
       onClose={() => oncancel()}
       visible={drawerVisible}
