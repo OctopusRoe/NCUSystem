@@ -20,8 +20,9 @@ interface Info {
 
 
 const ActiveInfoModal: React.FC<ActiveInfoModalProps> = (props) => {
-  console.log(props.info)
+
   const { visible, info, onCancel } = props
+  
   if (!info) {
     return <></>
   }

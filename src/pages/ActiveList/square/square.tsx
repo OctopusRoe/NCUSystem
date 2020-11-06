@@ -33,6 +33,7 @@ const tabList = [
   {key: 'signUp', tab: '我的报名'}
 ]
 
+// grid layout of form item
 const formItemLayout = {
   wrapperCol: {
     xs: { span: 24 },

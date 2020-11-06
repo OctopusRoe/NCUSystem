@@ -39,7 +39,6 @@ const formItemLayout = {
   },
 };
 
-
 const Square: React.FC<ProjectsProps> = ({
   dispatch,
   listAndsearchAndprojects: { list = [] },
