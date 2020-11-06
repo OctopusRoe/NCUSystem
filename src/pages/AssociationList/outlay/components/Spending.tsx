@@ -1,6 +1,6 @@
 //支出管理
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Divider } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -65,7 +65,7 @@ const Spending: React.FC<{}> = () => {
         toolBarRender={(action, { selectedRows }) => [
           <Search enterButton />,
           <Button type="primary">
-            <PlusOutlined /> 新增
+            <PlusOutlined /> 新增 
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
