@@ -1,6 +1,7 @@
 // 社团主页 组件
 
 import React from 'react'
+import { connect } from 'umi'
 
 const HomePage: React.FC<{}> = (props) => {
   return (
@@ -8,4 +9,6 @@ const HomePage: React.FC<{}> = (props) => {
   )
 }
 
-export default HomePage
+export default connect((state)=>{
+  return {test: state}
+})(HomePage)

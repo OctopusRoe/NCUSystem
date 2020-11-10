@@ -3,6 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, message, Button, DatePicker, Select } from 'antd';
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
+import { connect, Dispatch } from 'umi';
+
+interface OutregistrationformProps {
+  canTeacherUse: boolean
+  teacherCount: number
+  canDepartmentUse: boolean
+  departmentCount: number
+  dispatch: Dispatch
+}
 
 const formItemLayout = {
   labelCol: {
@@ -54,44 +63,74 @@ const info2: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
   },
 };
 
-const FormItem = Form.Item;
-const { TextArea } = Input;
+const FormItem = Form.Item
+const { TextArea } = Input
+const { Option } = Select
+const { RangePicker } = DatePicker
+const teacherValue = [
+  { name: '名字1', phone: '11011211911' },
+  { name: '名字2', phone: '11011211119' },
+]
 
-const Outregistrationform: React.FC<{}> = () => {
-  // 倒计时按钮是否可用
-  const [canUse, setCanUse] = useState<boolean>(true);
-  // 倒计时时间倒数
-  const [count, setCount] = useState<number>(1);
+const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
+
+  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, dispatch } = props
+
 
   const handleFinish = (e: any) => {
     message.success('ok');
     console.log(e);
-  };
+  }
 
-  // 选择审批老师电话 value = e.target.value
+  // 老师设置倒计时方法
+  const teacherCountDown = () => {
+    dispatch({
+      type: 'association-outregistration/setTeacherCount',
+      payload: [60, false]
+    })
+  }
 
-  // 倒计时递归方法
-  const countDown = () => {
-    setCanUse(false);
-    setCount(60);
-  };
+  // 部门设置倒计时方法
+  const departmentCountDown = () => {
+    dispatch({
+      type: 'association-outregistration/setDepartmentCount',
+      payload: [60, false]
+    })
+  }
 
-  // 倒计时的设置
+  // 老师倒计时
   useEffect(() => {
-    if (count > 1) {
+    if (teacherCount > 1) {
       setTimeout(() => {
-        setCount(count - 1);
-      }, 1000);
+        dispatch({
+          type: 'association-outregistration/setTeacherCount',
+          payload: [teacherCount - 1, false]
+        })
+      }, 1000)
     } else {
-      setCanUse(true);
+      dispatch({
+        type: 'association-outregistration/setTeacherCount',
+        payload: [1, true]
+      })
     }
-  }, [count]);
-  const { Option } = Select;
-  const { RangePicker } = DatePicker;
-  const teacherValue = [
-    { name: '名字1', phone: '11011211911' },
-    { name: '名字2', phone: '11011211119' },
-  ];
+  },[teacherCount])
+
+  // 部门倒计时
+  useEffect(() => {
+    if (departmentCount > 1) {
+      setTimeout(() => {
+        dispatch({
+          type: 'association-outregistration/setDepartmentCount',
+          payload: [departmentCount - 1, false]
+        })
+      }, 1000)
+    } else {
+      dispatch({
+        type: 'association-outregistration/setDepartmentCount',
+        payload: [1, true]
+      })
+    }
+  }, [departmentCount])
 
   return (
     <Form
@@ -153,46 +192,72 @@ const Outregistrationform: React.FC<{}> = () => {
           }}
         />
       </FormItem>
-      <Form.Item {...formItemLayout} name={'pickTeacher'} label={'指导老师审批'}>
-        <Input.Group compact>
-          <Select style={{ width: '25%' }} placeholder={'请选择'}>
-            {teacherValue.map((item: any, index: number) => (
-              <Option value={item.phone} key={index}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-          <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          <Button
-            style={{ width: '25%' }}
-            onClick={countDown}
-            disabled={canUse ? false : true}
-            type={canUse ? 'primary' : 'default'}
-          >
-            {canUse ? '点击获取' : `${count}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
-      <Form.Item {...formItemLayout} name={'pickDepartment'} label={'指导部门审批'}>
-        <Input.Group compact>
-          <Select style={{ width: '25%' }} placeholder={'请选择'}>
-            {teacherValue.map((item: any, index: number) => (
-              <Option value={item.phone} key={index}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-          <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          <Button
-            style={{ width: '25%' }}
-            onClick={countDown}
-            disabled={canUse ? false : true}
-            type={canUse ? 'primary' : 'default'}
-          >
-            {canUse ? '点击获取' : `${count}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
+      <Form.Item
+          {...formItemLayout}
+          name={'pickTeacher'}
+          label={'指导老师审批'}
+          rules={[
+            {
+              required: true,
+              message: '请输入验证码'
+            }
+          ]}
+        >
+          <Input.Group compact>
+            <Select
+              style={{width: '25%'}}
+              placeholder={'请选择'}
+            >
+              {
+                teacherValue.map((item: any, index: number) => (
+                  <Option value={item.phone} key={index}>{item.name}</Option>
+                ))
+              }
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
+            <Button
+              style={{width: '25%'}}
+              onClick={teacherCountDown}
+              disabled={canTeacherUse ? false : true}
+              type={canTeacherUse ? 'primary' : 'default'}
+            >
+              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
+            </Button>
+          </Input.Group>
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name={'pickDepartment'}
+          label={'指导部门审批'}
+          rules={[
+            {
+              required: true,
+              message: '请输入验证码'
+            }
+          ]}
+        >
+          <Input.Group compact>
+            <Select
+              style={{width: '25%'}}
+              placeholder={'请选择'}
+            >
+              {
+                teacherValue.map((item: any, index: number) => (
+                  <Option value={item.phone} key={index}>{item.name}</Option>
+                ))
+              }
+            </Select>
+            <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
+            <Button
+              style={{width: '25%'}}
+              onClick={departmentCountDown}
+              disabled={canDepartmentUse ? false : true}
+              type={canDepartmentUse ? 'primary' : 'default'}
+            >
+              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
+            </Button>
+          </Input.Group>
+        </Form.Item>
 
       <Form.Item {...submitFormLayout}>
         <Button htmlType={'submit'} type={'primary'} size={'large'}>
@@ -203,4 +268,13 @@ const Outregistrationform: React.FC<{}> = () => {
   );
 };
 
-export default Outregistrationform;
+export default connect(
+  (state: any)=>{
+    return {
+      canTeacherUse: state['association-outregistration'].canTeacherUse,
+      teacherCount: state['association-outregistration'].teacherCount,
+      canDepartmentUse: state['association-outregistration'].canDepartmentUse,
+      departmentCount: state['association-outregistration'].departmentCount
+    }
+  }
+)(Outregistrationform);

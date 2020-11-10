@@ -1,5 +1,5 @@
 export default {
-  namespace: 'association-upgrade',
+  namespace: 'association-outregistration',
   state: {
     canTeacherUse: true,
     teacherCount: 1,

@@ -42,7 +42,7 @@ const Chronicle: React.FC<{}> = (props) => {
   return (
     <>
       <Card>
-        <Row>
+        <Row style={{paddingTop: '20px'}}>
           <Col span={2} />
           <Col span={20}>
             <Timeline mode={'alternate'} pending>

@@ -1,9 +1,9 @@
 // 基本信息 组件
 import React, { useState, useEffect } from 'react';
 
-import { Button, Input, Form, message, Select, DatePicker, Tooltip, Upload, Radio } from 'antd';
+import { Button, Input, Form, message, Select, DatePicker, Tooltip, Upload } from 'antd';
 import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons'
-import { FormattedMessage, formatMessage} from 'umi';
+import { connect, FormattedMessage, useIntl, Dispatch} from 'umi';
 
 import CropImgView from '@/components/CropImgview'
 import styles from './BaseView.less';
@@ -17,6 +17,11 @@ interface FormInfo {
 
 interface BaseInfoProps {
   formInfo: FormInfo
+  canTeacherUse: boolean
+  teacherCount: number
+  canDepartmentUse: boolean
+  departmentCount: number
+  dispatch: Dispatch
 }
 
 const formItemLayout = {
@@ -38,27 +43,19 @@ const submitFormLayout = {
   },
 };
 
-
-const radioStyle = {
-  display: 'block',
-  height: '30px',
-  lineHeight: '30px',
-};
-
 const { Option } = Select
-
 
 const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
-  // 倒计时按钮是否可用
-  const [ canUse, setCanUse ] = useState<boolean>(true)
-  // 倒计时时间倒数
-  const [ count, setCount ] = useState<number>(1)
-  // 保存审批电话
+  const intl = useIntl()
+
+  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, dispatch } = props
+  
+  // 保存审批老师电话
   const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
 
   const handleFinish = (e:any) => {
-    message.success(formatMessage({ id: 'setting.basic.update.success' }));
+    message.success(intl.formatMessage({ id: 'setting.basic.update.success' }));
     console.log(e)
   };
 
@@ -72,20 +69,56 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     setGetTeacherPhone(props.formInfo.teacherValue[e.target.value].phone)
   }
 
-  // 倒计时递归方法
-  const countDown = () => {
-    setCanUse(false)
-    setCount(60)
+  // 老师设置倒计时方法
+  const teacherCountDown = () => {
+    dispatch({
+      type: 'association-base-info/setTeacherCount',
+      payload: [60, false]
+    })
   }
 
-  useEffect(()=> {
-    if (count > 1) {
-      setTimeout(() => {setCount(count - 1)}, 1000)
-    } else {
-      setCanUse(true)
-    }
-  },[count])
+  // 部门设置倒计时方法
+  const departmentCountDown = () => {
+    dispatch({
+      type: 'association-base-info/setDepartmentCount',
+      payload: [60, false]
+    })
+  }
 
+  // 老师倒计时
+  useEffect(() => {
+    if (teacherCount > 1) {
+      setTimeout(() => {
+        dispatch({
+          type: 'association-base-info/setTeacherCount',
+          payload: [teacherCount - 1, false]
+        })
+      }, 1000)
+    } else {
+      dispatch({
+        type: 'association-base-info/setTeacherCount',
+        payload: [1, true]
+      })
+    }
+  },[teacherCount])
+
+  // 部门倒计时
+  useEffect(() => {
+    if (departmentCount > 1) {
+      setTimeout(() => {
+        dispatch({
+          type: 'association-base-info/setDepartmentCount',
+          payload: [departmentCount - 1, false]
+        })
+      }, 1000)
+    } else {
+      dispatch({
+        type: 'association-base-info/setDepartmentCount',
+        payload: [1, true]
+      })
+    }
+  }, [departmentCount])
+  
   const { formInfo } = props;
   const { teacherValue, associationType, associationGrade, department } = formInfo
 
@@ -101,18 +134,18 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"logo"}
-          label={formatMessage({ id: 'info.infoBase.logo'})}
+          label={intl.formatMessage({ id: 'info.infoBase.logo'})}
         >
           <CropImgView id="associationLogo" onChange={testOne.bind(this)} />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
           name={"fullname-cn"}
-          label={formatMessage({ id: 'info.infoBase.fullname-cn' })}
+          label={intl.formatMessage({ id: 'info.infoBase.fullname-cn' })}
           rules={[
             {
               required: true,
-              message: formatMessage({ id: 'info.infoBase.fullname-cn-message' }, {}),
+              message: intl.formatMessage({ id: 'info.infoBase.fullname-cn-message' }, {}),
             },
           ]}
         >
@@ -121,11 +154,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"fullname-en"}
-          label={formatMessage({ id: 'info.infoBase.fullname-en' })}
+          label={intl.formatMessage({ id: 'info.infoBase.fullname-en' })}
           rules={[
             {
               required: true,
-              message: formatMessage({ id: 'info.infoBase.fullname-en-message' }, {}),
+              message: intl.formatMessage({ id: 'info.infoBase.fullname-en-message' }, {}),
             },
           ]}
         >
@@ -134,11 +167,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"typeof"}
-          label={formatMessage({ id: 'info.infoBase.typeof' })}
+          label={intl.formatMessage({ id: 'info.infoBase.typeof' })}
           rules={[
             {
               required: true,
-              message: formatMessage({ id: 'info.infoBase.typeof-message' }, {}),
+              message: intl.formatMessage({ id: 'info.infoBase.typeof-message' }, {}),
             },
           ]}
         >
@@ -153,11 +186,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"level"}
-          label={formatMessage({ id: 'info.infoBase.level' })}
+          label={intl.formatMessage({ id: 'info.infoBase.level' })}
           rules={[
             {
               required: true,
-              message: formatMessage({ id: 'info.infoBase.level-message' }, {}),
+              message: intl.formatMessage({ id: 'info.infoBase.level-message' }, {}),
             },
           ]}
         >
@@ -172,11 +205,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"department"}
-          label={formatMessage({ id: 'info.infoBase.department' })}
+          label={intl.formatMessage({ id: 'info.infoBase.department' })}
           rules={[
             {
               required: true,
-              message: formatMessage({ id: 'info.infoBase.department-message' }, {}),
+              message: intl.formatMessage({ id: 'info.infoBase.department-message' }, {}),
             },
           ]}
         >
@@ -208,7 +241,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"regulations"}
-          label={formatMessage({ id: 'info.infoBase.regulations' })}
+          label={intl.formatMessage({ id: 'info.infoBase.regulations' })}
         >
           <Upload showUploadList={false} fileList={[]}>
             <Button icon={<UploadOutlined />}>点击上传</Button>
@@ -217,11 +250,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"startTime"}
-          label={formatMessage({ id: 'info.infoBase.startTime' })}
+          label={intl.formatMessage({ id: 'info.infoBase.startTime' })}
           rules={[
             {
               required: true,
-              message: formatMessage({ id: 'info.infoBase.startTime-message' }, {}),
+              message: intl.formatMessage({ id: 'info.infoBase.startTime-message' }, {}),
             },
           ]}
         >
@@ -230,7 +263,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name={"syssimpleimg"}
-          label={formatMessage({ id: 'info.infoBase.syssimpleimg' })}
+          label={intl.formatMessage({ id: 'info.infoBase.syssimpleimg' })}
         >
           <CropImgView id="syssimpleimg" />
         </Form.Item>
@@ -238,6 +271,12 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           {...formItemLayout}
           name={'pickTeacher'}
           label={'指导老师审批'}
+          rules={[
+            {
+              required: true,
+              message: '请输入验证码'
+            }
+          ]}
         >
           <Input.Group compact>
             <Select
@@ -253,11 +292,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
             <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
             <Button
               style={{width: '25%'}}
-              onClick={countDown}
-              disabled={canUse ? false : true}
-              type={canUse? 'primary' : 'default'}
+              onClick={teacherCountDown}
+              disabled={canTeacherUse ? false : true}
+              type={canTeacherUse ? 'primary' : 'default'}
             >
-              {canUse ? '点击获取' : `${count}秒后重试`}
+              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
             </Button>
           </Input.Group>
         </Form.Item>
@@ -265,6 +304,12 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           {...formItemLayout}
           name={'pickDepartment'}
           label={'指导部门审批'}
+          rules={[
+            {
+              required: true,
+              message: '请输入验证码'
+            }
+          ]}
         >
           <Input.Group compact>
             <Select
@@ -280,11 +325,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
             <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
             <Button
               style={{width: '25%'}}
-              onClick={countDown}
-              disabled={canUse ? false : true}
-              type={canUse? 'primary' : 'default'}
+              onClick={departmentCountDown}
+              disabled={canDepartmentUse ? false : true}
+              type={canDepartmentUse ? 'primary' : 'default'}
             >
-              {canUse ? '点击获取' : `${count}秒后重试`}
+              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
             </Button>
           </Input.Group>
         </Form.Item>
@@ -305,4 +350,13 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
   );
 }
 
-export default BaseInfo;
+export default connect(
+  (state: any)=>{
+    return {
+      canTeacherUse: state['association-base-info'].canTeacherUse,
+      teacherCount: state['association-base-info'].teacherCount,
+      canDepartmentUse: state['association-base-info'].canDepartmentUse,
+      departmentCount: state['association-base-info'].departmentCount
+    }
+  }
+)(BaseInfo)

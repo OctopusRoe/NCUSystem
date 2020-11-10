@@ -15,7 +15,6 @@ const { Item } = Menu;
 
 interface SettingsProps {
   dispatch: Dispatch;
-  // currentUser: CurrentUser;
 }
 
 type SettingsStateKeys = 'baseInfo' | 'organization' | 'position' | 'newmedia';

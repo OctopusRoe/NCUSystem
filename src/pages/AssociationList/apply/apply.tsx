@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, Steps } from 'antd';
 import { connect } from 'umi';
 import { StateType } from './model';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Step1 from './components/Step1';
 import Step2 from './components/Step2';
 import Step3 from './components/Step3';
@@ -48,7 +47,7 @@ const StepForm: React.FC<StepFormProps> = ({ current }) => {
   }, [current]);
 
   return (
-    <PageHeaderWrapper>
+    <>
       <Card bordered={false}>
         <div>
           <Steps current={currentStep} className={styles.steps}>
@@ -62,7 +61,7 @@ const StepForm: React.FC<StepFormProps> = ({ current }) => {
         <Success/>
         <Fail/>
       </Card>
-    </PageHeaderWrapper>
+    </>
   );
 };
 

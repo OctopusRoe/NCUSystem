@@ -1,129 +1,124 @@
-// 成员管理 组件
+//
 
-import { Avatar, List, Skeleton } from 'antd';
-import React, { Component } from 'react';
-import { Dispatch, connect } from 'umi';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import moment from 'moment';
-import { ModalState } from '@/models/userInfoHead';
-import styles from './style.less';
-import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data';
-import MemberCom from './components/memberCom/memberCom'
+import { Button, Divider } from 'antd';
 
-interface WorkplaceProps {
-  currentUser?: CurrentUser;
-  projectNotice: NoticeType[];
-  activities: ActivitiesType[];
-  radarData: RadarDataType[];
-  dispatch: Dispatch;
-  currentUserLoading: boolean;
-  projectLoading: boolean;
-  activitiesLoading: boolean;
-}
+import React, { useRef, useState } from 'react';
+import { queryRule } from './service';
+import { TableListItem } from './data';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import { DownloadOutlined } from '@ant-design/icons';
+import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
-const PageHeaderContent: React.FC<{ currentUser: CurrentUser }> = ({ currentUser }) => {
-  const loading = currentUser && Object.keys(currentUser).length;
-  if (!loading) {
-    return <Skeleton avatar paragraph={{ rows: 1 }} active />;
-  }
+const MemberCom: React.FC<{}> = () => {
+  const actionRef = useRef<ActionType>();
+  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
+  const columns: ProColumns<TableListItem>[] = [
+    {
+      title: '届数',
+      dataIndex: 'period',
+      key: 'period',
+      fixed: 'left',
+      valueEnum: {
+        0: { text: 'A', status: 'a' },
+        1: { text: 'B', status: 'b' },
+        2: { text: 'C', status: 'c' },
+        3: { text: 'D', status: 'd' },
+      },
+    },
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+      fixed: 'left',
+      render: (text, record) => {
+        return <Button size={'small'} type={'link'} onClick={() => setDetailsModalVisible(true)}>{text}</Button>;
+      },
+    },
+    {
+      title: '学号',
+      dataIndex: 'stuid',
+      key: 'stuid',
+      fixed: 'left',
+      hideInSearch: true,
+    },
+    {
+      title: '性别',
+      dataIndex: 'sex',
+      key: 'sex',
+      hideInSearch: true,
+    },
+    {
+      title: '学院',
+      dataIndex: 'college',
+      key: 'college',
+      hideInSearch: true,
+    },
+    {
+      title: '班级',
+      dataIndex: 'class',
+      key: 'class',
+      hideInSearch: true,
+    },
+    {
+      title: '部门',
+      dataIndex: 'department',
+      key: 'department',
+      hideInSearch: true,
+    },
+    {
+      title: '职务',
+      dataIndex: 'position',
+      key: 'position',
+      hideInSearch: true,
+    },
+    {
+      title: '操作',
+      dataIndex: 'option',
+      valueType: 'option',
+      width: '10%',
+      fixed: 'right',
+      render: (_) => (
+        <>
+          <a>调整</a>
+          <Divider type="vertical" />
+          <a>删除</a>
+        </>
+      ),
+    },
+  ];
+
   return (
-    <div className={styles.pageHeaderContent}>
-      <div className={styles.avatar}>
-        <Avatar size="large" src={currentUser.avatar} />
-      </div>
-      <div className={styles.content}>
-        <div className={styles.contentTitle}>
-          {currentUser.name}
-        </div>
-        <div>
-          {currentUser.title} | {currentUser.group}
-        </div>
-      </div>
-    </div>
+    <>
+      <ProTable<TableListItem>
+        headerTitle="成员列表"
+        actionRef={actionRef}
+        rowKey="key"
+        rowClassName={(record, index) => {
+          let className = 'light-row';
+          if (index % 2 === 1) className = 'dark-row';
+          return className;
+        }}
+        toolBarRender={(_action, { selectedRows }) => [
+          <Button type="default">
+            <DownloadOutlined /> 导出
+          </Button>,
+          selectedRows && selectedRows.length > 0 && (
+            <Button>
+              <DownloadOutlined /> 批量导出
+            </Button>
+          ),
+        ]}
+        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        columns={columns}
+        rowSelection={{}}
+        scroll={{ x: 1500 }}
+      />
+      <DetailsModal
+        modalVisible={DetailsModalVisible}
+        onCancel={() => setDetailsModalVisible(false)}
+      />
+    </>
   );
 };
 
-const ExtraContent: React.FC<{}> = () => (
-  <div className={styles.extraImg}>
-    <img
-      alt="这是一个标题"
-      src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
-    />
-  </div>
-);
-
-class Member extends Component<WorkplaceProps> {
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'dashboardAndworkplace/init',
-    });
-  }
-
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'dashboardAndworkplace/clear',
-    });
-  }
-
-  renderActivities = (item: ActivitiesType) => {
-    const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
-      if (item[key]) {
-        return (
-          <a href={item[key].link} key={item[key].name}>
-            {item[key].name}
-          </a>
-        );
-      }
-      return key;
-    });
-    return (
-      <List.Item key={item.id}>
-        <List.Item.Meta
-          avatar={<Avatar src={item.user.avatar} />}
-          title={
-            <span>
-              <a className={styles.username}>{item.user.name}</a>
-              &nbsp;
-              <span className={styles.event}>{events}</span>
-            </span>
-          }
-          description={
-            <span className={styles.datetime} title={item.updatedAt}>
-              {moment(item.updatedAt).fromNow()}
-            </span>
-          }
-        />
-      </List.Item>
-    );
-  };
-
-  render() {
-    const { currentUser } = this.props;
-    if (!currentUser || !currentUser.userid) {
-      return null;
-    }
-    return (
-      <PageHeaderWrapper
-        content={<PageHeaderContent currentUser={currentUser} />}
-        extraContent={<ExtraContent />}
-      >
-        <MemberCom />
-      </PageHeaderWrapper>
-    );
-  }
-}
-
-export default connect(
-  ({ dashboardAndworkplace: { currentUser }, }: {
-    dashboardAndworkplace: ModalState;
-    loading: {
-      effects: {
-        [key: string]: boolean;
-      };
-    };
-  }) => ({
-    currentUser,
-  }),
-)(Member);
+export default MemberCom;
