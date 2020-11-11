@@ -1,7 +1,6 @@
 import { Button, Form, Input, Select } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
-
 interface AddModalProps {
   modalvisible: boolean;
   onCancel: () => void;
@@ -9,7 +8,7 @@ interface AddModalProps {
 
 const unitValue = ['类别1', '类别2', '类别3', '类别4'];
 
-const AddModal: React.FC<AddModalProps> = (props) => {
+const EditModal: React.FC<AddModalProps> = (props) => {
   const { modalvisible, onCancel } = props;
   const layout = {
     labelCol: { span: 5 },
@@ -28,13 +27,13 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
   //modal框确定按钮
   const okChange = () => {
-    document.getElementById('add-submit')?.click();
+    document.getElementById('edit-btnok')?.click();
   };
 
   return (
     <>
       <Modal
-        title="新增单位"
+        title="编辑单位"
         visible={modalvisible}
         onCancel={onCancel}
         onOk={okChange}
@@ -43,12 +42,12 @@ const AddModal: React.FC<AddModalProps> = (props) => {
       >
         <Form
           {...layout}
-          name="add"
+          name="edit"
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           hideRequiredMark //去除前面红色*号
-          autoComplete={'off'} //输入框输入记录
+          autoComplete={'off'}
         >
           <Form.Item
             label="单位号"
@@ -105,7 +104,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
-            <Button type="primary" htmlType="submit" id="add-submit" />
+            <Button type="primary" htmlType="submit" id="edit-btnok"/>
           </Form.Item>
         </Form>
       </Modal>
@@ -113,4 +112,4 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default AddModal;
+export default EditModal;

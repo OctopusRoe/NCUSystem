@@ -7,7 +7,7 @@ interface AddModalProps {
   onCancel: () => void;
 }
 
-const unitValue = ['类别1', '类别2', '类别3', '类别4'];
+const educational = ['4年制', '5年制', '6年制', '8年制'];
 
 const AddModal: React.FC<AddModalProps> = (props) => {
   const { modalvisible, onCancel } = props;
@@ -34,7 +34,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   return (
     <>
       <Modal
-        title="新增单位"
+        title="新增专业"
         visible={modalvisible}
         onCancel={onCancel}
         onOk={okChange}
@@ -51,57 +51,41 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           autoComplete={'off'} //输入框输入记录
         >
           <Form.Item
-            label="单位号"
-            name="unitID"
-            rules={[{ required: true, message: '请输入单位号' }]}
+            label="专业号"
+            name="specialtyID"
+            rules={[{ required: true, message: '请输入专业号' }]}
           >
-            <Input placeholder="请输入单位号" />
+            <Input placeholder="请输入专业号" />
           </Form.Item>
 
           <Form.Item
-            label="单位全称"
-            name="unitname"
-            rules={[{ required: true, message: '请输入单位全称' }]}
+            label="专业名称"
+            name="specialtyname"
+            rules={[{ required: true, message: '请输入专业名称' }]}
           >
-            <Input placeholder="请输入单位全称" />
+            <Input placeholder="请输入专业名称" />
           </Form.Item>
 
           <Form.Item
-            label="单位简称"
-            name="unitname1"
-            rules={[{ required: true, message: '请输入单位简称' }]}
+            label="学院/单位"
+            name="college"
+            rules={[{ required: true, message: '请输入学院/单位' }]}
           >
-            <Input placeholder="请输入单位简称" />
+            <Input placeholder="请输入学院/单位" />
           </Form.Item>
 
           <Form.Item
-            label="单位类别"
-            name="unittype"
-            rules={[{ required: true, message: '请选择单位类别' }]}
+            label="学制"
+            name="educational"
+            rules={[{ required: true, message: '请选择学制' }]}
           >
-            <Select placeholder={'请选择单位类别'}>
-              {unitValue.map((item: any, index: number) => (
+            <Select placeholder={'请选择学制'}>
+              {educational.map((item: any, index: number) => (
                 <Option value={item} key={index}>
                   {item}
                 </Option>
               ))}
             </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="子单位"
-            name="chiledunit"
-            rules={[{ required: true, message: '请输入子单位' }]}
-          >
-            <Input placeholder="请输入子单位" />
-          </Form.Item>
-
-          <Form.Item
-            label="排序号"
-            name="number"
-            rules={[{ required: true, message: '请输入排序号' }]}
-          >
-            <Input placeholder="请输入排序号" />
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>

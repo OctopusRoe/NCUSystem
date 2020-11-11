@@ -22,17 +22,17 @@ const onFinishFailed = (errorInfo: any) => {
 
 //modal框确定按钮
 const okChange = () => {
-  document.getElementById('add-submit')?.click();
+  document.getElementById('edit-submit')?.click();
 };
 
 const apptype = ['类别1', '类别2', '类别3', '类别4'];
-const AddModal: React.FC<AddModalFormProps> = (porps) => {
+const EditModal: React.FC<AddModalFormProps> = (porps) => {
   const { modalVisible, onCancel } = porps;
   const { Option } = Select;
   return (
     <Modal
       destroyOnClose
-      title="新增应用"
+      title="编辑应用"
       visible={modalVisible}
       onCancel={onCancel}
       onOk={okChange}
@@ -41,7 +41,7 @@ const AddModal: React.FC<AddModalFormProps> = (porps) => {
     >
       <Form
         {...layout}
-        name="add"
+        name="edit"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -79,11 +79,11 @@ const AddModal: React.FC<AddModalFormProps> = (porps) => {
           <Input placeholder="请输入链接地址" />
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
-          <Button type="primary" htmlType="submit" id="add-submit" />
+          <Button type="primary" htmlType="submit" id="edit-submit" />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default AddModal;
+export default EditModal;

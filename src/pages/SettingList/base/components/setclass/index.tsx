@@ -2,62 +2,65 @@
 
 import React, { useState, useRef } from 'react';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Divider } from 'antd';
+import { Button, Input, Divider, Popconfirm, message } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import CreateForm from './components/CreateForm';
 import { TableListItem } from './data.d';
 import { queryRule } from './service';
+import AddModal from './components/AddMOdal';
+import EditModal from './components/EditModal';
 
 const { Search } = Input;
 
 const SetClass: React.FC<{}> = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
+  const [addmodalVisible, setAddmodalVisible] = useState(false);
+  const [editmodalVisible, setEditmodalVisible] = useState(false);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '班级号',
       dataIndex: 'classID',
-      width: '25%',
       key: 'classID',
-      hideInSearch: true,
     },
     {
       title: '班级名称',
       dataIndex: 'classname',
-      width: '35%',
       key: 'classname',
-      hideInSearch: true,
     },
     {
       title: '专业号',
       dataIndex: 'specialtyID',
-      width: '25%',
       key: 'specialtyID',
-      hideInSearch: true,
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: '15%',
+      width: '10%',
       render: (_, record) => (
         <>
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            编辑
-          </a>
+          <a onClick={() => setEditmodalVisible(true)}>编辑</a>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
+
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
+
+  //搜索框 search方法
+  const onSearch = (vlaue: any) => {
+    console.log(vlaue);
+  };
 
   return (
     <div>
@@ -70,8 +73,8 @@ const SetClass: React.FC<{}> = () => {
         actionRef={actionRef}
         headerTitle={'班级设置'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton placeholder={'请输入班级名称'} />,
-          <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>
+          <Search enterButton placeholder={'请输入班级名称'} onSearch={onSearch} />,
+          <Button type="primary" onClick={() => setAddmodalVisible(true)}>
             <PlusOutlined /> 新增
           </Button>,
           <Button>
@@ -85,7 +88,8 @@ const SetClass: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
+      <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
+      <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
     </div>
   );
 };

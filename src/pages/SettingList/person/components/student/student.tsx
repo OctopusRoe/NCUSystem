@@ -2,98 +2,118 @@
 
 import React, { useState, useRef } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Switch } from 'antd';
+import { Button, Divider, message, Popconfirm, Switch } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import InfoModal from '@/components/InfoModal/Infomodal';
-import CreateForm from '@/components/CreateForm/CreateForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { queryRule, updateRule } from './service';
-import ModalForm from './components/ModalForm'
+import { queryRule } from './service';
+import AddModal from './components/AddModal';
+import EditModal from './components/EditModal';
+import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
 const Student: React.FC<{}> = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [infomodalModalVisible, handleinfomodalModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [addmodalVisible, setAddmodalVisible] = useState<boolean>(false);
+  const [editmodalVisible, setEditmodalVisible] = useState(false);
+  const [detailsmodalVisible, setDetailmodalVisible] = useState(false);
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '用户类别',
       dataIndex: 'category',
-      hideInSearch: true,
       key: 'category',
-      width: 150,
-      fixed: 'left',
     },
     {
       title: '姓名',
-      dataIndex: 'userName',
-      width: 80,
-      key: 'userName',
-      fixed: 'left',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => {
+        return (
+          <Button type={'link'} size={'small'} onClick={() => setDetailmodalVisible(true)}>
+            {text}
+          </Button>
+        );
+      },
     },
     {
       title: '学号/工号',
       dataIndex: 'studentId',
-      width: 120,
       key: 'studentId',
     },
     {
       title: '性别',
       dataIndex: 'sex',
-      hideInSearch: true,
-      width: 100,
       key: 'sex',
     },
     {
       title: '身份证号',
       dataIndex: 'IdCard',
-      hideInSearch: false,
       key: 'IdCard',
-      width: 150,
     },
     {
       title: '学院/单位',
       dataIndex: 'college',
-      hideInSearch: true,
       key: 'college',
-      width: 200,
     },
     {
       title: '班级',
       dataIndex: 'class',
-      hideInSearch: true,
       key: 'class',
-      width: 200,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
-      hideInSearch: false,
       key: 'phone',
-      width: 150,
     },
 
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 250,
-      fixed: 'right',
-      render: (_, record) => (
+      width: 300,
+      render: (_) => (
         <>
-          <a>编辑</a>
+          <a onClick={() => setEditmodalVisible(true)}>编辑</a>
           <Divider type="vertical" />
-          <a onClick={() => {}}>密码重置</a>
+          <Popconfirm title="确定要密码重置吗？" onConfirm={pwdConfirm} onCancel={pwdCancel}>
+            <a>密码重置</a>
+          </Popconfirm>
           <Divider type="vertical" />
-          <Switch checkedChildren="锁定" unCheckedChildren="解除" defaultChecked />
+          <Switch
+            checkedChildren="锁定"
+            unCheckedChildren="解除"
+            defaultChecked
+            onChange={switchChange}
+          />
           <Divider type="vertical" />
-          <a>删除</a>
+          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
+
+  //switch 开关
+  const switchChange = (checked: any) => {
+    console.log(checked);
+  };
+
+  //密码重置成功
+  const pwdConfirm = () => {
+    message.success('密码重置成功');
+  };
+
+  //取消密码重置
+  const pwdCancel = () => {
+    message.error('取消重置');
+  };
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
 
   return (
     <div>
@@ -101,8 +121,8 @@ const Student: React.FC<{}> = () => {
         headerTitle="用户列表"
         actionRef={actionRef}
         rowKey="key"
-        toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+        toolBarRender={(action, {}) => [
+          <Button type="primary" onClick={() => setAddmodalVisible(true)}>
             <PlusOutlined /> 新增
           </Button>,
         ]}
@@ -110,11 +130,12 @@ const Student: React.FC<{}> = () => {
         columns={columns}
         // rowSelection={{}}
       />
-      <InfoModal
-        onCancel={() => handleinfomodalModalVisible(false)}
-        modalVisible={infomodalModalVisible}
+      <AddModal modalVisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
+      <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
+      <DetailsModal
+        modalVisible={detailsmodalVisible}
+        onCancel={() => setDetailmodalVisible(false)}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} form={<ModalForm/>}/>
     </div>
   );
 };

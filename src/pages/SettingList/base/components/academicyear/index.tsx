@@ -1,134 +1,64 @@
 // 学年设置 组件
 
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Divider } from 'antd';
+import { Button, Divider, message, Popconfirm } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-
-import CreateForm from './components/CreateForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { queryRule, updateRule } from './service';
-
-/**
- * 添加节点
- * @param fields
- */
-// const handleAdd = async (fields: TableListItem) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addRule({ ...fields });
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
-
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-
-/**
- *  删除节点
- * @param selectedRows
- */
-// const handleRemove = async (selectedRows: TableListItem[]) => {
-//   const hide = message.loading('正在删除');
-//   if (!selectedRows) return true;
-//   try {
-//     await removeRule({
-//       key: selectedRows.map((row) => row.key),
-//     });
-//     hide();
-//     message.success('删除成功，即将刷新');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('删除失败，请重试');
-//     return false;
-//   }
-// };
-
-const { Search } = Input
+import { queryRule } from './service';
+import AddModal from './components/AddModal';
+import EditModal from './components/EditModal';
 
 const AcademicYear: React.FC<{}> = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
+  const [addmodalVisible, setaddmodalVisible] = useState(false);
+  const [editmodalVisible, seteditmodalVisible] = useState(false);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '学年全称',
       dataIndex: 'academicfull',
-      width: '20%',
       key: 'academicfull',
-      hideInSearch: true,
     },
     {
       title: '学年简称',
       dataIndex: 'academicsyssimple',
-      width: '20%',
       key: 'academicsyssimple',
-      hideInSearch: true,
     },
     {
       title: '时间段',
       dataIndex: 'academictime',
-      width: '30%',
       key: 'academictime',
-      hideInSearch: true,
     },
     {
       title: '当前学年',
       dataIndex: 'defaulttime',
-      width: '15%',
       key: 'defaulttime',
-      hideInSearch: true,
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: '15%',
+      width: '10%',
       render: (_, record) => (
         <>
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            编辑
-          </a>
+          <a onClick={() => seteditmodalVisible(true)}>编辑</a>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
+
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
 
   return (
     <div>
@@ -138,34 +68,15 @@ const AcademicYear: React.FC<{}> = () => {
         actionRef={actionRef}
         headerTitle={'学年设置'}
         toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>
+          <Button type="primary" onClick={() => setaddmodalVisible(true)}>
             <PlusOutlined /> 新增
-          </Button>
+          </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
+      <AddModal modalvisible={addmodalVisible} onCancel={() => setaddmodalVisible(false)} />
+      <EditModal modalvisible={editmodalVisible} onCancel={() => seteditmodalVisible(false)} />
     </div>
   );
 };

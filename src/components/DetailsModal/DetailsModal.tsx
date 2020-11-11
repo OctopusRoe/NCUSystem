@@ -1,7 +1,5 @@
-import { Button, Col, Row, Space, Table,Image, Tabs, Typography } from 'antd';
-import FormItem from 'antd/es/form/FormItem';
+import { Col, Row, Table,Image, Tabs } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
-import Paragraph from 'antd/lib/skeleton/Paragraph';
 import React from 'react';
 import FormatGrid from './FormatGrid';
 
@@ -10,22 +8,11 @@ interface DetailsModalProps {
   onCancel: () => void;
 }
 
-const TestList = () => {
-  return (
-    <div>
-      <FormItem>
-        <Space>
-          <Button type="primary">关闭</Button>
-        </Space>
-      </FormItem>
-    </div>
-  );
-};
 
 const DetailsModal: React.FC<DetailsModalProps> = (props) => {
   const { modalVisible, onCancel } = props;
   const { TabPane } = Tabs;
-  const callback = (key: any) => {};
+  const callback = () => {};
 
   const columns1 = [
     {
@@ -55,28 +42,6 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
     },
   ];
 
-  const columns2 = [
-    {
-      title: '社团名称',
-      dataIndex: 'name',
-    },
-    {
-      title: '部门',
-      dataIndex: 'department',
-    },
-    {
-      title: '职务',
-      dataIndex: 'position',
-    },
-    {
-      title: '社团骨干',
-      dataIndex: ' backbone',
-    },
-    {
-      title: '在团时间',
-      dataIndex: 'time',
-    },
-  ];
 
   const data1 = [
     {
@@ -164,10 +129,10 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
         </Row>
         <Tabs defaultActiveKey="1" onChange={callback} style={{ marginTop: '20px' }}>
           <TabPane tab="社团档案" key="1">
-            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: (a,b)=>false}}/>
+            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: ()=>false}}/>
           </TabPane>
           <TabPane tab="活动档案" key="2">
-            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: (a,b)=>false}}/>
+            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: ()=>false}}/>
           </TabPane>
         </Tabs>
       </div>
