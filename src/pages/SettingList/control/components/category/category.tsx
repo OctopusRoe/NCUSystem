@@ -1,18 +1,24 @@
 import React from 'react'
 
-import { Row, Col} from 'antd';
-import FormListCom, { Group } from '@/components/FormListCom/formlistcom'
-const Category: React.FC<{}> = (props) => {
-  // 启动页面后默认存在两个数据
-  const inputList: Group[] = [
-    {name: 0, key: 0, fieldKey: 0, value: {one: '腾讯'}},
-    {name: 1, key: 1, fieldKey: 1, value: {one: '网易'}},
-  ]
+import { Row, Col, Form, Button} from 'antd';
+import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
+
+import { connect, Dispatch } from 'umi'
+
+interface CategoryProps {
+  dispatch: Dispatch
+  valueList: any[]
+}
+
+const FormItem = Form.Item
+
+const Category: React.FC<CategoryProps> = (props) => {
+  
+  const { valueList, dispatch } = props
 
   // input 输入框属性
-  const info = {
+  const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
     one: {
-      name: 'name',
       message: '请输入应用类别!',
       placeHodel: '请输入应用类别',
     }
@@ -21,6 +27,14 @@ const Category: React.FC<{}> = (props) => {
   const onFinish = (e: any) => {
     console.log(e)
   }
+
+  const removeFun = (index: number) => {
+    dispatch({
+      type: 'base-association-grade/rmFormValue',
+      payload: index
+    })
+  }
+
   return (
     <Row style={{paddingTop: '12px'}}>
       <Col span={6} >
@@ -29,8 +43,20 @@ const Category: React.FC<{}> = (props) => {
         </Row>
       </Col>
       <Col span={12}>
-        {/* inputTwo inputThree 属性默认为false */}
-        <FormListCom inputList={inputList} info={info} onFinish={onFinish} />
+        <Form
+          onFinish={onFinish}
+          autoComplete={'off'}
+          initialValues={{'control-category': valueList}}
+        >
+          <FormListCom
+            info={info}
+            formListName={'control-category'}
+            showInput={{two: false, three: false}}
+          />
+          <FormItem>
+            <Button type={'primary'} htmlType={'submit'} size={'large'}>提交</Button>
+          </FormItem>
+        </Form>
       </Col>
       <Col span={6}>
       </Col>
@@ -38,4 +64,10 @@ const Category: React.FC<{}> = (props) => {
   )
 }
 
-export default Category
+export default connect(
+  (state: any) => {
+    return {
+      valueList: state['control-category'].valueList
+    }
+  }
+)(Category)

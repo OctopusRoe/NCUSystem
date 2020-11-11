@@ -1,3 +1,5 @@
+// 注册申请 组件
+
 import React, { useState, useEffect } from 'react';
 import { Card, Steps } from 'antd';
 import { connect } from 'umi';

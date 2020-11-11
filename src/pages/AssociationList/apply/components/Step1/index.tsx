@@ -1,3 +1,4 @@
+// 申请第1步组件
 import React, { useState } from 'react';
 import { Form, Button, Input, Select, Upload, Tooltip } from 'antd';
 import { connect, Dispatch } from 'umi';

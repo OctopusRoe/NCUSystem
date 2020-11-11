@@ -1,3 +1,4 @@
+// 申请第2步组件
 import React from 'react';
 import { Form, Button, Input, Select, Radio } from 'antd';
 import { connect, Dispatch } from 'umi';

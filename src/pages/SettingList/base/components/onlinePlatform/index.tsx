@@ -1,22 +1,27 @@
 // 网络平台设置 组件
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
-import { Row, Col } from 'antd';
-import FormListCom, { Group, InputInfo } from '@/components/FormListCom/formlistcom'
+import { Row, Col, Form, Button } from 'antd';
+import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
-const OnlinePlatform: React.FC<{}> = (props) => {
+import { connect, Dispatch } from 'umi'
 
-  // 启动页面后默认存在两个数据
-const inputList: Group[] = [
-  {name: 0, key: 0, fieldKey: 0, value: {one: '腾讯'}},
-  {name: 1, key: 1, fieldKey: 1, value: {one: '网易'}},
-]
+
+interface OnlinePlatformProps {
+  dispatch: Dispatch
+  valueList: any[]
+}
+
+const FormItem = Form.Item
+
+const OnlinePlatform: React.FC<OnlinePlatformProps> = (props) => {
+
+  const { valueList, dispatch } = props
 
   // input 输入框属性
   const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
     one: {
-      name: 'one',
       message: '请输入网络平台类型!',
       placeHodel: '请输入网络平台类型',
     }
@@ -24,6 +29,13 @@ const inputList: Group[] = [
   
   const onFinish = (e: any) => {
     console.log(e)
+  }
+
+  const removeFun = (index: number) => {
+    dispatch({
+      type: 'base-online-platform/rmFormValue',
+      payload: index
+    })
   }
 
   return (
@@ -34,8 +46,21 @@ const inputList: Group[] = [
         </Row>
       </Col>
       <Col span={12}>
-        {/* inputTwo inputThree 属性默认为false */}
-        <FormListCom inputList={inputList} info={info} onFinish={onFinish} />
+        <Form
+          onFinish={onFinish}
+          autoComplete={'off'}
+          initialValues={{'online-Plat-list': valueList}}
+        >
+          <FormListCom
+            info={info}
+            formListName={'online-Plat-list'}
+            showInput={{two: false, three: false}}
+            removeFun={removeFun}
+          />
+          <FormItem>
+            <Button type={'primary'} htmlType={'submit'} size={'large'}>提交</Button>
+          </FormItem>
+        </Form>
       </Col>
       <Col span={6}>
       </Col>
@@ -43,4 +68,10 @@ const inputList: Group[] = [
   )
 }
 
-export default OnlinePlatform
+export default connect(
+  (state: any) => {
+    return {
+      valueList: state['base-online-platform'].valueList
+    }
+  }
+)(OnlinePlatform)

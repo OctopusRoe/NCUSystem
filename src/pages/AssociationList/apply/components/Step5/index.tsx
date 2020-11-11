@@ -1,5 +1,7 @@
+// 申请最后1步组件
+
 import { PlusOutlined, PrinterOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Radio, Select, Upload } from 'antd';
+import { Button, Form, Input, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';

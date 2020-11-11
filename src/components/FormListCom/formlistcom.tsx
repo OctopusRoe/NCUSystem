@@ -1,6 +1,6 @@
 // 动态增减表单组件
 
-import React, { useState , useEffect } from 'react'
+import React from 'react'
 
 import { Button, Input, Form } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
@@ -8,152 +8,121 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 const FormList = Form.List
 const FormItem = Form.Item
 
-// 显示 input
-export interface Group {
-  name: number
-  key: number
-  fieldKey: number
-  value?: {one?: string, two?: string, three?: string}
-}
-
 // 每行 input 的参数设置
 export interface InputInfo {
-  name: 'one' | 'two' | 'three'
   message?: string
   placeHodel?: string
   disabled?: boolean
 }
 
 interface FormListComProps {
-  inputList: Group[]
+  formListName: string
   info: {one: InputInfo, two?: InputInfo, three?: InputInfo}
-  onFinish: (e: any) => void
-  inputTwo?: boolean
-  inputThree?: boolean
+  showInput: { two: boolean, three: boolean }
+  valueList?: [{one?: string, two?: string, three?: string}]
+  removeFun?: (index: number ) => void
+  onBlurFun?: (e: string, i: number) => void
 }
 
+/**
+ * @param formListName 必须
+ * @param info 必须，配置输入框的配置 {one: InputInfo, two?: InputInfo, three?: InputInfo}
+ * @param showInput 必须, 控制第二和第三个输入框是否显示 {two: boolean, three: boolean}
+ * @param valueList 可选，如果第二和第三个输入框要自动显示数据，必须把值列表传入进组件 [{one?: string, two?: string, three?: string}]
+ * @param removeFun 可选，控制model文件中的 valueList 的原始数据，如果第二和第三输入框是自动显示数据，则此项必填，例子：(index) => {dispatch({type:'namespace/funName',payload:index})}
+ * @param onBlurFun 可选，第一输入框失去焦点后的动作，例子：(e: string, i: number)=>{dispatch({type:'nameSpace/funName',payload:[i,e]})}
+ * */
 const FormListCom: React.FC<FormListComProps> = (props) => {
 
-  const { info, onFinish } = props
+  const { showInput, formListName, info, valueList, removeFun, onBlurFun } = props
 
-  const [ listLength, setListLength ] = useState<number>(20)    // 此处因为 diff 算法问题，如果传入的 inputList.length >= listLength 所设定的数字，会产生bug
-  const [ inputList, setInputList ] = useState<Group[]>([])
-  const [ defaultList, setDefaultList ] = useState<any[]>([])
-
-  useEffect(() => {
-    setInputList(props.inputList)
-    const defaultValue = props.inputList.map((item: Group) => {
-      if (item.value) {
-        return item.value.one
-      }
-      return
-    })
-    setDefaultList(defaultValue)
-  },[])
-
-  const returnValue = (e: any) => {
-    const back = e.valueList.filter((item: any) => item !== undefined && item.one !== null && defaultList.indexOf(item.one) < 0)
-    onFinish(back)
-  }
-
-  const add = () => {
-
-    const item: Group[] = [{
-      name: listLength,
-      key: listLength,
-      fieldKey: listLength,
-      value: {}
-    }]
-
-    const list = [...inputList, ...item]
-    setInputList(list)
-    setListLength(listLength + 1)
-  }
-
-  const remove = (e: any) => {
-    const list = inputList.filter((item: any, index: number) => item.name !== e)
-    setInputList(list)
+  const onBlur = (e: string, i: number) => {
+    if (onBlurFun) {
+      onBlurFun(e,i)
+    }
+    return
   }
 
   return (
-    <Form name="formListCom" onFinish={returnValue} autoComplete={"off"}  >
-      <FormList name="valueList">
-        {() => {
-          return (
-            <div>
-              {inputList.map((item: any, index: number)=> (
-                <div key={item.key} style={{ display: 'flex', marginBottom: 8}}>
+
+    <FormList name={formListName}>
+      {(fields, { add, remove}) => {
+        return (
+          <div>
+            {fields.map((item: any, index: number)=> (
+              <div key={item.key} style={{ display: 'flex', marginBottom: 8}}>
+                <FormItem
+                  name={[item.name, 'one']}
+                  fieldKey={[item.fieldKey, 'one']}
+                  rules={[{ required: true, message: info.one.message }]}
+                  style={{width: '100%', marginRight: '8px' }}
+                >
+                  <Input placeholder={info.one.placeHodel} disabled={info.one.disabled} onBlur={(e)=> onBlur(e.target.value, item.name)} />
+                </FormItem>
+                {
+                  showInput.two &&
                   <FormItem
-                    initialValue={item.value.one ? item.value.one : null}
-                    name={[item.name, info.one.name]}
-                    fieldKey={[item.fieldKey, info.one.name]}
-                    rules={[{ required: true, message: info.one.message }]}
+                    name={[item.name, 'two']}
+                    fieldKey={[item.fieldKey, 'two']}
+                    rules={[{ required: !info.two?.disabled, message: info.two?.message }]}
                     style={{width: '100%', marginRight: '8px' }}
                   >
-                    <Input placeholder={info.one.placeHodel} disabled={info.one.disabled} />
+                    {
+                      info.two?.disabled ? 
+                        <div style={{backgroundColor: '#f5f5f5', color: 'rgba(0,0,0,0.25)', width: '100%', marginRight: '8px', height: '32px', border: '1px solid #d9d9d9'}}>
+                          <div style={{padding: '4px 11px'}}>
+                            {valueList ? valueList[item.name] && valueList[item.name].two : null}
+                          </div>
+                        </div> :
+                        <Input placeholder={info.two?.placeHodel} />
+                    }
                   </FormItem>
-                  {
-                    props.inputTwo
-                    ?
-                    (<FormItem
-                      initialValue={item.value.two ? item.value.two : null}
-                      name={[item.name, info.two?.name]}
-                      fieldKey={[item.fieldKey, info.two?.name]}
-                      rules={[{ required: true, message: info.two?.message }]}
-                      style={{width: '100%', marginRight: '8px' }}
-                    >
-                      <Input placeholder={info.two?.placeHodel} disabled={info.two?.disabled} />
-                    </FormItem>)
-                    :
-                    null
-                  }
-                  {
-                    props.inputThree
-                    ?
-                    (<FormItem
-                      initialValue={item.value.three ? item.value.three : null}
-                      name={[item.name, info.three?.name]}
-                      fieldKey={[item.fieldKey, info.three?.name]}
-                      rules={[{ required: true, message: info.three?.message }]}
-                      style={{width: '100%', marginRight: '8px' }}
-                    >
-                      <Input placeholder={info.three?.placeHodel} disabled={info.three?.disabled} />
-                    </FormItem>)
-                    :
-                    null
-                  }
+                }
+                {
+                  showInput.three &&
+                  <FormItem
+                    name={[item.name, 'three']}
+                    fieldKey={[item.fieldKey, 'three']}
+                    rules={[{ required: !info.two?.disabled, message: info.three?.message }]}
+                    style={{width: '100%', marginRight: '8px' }}
+                  >
+                    {
+                      info.two?.disabled ? 
+                        <div style={{backgroundColor: '#f5f5f5', color: 'rgba(0,0,0,0.25)', width: '100%', marginRight: '8px', height: '32px', border: '1px solid #d9d9d9'}}>
+                          <div style={{padding: '4px 11px'}}>
+                            {valueList ? valueList[item.name] && valueList[item.name].three : null}
+                          </div>
+                        </div> :
+                        <Input placeholder={info.two?.placeHodel} />
+                    }
+                  </FormItem>
+                }
 
-                  <MinusCircleOutlined
-                    title={'移除'}
-                    onClick={() => {
-                      remove(item.name);
-                    }}
-                  />
-                </div>
-              ))}
-
-              <FormItem>
-                <Button
-                  type="dashed"
+                <MinusCircleOutlined
+                  title={'移除'}
                   onClick={() => {
-                    add();
+                    remove(item.name);
+                    if (removeFun) {
+                      removeFun(index)
+                    }
                   }}
-                  block
-                >
-                  <PlusOutlined />添加
-                </Button>
-              </FormItem>
-            </div>
-          );
-        }}
-      </FormList>
+                />
+              </div>
+            ))}
 
-      <FormItem>
-        <Button type="primary" htmlType="submit" size={'large'}>
-          提交
-        </Button>
-      </FormItem>
-    </Form>
+            <FormItem>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+              >
+                <PlusOutlined />添加
+              </Button>
+            </FormItem>
+          </div>
+        );
+      }}
+    </FormList>
   )
 }
 

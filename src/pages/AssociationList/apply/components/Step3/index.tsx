@@ -1,14 +1,19 @@
-import React from 'react';
-import { Form, Button, Input, Space } from 'antd';
+// 申请第3步组件
+
+import React,{ useState, useEffect } from 'react';
+import { Form, Button } from 'antd';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
 import styles from './index.less'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+
+import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 interface Step2Props {
   data?: StateType['step'];
-  dispatch?: Dispatch;
+  dispatch: Dispatch;
   submitting?: boolean;
+  teacherValueList: any
+  memberValueList: any
 }
 
 const formItemLayout = {
@@ -20,7 +25,25 @@ const formItemLayout = {
   },
 };
 
+const teacherInfo: {one: InputInfo, two: InputInfo, three: InputInfo} = {
+  one: {
+    message: '请输入工号!',
+    placeHodel: '请输入工号',
+  },
+  two: {
+    disabled: true
+  },
+  three: {
+    disabled: true
+  }
+}
+
 const Step3: React.FC<Step2Props> = (props) => {
+
+  const { teacherValueList, memberValueList } = props
+
+  console.log(teacherValueList, memberValueList)
+  const [ count, setCount ] = useState<any>(0)
   const [form] = Form.useForm();
   const { data, dispatch, submitting } = props;
   if (!data) {
@@ -28,37 +51,89 @@ const Step3: React.FC<Step2Props> = (props) => {
   }
   const { validateFields, getFieldsValue } = form;
   const onPrev = () => {
-    if (dispatch) {
-      const values = getFieldsValue();
-      dispatch({
-        type: 'formAndstepForm/saveStepFormData',
-        payload: {
-          ...data,
-          ...values,
-        },
-      });
-      dispatch({
-        type: 'formAndstepForm/saveCurrentStep',
-        payload: 'second',
-      });
-    }
+
+    const values = getFieldsValue();
+    dispatch({
+      type: 'formAndstepForm/saveStepFormData',
+      payload: {
+        ...data,
+        ...values,
+      },
+    });
+    dispatch({
+      type: 'formAndstepForm/saveCurrentStep',
+      payload: 'second',
+    });
+
   };
 
   const onValidateForm = async () => {
     const values = await validateFields();
-    if (dispatch) {
-      dispatch({
-        type: 'formAndstepForm/saveStepFormData',
-        payload: values,
-      });
-      dispatch({
-        type: 'formAndstepForm/saveCurrentStep',
-        payload: 'fifth',
-      });
-    }
+
+    dispatch({
+      type: 'formAndstepForm/saveStepFormData',
+      payload: values,
+    });
+    dispatch({
+      type: 'formAndstepForm/saveCurrentStep',
+      payload: 'fifth',
+    });
+
   };
 
+  // 手动控制页面刷新
+  useEffect(()=>{},[count])
 
+  // 指导老师失去焦点后的动作
+  const teacherOnBlur = (e: string, i: number) => {
+
+    dispatch({
+      type: 'associationApplyStep3/setTeacherValueList',
+      payload: [i, e]
+    })
+
+    setCount(e)
+  }
+
+  // 指导老师点击删除的动作
+  const teacherRemove = (i: number) => {
+    
+    dispatch({
+      type: 'associationApplyStep3/rmTeacherValueList',
+      payload: i
+    })
+
+  }
+
+  // 成员列表失去焦点后的动作
+  const memberOnBlur = (e: string, i: number) => {
+
+    dispatch({
+      type: 'associationApplyStep3/setMemberValueList',
+      payload: [i, e]
+    })
+
+    setCount(e)
+  }
+
+  // 成员列表点击删除的动作
+  const memberRemove = (i: number) => {
+    
+    dispatch({
+      type: 'associationApplyStep3/rmMemberValueList',
+      payload: i
+    })
+  }
+
+  // 退出组件清除成员列表
+  // useEffect(()=>{
+  //   return function () {
+  //     dispatch({
+  //       type: 'associationApplyStep3/cleanAll',
+  //       payload: []
+  //     })
+  //   }
+  // },[])
 
   return (
     <>
@@ -68,122 +143,33 @@ const Step3: React.FC<Step2Props> = (props) => {
         layout="horizontal"
         className={styles.stepForm}
         hideRequiredMark
+        autoComplete={'off'}
+        initialValues={{teacherName: teacherValueList, memberName: memberValueList}}
       >
         <Form.Item
           label="指导老师"
-          name="teachername"
         >
-          <Form.List name="teacher">
-            {(fields, { add, remove }) => {
-              return (
-                <div>
-                  {fields.map(field => (
-                    <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="start">
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'first']}
-                        fieldKey={[field.fieldKey, 'first']}
-                        rules={[{ required: true, message: '请输入工号' }]}
-                      >
-                        <Input placeholder="请输入工号" />
-                      </Form.Item>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'second']}
-                        fieldKey={[field.fieldKey, 'second']}
-                        rules={[{ required: true, }]}
-                      >
-                        <Input disabled={true} />
-                      </Form.Item>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'last']}
-                        fieldKey={[field.fieldKey, 'last']}
-                        rules={[{ required: true, }]}
-                      >
-                        <Input disabled={true} />
-                      </Form.Item>
-                      <MinusCircleOutlined
-                        onClick={() => {
-                          remove(field.name);
-                        }}
-                      />
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => {
-                        add();
-                      }}
-                      block
-                    >
-                      <PlusOutlined /> 点击添加
-                </Button>
-                  </Form.Item>
-                </div>
-              );
-            }}
-          </Form.List>
+          <FormListCom
+            info={teacherInfo}
+            formListName={'teacherName'}
+            showInput={{two: true, three: true}}
+            valueList={teacherValueList}
+            onBlurFun={teacherOnBlur}
+            removeFun={teacherRemove}
+          />
         </Form.Item>
         <Form.Item
           label="社团成员"
           name="name"
         >
-
-          <Form.List name="users">
-            {(fields, { add, remove }) => {
-              return (
-                <div>
-                  {fields.map(field => (
-                    <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="start">
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'first']}
-                        fieldKey={[field.fieldKey, 'first']}
-                        rules={[{ required: true, message: '请输入学号' }]}
-                      >
-                        <Input placeholder="请输入学号" />
-                      </Form.Item>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'second']}
-                        fieldKey={[field.fieldKey, 'second']}
-                        rules={[{ required: true, }]}
-                      >
-                        <Input disabled={true} />
-                      </Form.Item>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'last']}
-                        fieldKey={[field.fieldKey, 'last']}
-                        rules={[{ required: true, }]}
-                      >
-                        <Input disabled={true} />
-                      </Form.Item>
-
-                      <MinusCircleOutlined
-                        onClick={() => {
-                          remove(field.name);
-                        }}
-                      />
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => {
-                        add();
-                      }}
-                      block
-                    >
-                      <PlusOutlined /> 点击添加
-                </Button>
-                  </Form.Item>
-                </div>
-              );
-            }}
-          </Form.List>
+          <FormListCom
+            info={teacherInfo}
+            formListName={'memberName'}
+            showInput={{two: true, three: true}}
+            valueList={memberValueList}
+            onBlurFun={memberOnBlur}
+            removeFun={memberRemove}
+          />
         </Form.Item>
 
 
@@ -213,13 +199,20 @@ export default connect(
   ({
     formAndstepForm,
     loading,
+    associationApplyStep3
   }: {
     formAndstepForm: StateType;
     loading: {
       effects: { [key: string]: boolean };
     };
+    associationApplyStep3: {
+      teacherValueList: any[],
+      memberValueList: any[]
+    }
   }) => ({
     submitting: loading.effects['formAndstepForm/submitStepForm'],
     data: formAndstepForm.step,
+    teacherValueList: associationApplyStep3.teacherValueList,
+    memberValueList: associationApplyStep3.memberValueList
   }),
 )(Step3);

@@ -1,4 +1,4 @@
-//登记申请 组件
+//外出登记 组件
 
 import React, { useState, useEffect } from 'react';
 import { Form, Input, message, Button, DatePicker, Select } from 'antd';
@@ -10,6 +10,8 @@ interface OutregistrationformProps {
   teacherCount: number
   canDepartmentUse: boolean
   departmentCount: number
+  leaderValueList: any
+  memberValueList: any
   dispatch: Dispatch
 }
 
@@ -32,32 +34,27 @@ const submitFormLayout = {
   },
 };
 
-const info: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
+const memberInfo: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
   one: {
-    name: 'one',
     message: '请输入外出成员学号!',
     placeHodel: '请输入外出成员学号',
   },
   two: {
-    name: 'two',
     message: '请输入外出成员学号来获取姓名!',
     disabled: true,
   },
   three: {
-    name: 'three',
     message: '请输入外出成员学号来获取学院',
     disabled: true,
   },
 };
 
-const info2: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
+const leaderInfo: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
   one: {
-    name: 'one',
     message: '请输入外出负责人姓名!',
     placeHodel: '请输入外出负责人姓名',
   },
   two: {
-    name: 'two',
     message: '请输入外出负责人手机号!',
     placeHodel: '请输入外出负责人手机号',
   },
@@ -74,8 +71,9 @@ const teacherValue = [
 
 const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
 
-  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, dispatch } = props
+  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, leaderValueList, memberValueList, dispatch } = props
 
+  const [ count, setCount ] = useState<any>(0)
 
   const handleFinish = (e: any) => {
     message.success('ok');
@@ -132,6 +130,35 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
     }
   }, [departmentCount])
 
+  const memberOnBlur = (e: string, i: number) => {
+    dispatch({
+      type: 'association-outregistration/setMemberValueList',
+      payload: [i, e]
+    })
+
+    setCount(e)
+  }
+
+  const memberRemove = (i: number) => {
+    dispatch({
+      type: 'association-outregistration/rmMemberValueList',
+      payload: i
+    })
+  }
+
+  // 手动控制刷新
+  useEffect(()=>{}, [count])
+
+  // 退出组件清除成员列表
+  useEffect(()=>{
+    return function () {
+      dispatch({
+        type: 'association-outregistration/cleanAll',
+        payload: []
+      })
+    }
+  },[])
+
   return (
     <Form
       onFinish={handleFinish}
@@ -171,37 +198,29 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
       <FormItem {...formItemLayout} label={'外出地点'} name={'time'} initialValue={''}>
         <Input />
       </FormItem>
-      <FormItem {...formItemLayout} label={'外出负责人'} name={'student-member'}>
+      <FormItem {...formItemLayout} label={'外出负责人'}>
         <FormListCom
-          inputTwo
-          inputList={[]}
-          info={info2}
-          onFinish={() => {
-            console.log('e');
-          }}
+          info={leaderInfo}
+          formListName={'leaderName'}
+          showInput={{two: true, three: false}}
+          valueList={leaderValueList}
         />
       </FormItem>
-      <FormItem {...formItemLayout} label={'外出成员'} name={'student-member'}>
+      <FormItem {...formItemLayout} label={'外出成员'}>
         <FormListCom
-          inputTwo
-          inputThree
-          inputList={[]}
-          info={info}
-          onFinish={() => {
-            console.log('e');
-          }}
+          info={memberInfo}
+          formListName={'memberName'}
+          showInput={{two: true, three: true}}
+          valueList={memberValueList}
+          onBlurFun={memberOnBlur}
+          removeFun={memberRemove}
         />
       </FormItem>
       <Form.Item
           {...formItemLayout}
           name={'pickTeacher'}
           label={'指导老师审批'}
-          rules={[
-            {
-              required: true,
-              message: '请输入验证码'
-            }
-          ]}
+          
         >
           <Input.Group compact>
             <Select
@@ -229,12 +248,7 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
           {...formItemLayout}
           name={'pickDepartment'}
           label={'指导部门审批'}
-          rules={[
-            {
-              required: true,
-              message: '请输入验证码'
-            }
-          ]}
+          
         >
           <Input.Group compact>
             <Select
@@ -274,7 +288,9 @@ export default connect(
       canTeacherUse: state['association-outregistration'].canTeacherUse,
       teacherCount: state['association-outregistration'].teacherCount,
       canDepartmentUse: state['association-outregistration'].canDepartmentUse,
-      departmentCount: state['association-outregistration'].departmentCount
+      departmentCount: state['association-outregistration'].departmentCount,
+      leaderValueList: state['association-outregistration'].leaderValueList,
+      memberValueList: state['association-outregistration'].memberValueList
     }
   }
 )(Outregistrationform);

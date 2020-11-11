@@ -1,5 +1,5 @@
 
-export default{
+export default {
   namespace: 'deleteModel',
   state: {
     formValue: {
@@ -18,7 +18,7 @@ export default{
   },
   reducers: {
     setNewFormValue(state: any, action: any) {
-      state.formValue['student-member-list'].splice(action.payload[0], 0, {one: action.payload[1], two: action.payload[1]})
+      state.formValue['student-member-list'].splice(action.payload[0], 1, {one: action.payload[1], two: action.payload[1]})
       return {
         ...state
       }
