@@ -48,21 +48,27 @@ const Delete: React.FC<DeleteProps> = (props) => {
   // 控制刷新
   const [ count, setCount ] = useState<any>(0)
 
-  // 保存审批电话
+  // 保存指导老师电话
   const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
 
-  const handleFinish = (e:any) => {
-    message.success('ok');
-    console.log(e)
-  };
+  // 保存指导部门电话
+  const [ getDepartmentPhone, setGetDepartmentPhone ] = useState<string>('')
 
-  // 选择审批老师电话 value = e.target.value
-  const changeValue = (e: any) => {
-    setGetTeacherPhone(teacherValue[e.target.value].phone)
+  // 选择指导老师电话
+  const selectTeacher = (e: string) => {
+    setGetTeacherPhone(e)
+  }
+
+  // 选择指导部门电话
+  const selectDepartment = (e: string) => {
+    setGetDepartmentPhone(e)
   }
 
   // 老师设置倒计时方法
   const teacherCountDown = () => {
+    if (getTeacherPhone === '') {
+      return
+    }
     dispatch({
       type: 'deleteModel/setTeacherCount',
       payload: [60, false]
@@ -71,6 +77,9 @@ const Delete: React.FC<DeleteProps> = (props) => {
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
+    if (getDepartmentPhone === '') {
+      return
+    }
     dispatch({
       type: 'deleteModel/setDepartmentCount',
       payload: [60, false]
@@ -111,6 +120,7 @@ const Delete: React.FC<DeleteProps> = (props) => {
     }
   }, [departmentCount])
 
+  // 设置成员列表
   const setStudentId = async (e: string, i: number) => {
 
     if (e === '') {
@@ -126,6 +136,12 @@ const Delete: React.FC<DeleteProps> = (props) => {
   // 控制页面刷新
   useEffect(() => {
   },[count])
+
+  // 表单数据获取
+  const handleFinish = (e:any) => {
+    message.success('ok');
+    console.log(e)
+  };
 
   // 退出组件清除成员列表
   useEffect(()=>{
@@ -258,8 +274,12 @@ const Delete: React.FC<DeleteProps> = (props) => {
         </FormItem>
         <Form.Item  {...formItemLayout} label={'指导老师审批'}>
           <Input.Group compact>
-            <Form.Item noStyle>
-              <Select style={{ width: '25%' }} placeholder={'请选择'}>
+            <Form.Item
+              noStyle
+              name={'teacherPhone'}
+              rules={[{required: true, message: '请选择指导老师!'}]}
+            >
+              <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectTeacher}>
                 {
                   teacherValue.map((item: any, index: number) => (
                     <Option value={item.phone} key={index}>
@@ -284,8 +304,12 @@ const Delete: React.FC<DeleteProps> = (props) => {
         </Form.Item>
         <Form.Item  {...formItemLayout} label={'指导部门审批'}>
           <Input.Group compact>
-            <Form.Item noStyle>
-              <Select style={{ width: '25%' }} placeholder={'请选择'}>
+            <Form.Item
+              noStyle
+              name={'departmentPhone'}
+              rules={[{required: true, message: '请选择指导指导部门!'}]}
+            >
+              <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectDepartment}>
                 {
                   teacherValue.map((item: any, index: number) => (
                     <Option value={item.phone} key={index}>

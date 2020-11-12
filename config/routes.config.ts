@@ -43,7 +43,7 @@ const recruitment: FileType = {
     'square', // 招新广场
     'setting', // 招新设置
     'admin', // 招新管理
-    // 'statistic', // 招新统计
+    'message'
   ]
 }
 
@@ -137,6 +137,8 @@ function CreateRouter( fileData: FileType ) {
       }
     )
   })
+
+  childrenRoutes.routes.splice(childrenRoutes.routes.length, 0, {component: './404'})
 
   return {...routes, ...childrenRoutes}
 

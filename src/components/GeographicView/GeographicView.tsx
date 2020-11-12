@@ -1,12 +1,12 @@
 // 地理三级联动 select 选框
 
 import React, { useState } from 'react'
-import { Select } from 'antd'
+import { Select, Form } from 'antd'
 const Geographic = require('./pca.json')
 const { Option } = Select
 
 interface GeographicViewProps {
-  onFinish: (value: string[]) => void
+  onFinish?: (value: string[]) => void
 }
 
 const GeographicView: React.FC<GeographicViewProps> = (props) => {
@@ -42,35 +42,52 @@ const GeographicView: React.FC<GeographicViewProps> = (props) => {
   }
 
   const onFinish = (value: string) => {
-    props.onFinish([province, city, value])
+    if (props.onFinish) {
+      props.onFinish([province, city, value])
+    }
   }
 
   return (
     <div style={{width: '100%'}}>
-      <Select
-        showSearch
-        style={{width: '33%'}}
-        placeholder={'请选择省份'}
-        onSelect={getCity}
+      <Form.Item
+        noStyle
+        name={'province'}
       >
-        {getOption(provinceList)}
-      </Select>
-      <Select
-        showSearch
-        style={{width: '33%', marginLeft: '0.5%'}}
-        placeholder={'请选择城市'}
-        onSelect={getRegion}
+        <Select
+          showSearch
+          style={{width: '33%'}}
+          placeholder={'请选择省份'}
+          onSelect={getCity}
+          >
+          {getOption(provinceList)}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        noStyle
+        name={'city'}
       >
-        {getOption(cityList)}
-      </Select>
-      <Select
-        showSearch
-        style={{width: '33%', marginLeft: '0.5%'}}
-        placeholder={'请选择区/县'}
-        onSelect={onFinish}
+        <Select
+          showSearch
+          style={{width: '33%', marginLeft: '0.5%'}}
+          placeholder={'请选择城市'}
+          onSelect={getRegion}
+        >
+          {getOption(cityList)}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        noStyle
+        name={'district'}
       >
+        <Select
+          showSearch
+          style={{width: '33%', marginLeft: '0.5%'}}
+          placeholder={'请选择区/县'}
+          onSelect={onFinish}
+        >
         {getOption(regionList)}
       </Select>
+      </Form.Item>
     </div>
   )
 }

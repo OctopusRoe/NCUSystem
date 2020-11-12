@@ -1,4 +1,4 @@
-// 招新管理 组件
+// 录用管理 组件
 
 import React, { useState, useRef } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';

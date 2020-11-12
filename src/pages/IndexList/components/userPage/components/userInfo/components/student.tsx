@@ -50,7 +50,6 @@ const submitFormLayout = {
 };
 
 const StudentInfo: React.FC<StudentInfoProps> = (props) => {
-  console.log(ethnicity)
 
   const { info, political } = props
   const {studentName, studentID, studentSex, cardID, nation , college, className, specialty, educational } = info
@@ -155,7 +154,6 @@ const StudentInfo: React.FC<StudentInfoProps> = (props) => {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          name={'birthPlace'}
           label={'籍贯'}
           validateStatus={birthPlaceError}
           help={birthPlaceStr}

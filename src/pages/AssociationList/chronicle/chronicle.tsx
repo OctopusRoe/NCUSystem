@@ -49,7 +49,7 @@ const Chronicle: React.FC<{}> = (props) => {
               <Timeline.Item
                 style={{height: '100px'}}
                 dot={
-                  <Button type={'dashed'} style={{borderRadius: '5px', color: 'rgba(0,0,0,0.45)'}} onClick={()=> setVisible(true)}>今日大事记</Button>
+                  <Button type={'dashed'} style={{borderRadius: '5px', color: 'rgba(0,0,0,0.45)'}} onClick={()=> setVisible(true)}>添加大事记</Button>
                   }
               />
               {

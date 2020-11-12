@@ -151,7 +151,6 @@ const WorkerInfo: React.FC<WorkerInfoProps> = (props) => {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          name={'birthPlace'}
           label={'籍贯'}
           validateStatus={birthPlaceError}
           help={birthPlaceStr}

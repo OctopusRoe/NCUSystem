@@ -49,28 +49,35 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
   const intl = useIntl()
 
-  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, dispatch } = props
+  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, formInfo, dispatch } = props
+  const { teacherValue, associationType, associationGrade, department } = formInfo
   
-  // 保存审批老师电话
+  // 保存指导老师电话
   const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
 
-  const handleFinish = (e:any) => {
-    message.success(intl.formatMessage({ id: 'setting.basic.update.success' }));
-    console.log(e)
-  };
+  // 保存指导部门电话
+  const [ getDepartmentPhone, setGetDepartmentPhone ] = useState<string>('')
+
+  // 选择指导老师电话
+  const selectTeacher = (e: string) => {
+    setGetTeacherPhone(e)
+  }
+
+  // 选择指导部门电话
+  const selectDepartment = (e: string) => {
+    setGetDepartmentPhone(e)
+  }
 
   // 获取图片数据
   const testOne = (e: any) => {
     console.log(e)
   }
 
-  // 选择审批老师电话
-  const changeValue = (e: any) => {
-    setGetTeacherPhone(props.formInfo.teacherValue[e.target.value].phone)
-  }
-
   // 老师设置倒计时方法
   const teacherCountDown = () => {
+    if (getTeacherPhone === '') {
+      return
+    }
     dispatch({
       type: 'association-base-info/setTeacherCount',
       payload: [60, false]
@@ -79,6 +86,9 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
+    if (getDepartmentPhone === '') {
+      return
+    }
     dispatch({
       type: 'association-base-info/setDepartmentCount',
       payload: [60, false]
@@ -118,9 +128,12 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
       })
     }
   }, [departmentCount])
-  
-  const { formInfo } = props;
-  const { teacherValue, associationType, associationGrade, department } = formInfo
+
+  // 表单数据获取
+  const handleFinish = (e:any) => {
+    message.success(intl.formatMessage({ id: 'setting.basic.update.success' }));
+    console.log(e)
+  }
 
   return (
     <div className={styles.baseView}>
@@ -267,29 +280,26 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         >
           <CropImgView id="syssimpleimg" />
         </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name={'pickTeacher'}
-          label={'指导老师审批'}
-          rules={[
-            {
-              required: true,
-              message: '请输入验证码'
-            }
-          ]}
-        >
+        <Form.Item  {...formItemLayout} label={'指导老师审批'}>
           <Input.Group compact>
-            <Select
-              style={{width: '25%'}}
-              placeholder={'请选择'}
+            <Form.Item
+              noStyle
+              name={'teacherPhone'}
+              rules={[{required: true, message: '请选择指导老师!'}]}
             >
-              {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>{item.name}</Option>
-                ))
-              }
-            </Select>
-            <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
+              <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectTeacher}>
+                {
+                  teacherValue.map((item: any, index: number) => (
+                    <Option value={item.phone} key={index}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item name={'teacherCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
+              <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
             <Button
               style={{width: '25%'}}
               onClick={teacherCountDown}
@@ -300,29 +310,26 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
             </Button>
           </Input.Group>
         </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name={'pickDepartment'}
-          label={'指导部门审批'}
-          rules={[
-            {
-              required: true,
-              message: '请输入验证码'
-            }
-          ]}
-        >
+        <Form.Item  {...formItemLayout} label={'指导部门审批'}>
           <Input.Group compact>
-            <Select
-              style={{width: '25%'}}
-              placeholder={'请选择'}
+            <Form.Item
+              noStyle
+              name={'departmentPhone'}
+              rules={[{required: true, message: '请选择指导指导部门!'}]}
             >
-              {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>{item.name}</Option>
-                ))
-              }
-            </Select>
-            <Input style={{ width: '50%', borderRight: 'none'}} placeholder={'请输入手机验证码'} />
+              <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectDepartment}>
+                {
+                  teacherValue.map((item: any, index: number) => (
+                    <Option value={item.phone} key={index}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item name={'departmentCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
+              <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
             <Button
               style={{width: '25%'}}
               onClick={departmentCountDown}

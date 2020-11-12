@@ -26,7 +26,7 @@ export default {
   'menu.recruitment.square': '招新广场',
   'menu.recruitment.setting': '招新设置',
   'menu.recruitment.admin': '录用管理',
-  'menu.recruitment.statistic': '招新统计',
+  'menu.recruitment.message': '短信通知',
 
   // 活动管理
   'menu.active': '活动管理',

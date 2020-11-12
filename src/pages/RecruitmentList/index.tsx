@@ -72,18 +72,24 @@ class RecruitmentList extends Component<WorkplaceProps> {
       return null;
     }
 
-    if (location.pathname === '/recruitment/square') {
-      return <>{children}</>
+    switch (location.pathname) {
+      case '/recruitment/square':
+        return <>{children}</>
+        break
+      case '/recruitment/message':
+        return <PageHeaderWrapper>{children}</PageHeaderWrapper>
+        break
+      default:
+        return (
+          <PageHeaderWrapper
+            content={<PageHeaderContent currentUser={currentUser} />}
+            extraContent={<ExtraContent />}
+          >
+            {children}
+          </PageHeaderWrapper>
+        )
     }
     
-    return (
-      <PageHeaderWrapper
-        content={<PageHeaderContent currentUser={currentUser} />}
-        extraContent={<ExtraContent />}
-      >
-        {children}
-      </PageHeaderWrapper>
-    );
   }
 }
 
