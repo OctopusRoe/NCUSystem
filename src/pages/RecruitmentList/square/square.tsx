@@ -1,9 +1,7 @@
 // 招新广场 组件
 
 import React, { useEffect, useState } from 'react';
-
 import { Card, Col, Form, List, Row, Select, Typography, Input, Tag } from 'antd';
-
 import { ClockCircleOutlined } from '@ant-design/icons'
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, Dispatch } from 'umi';

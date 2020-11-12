@@ -1,7 +1,7 @@
-// 用户管理页面
+// 用户组管理页面
 
 import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider} from 'antd';
+import { Button, Divider, message, Popconfirm } from 'antd';
 import React, { useState, useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
@@ -9,25 +9,23 @@ import CreateForm from './components/CreateForm';
 import ChangePerson from './components/ChangePerson';
 import { TableListItem } from './data';
 import { queryRule } from './service';
+import EditModal from './components/EditModal';
 
 const UserGroup: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [changePersonVisible, handleChangePersonVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
+  const [editmodalVisible, setEditmodalVisible] = useState(false);
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '用户组名称',
       dataIndex: 'name',
-      width: 200,
       key: 'name',
-      fixed: 'left',
     },
     {
       title: '权限详情',
       dataIndex: 'infomation',
-      width: 250,
       key: 'infomation',
       hideInSearch: true,
       // 使用 antd Tree 组件
@@ -36,7 +34,6 @@ const UserGroup: React.FC<{}> = () => {
     {
       title: '用户组人数',
       dataIndex: 'userGroup',
-      width: 150,
       key: 'userGroup',
       hideInSearch: true,
       render: () => <></>,
@@ -44,21 +41,19 @@ const UserGroup: React.FC<{}> = () => {
     {
       title: '描述',
       dataIndex: 'desc',
-      width: 550,
       hideInSearch: true,
       key: 'desc',
     },
     {
       title: '操作',
       dataIndex: 'option',
-      width: 180,
       valueType: 'option',
-      fixed: 'right',
+      width: '250px',
       render: (_, record) => (
         <>
           <a
             onClick={() => {
-              handleModalVisible(true);
+              setEditmodalVisible(true);
               setStepFormValues(record);
             }}
           >
@@ -68,32 +63,35 @@ const UserGroup: React.FC<{}> = () => {
           <a
             onClick={() => {
               handleChangePersonVisible(true);
-              setStepFormValues(record);
             }}
           >
             人员
           </a>
           <Divider type="vertical" />
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            权限
-          </a>
+          <a>权限</a>
           <Divider type="vertical" />
-          <a>删除</a>
+          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
 
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
+
   return (
     <div>
       <ProTable<TableListItem>
         // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
-        headerTitle="权限列表"
+        headerTitle="用户组列表"
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, {}) => [
@@ -107,7 +105,7 @@ const UserGroup: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-
+      <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
       <ChangePerson
         onCancel={() => handleChangePersonVisible(false)}

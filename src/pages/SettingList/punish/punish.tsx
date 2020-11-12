@@ -13,27 +13,27 @@ const Punish: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '学号',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'stuID',
+      key: 'stuID',
       fixed: 'left',
     },
     {
       title: '处分名称',
-      dataIndex: 'infomation',
-      key: 'infomation',
+      dataIndex: 'disciplinaryName',
+      key: 'disciplinaryName',
       hideInSearch: true,
     },
     {
       title: '处分日期',
-      dataIndex: 'userGroup',
-      key: 'userGroup',
+      dataIndex: 'disciplinaryDate',
+      key: 'disciplinaryDate',
       hideInSearch: true,
     },
     {
       title: '处分文号',
-      dataIndex: 'desc',
+      dataIndex: 'disciplinaryTitanic',
       hideInSearch: true,
-      key: 'desc',
+      key: 'disciplinaryTitanic',
     },
   ];
 

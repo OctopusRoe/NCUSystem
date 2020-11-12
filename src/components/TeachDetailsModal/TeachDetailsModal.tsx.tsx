@@ -79,10 +79,10 @@ const TeachDetailsModal: React.FC<TeachDetailsModalProps> = (props) => {
   };
 
   const data = [
-    [{title: '姓名', value: '曲丽丽'},{title: '籍贯', value: '新疆维吾尔自治区'},{title: '专业', value:'信息技术'},{title:'手机号',value:'1366654888',copy: true}],
-    [{title: '学号', value: '4565545458',copy: true},{title: '民族', value: '维吾尔族'},{title: '学制', value:'四年制'},{title:'QQ号',value:'136665488',copy: true}],
-    [{title: '性别', value: '女'},{title: '学院', value: '信息工程学院'},{title: '入学时间', value: '2020-09-12'}],
-    [{title: '身份证号', value: '36565415255695845X',copy: true},{title: '班级', value: '20XXXXXXXXX'},{title: '政治面貌', value: '群众'}],
+    [{title: '姓名', value: '曲丽丽'},{title: '籍贯', value: '新疆维吾尔自治区'},{title: '职务', value:'XXXXX'},{title:'手机号',value:'1366654888',copy: true}],
+    [{title: '工号', value: '4565545458',copy: true},{title: '民族', value: '维吾尔族'},{title: '部门', value: '信息工程学院'},{title:'QQ号',value:'136665488',copy: true}],
+    [{title: '性别', value: '女'},{title: '政治面貌', value: '群众'},{title: '入职时间', value: '2020-09-12'}],
+    [{title: '身份证号', value: '36565415255695845X',copy: true},{title: '学历', value: '20XXXXXXXXX'},{title: '教龄', value: '2年'}],
   ]
 
 

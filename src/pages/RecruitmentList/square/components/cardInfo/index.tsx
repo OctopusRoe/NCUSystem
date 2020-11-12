@@ -83,7 +83,6 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
       width: '25%',
       key: 'requirement',
       render: (_, record) => {
-
         const text = (
           <div>
             <p style={{width: '200px'}}>

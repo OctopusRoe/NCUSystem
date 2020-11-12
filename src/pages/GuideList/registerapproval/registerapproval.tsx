@@ -1,53 +1,38 @@
-import { Divider } from 'antd';
-
 // 审批页面
-
+import { Button, Divider, message, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import ApprovalDrawer from './components/ApprovalDrawer';
-import DetailsModal from '@/components/DetailsModal/DetailsModal';
+import CardInfo from '@/components/CardInfo/index';
 
 const RegisterApproval: React.FC<{}> = () => {
-  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
   const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
+  const [cardInfo, setCardInfo] = useState(false);
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '注册编号',
       dataIndex: 'number',
-      // width: 120,
       key: 'number',
-      fixed: 'left',
-      // sorter: true,  //升降序
       hideInSearch: true,
     },
     {
       title: '社团名称',
       dataIndex: 'name',
-      // width: 150,
       key: 'name',
-      fixed: 'left',
-
       render: (text, record) => {
         return (
-          <>
-            <div
-              onClick={() => {
-                setDetailsModalVisible(true);
-              }}
-            >
-              {record.name}
-            </div>
-          </>
+          <Button type={'link'} size={'small'} onClick={() => setCardInfo(true)}>
+            {text}
+          </Button>
         );
       },
     },
     {
       title: '社团类别',
       dataIndex: 'category',
-      // width: 100,
       key: 'category',
       hideInSearch: true,
       filters: [
@@ -60,7 +45,6 @@ const RegisterApproval: React.FC<{}> = () => {
     {
       title: '社团级别',
       dataIndex: 'level',
-      // width: 100,
       key: 'level',
       hideInSearch: true,
       filters: [
@@ -81,7 +65,6 @@ const RegisterApproval: React.FC<{}> = () => {
     {
       title: '业务指导单位',
       dataIndex: 'unit',
-      // width: 120,
       key: 'unit',
       hideInSearch: true,
       filters: [
@@ -95,12 +78,9 @@ const RegisterApproval: React.FC<{}> = () => {
       dataIndex: 'status',
       hideInSearch: false,
       key: 'status',
-      // width: 100,
       valueEnum: {
-        // 0: { text: '毕业', status: 'Default' },
-        // 1: { text: '休学', status: 'Processing' },
-        2: { text: '已审批', status: 'Success' },
-        3: { text: '未审批', status: 'Error' },
+        1: { text: '已审批', status: 'Success' },
+        0: { text: '未审批', status: 'Error' },
       },
     },
     {
@@ -119,11 +99,22 @@ const RegisterApproval: React.FC<{}> = () => {
             审核
           </a>
           <Divider type="vertical" />
-          <a>删除</a>
+          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
+
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
 
   return (
     <div>
@@ -134,16 +125,11 @@ const RegisterApproval: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <DetailsModal
-        modalVisible={DetailsModalVisible}
-        onCancel={() => {
-          setDetailsModalVisible(false);
-        }}
-      />
       <ApprovalDrawer
         drawerVisible={ApprovalDrawerVisible}
         oncancel={() => setApprovalDrawerVisible(false)}
       />
+      <CardInfo visible={cardInfo} onCancel={() => setCardInfo(false)} />
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
-import Infomodal from '@/components/InfoModal/Infomodal';
 
 const Member: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
@@ -117,12 +116,6 @@ const Member: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{}}
-      />
-      <Infomodal
-        modalVisible={infomodalVisible}
-        onCancel={() => {
-          setinfomodalVisible(false);
-        }}
       />
     </>
   );

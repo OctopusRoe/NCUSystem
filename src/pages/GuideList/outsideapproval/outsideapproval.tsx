@@ -1,15 +1,15 @@
 // 外出审批 组件
 
-import { Divider } from 'antd';
+import { Button, Divider, message, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import DetailsModal from '@/components/DetailsModal/DetailsModal';
 import ApprovalDrawer from './components/ApprovalDrawer';
+import CardInfo from '@/components/CardInfo/index';
 
 const OutsideApproval: React.FC<{}> = () => {
-  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [cardInfo, setCardInfo] = useState(false);
   const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
@@ -27,15 +27,9 @@ const OutsideApproval: React.FC<{}> = () => {
       fixed: 'left',
       render: (text, record) => {
         return (
-          <>
-            <a
-              onClick={() => {
-                setDetailsModalVisible(true);
-              }}
-            >
-              {record.name}
-            </a>
-          </>
+          <Button type={'link'} size={'small'} onClick={() => setCardInfo(true)}>
+            {text}
+          </Button>
         );
       },
     },
@@ -108,11 +102,22 @@ const OutsideApproval: React.FC<{}> = () => {
             审核
           </a>
           <Divider type="vertical" />
-          <a>删除</a>
+          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
+
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
 
   return (
     <div>
@@ -123,12 +128,7 @@ const OutsideApproval: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <DetailsModal
-        modalVisible={DetailsModalVisible}
-        onCancel={() => {
-          setDetailsModalVisible(false);
-        }}
-      />
+      <CardInfo visible={cardInfo} onCancel={() => setCardInfo(false)} />
       <ApprovalDrawer
         drawerVisible={ApprovalDrawerVisible}
         oncancel={() => setApprovalDrawerVisible(false)}

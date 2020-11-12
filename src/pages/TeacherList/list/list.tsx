@@ -1,38 +1,28 @@
 // 社团指导列表页面
 
 import React, { useState, useRef } from 'react';
-
 import { DownloadOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-
-import CreateForm from './components/CreateForm';
 import { TableListItem } from './data.d';
 import { queryRule } from './service';
-import InfoModal from '@/components/InfoModal/Infomodal';
-// import styles from './student.less'
+import CardInfo from '@/components/CardInfo/index';
+import TeachDetailsModal from '@/components/TeachDetailsModal/TeachDetailsModal.tsx';
 
 const List: React.FC<{}> = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [showInfoModal, setShowInfoModal] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
+  const [cardInfo, setCardInfo] = useState(false);
+  const [teachDetails, setTeachDetails] = useState(false);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '社团名称',
       dataIndex: 'associationName',
       key: 'associationName',
-      fixed: 'left',
-      render: (_, record) => {
+      render: (text, record) => {
         return (
-          <>
-            <div
-              onClick={() => {
-                setShowInfoModal(true);
-              }}
-            >
-              {record.name}
-            </div>
-          </>
+          <Button type={'link'} size={'small'} onClick={() => setCardInfo(true)}>
+            {text}
+          </Button>
         );
       },
     },
@@ -40,7 +30,6 @@ const List: React.FC<{}> = () => {
       title: '社团类别',
       dataIndex: 'associationType',
       key: 'associationType',
-      fixed: 'left',
       hideInSearch: true,
     },
     {
@@ -73,6 +62,13 @@ const List: React.FC<{}> = () => {
       title: '指导老师',
       dataIndex: 'teacher',
       key: 'teacher',
+      render: (text, record) => {
+        return (
+          <Button type={'link'} size={'small'} onClick={() =>console.log(record)}>
+            {text}
+          </Button>
+        );
+      },
     },
     {
       title: '成立时间',
@@ -102,11 +98,11 @@ const List: React.FC<{}> = () => {
   return (
     <div>
       <ProTable<TableListItem>
-        headerTitle="社团列表"
+        headerTitle=""
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, { selectedRows }) => [
-          <Button type="default" onClick={() => handleModalVisible(true)} size={'middle'}>
+          <Button type="default">
             <DownloadOutlined /> 导出
           </Button>,
         ]}
@@ -114,13 +110,8 @@ const List: React.FC<{}> = () => {
         columns={columns}
         rowSelection={{}}
       />
-      <InfoModal
-        modalVisible={showInfoModal}
-        onCancel={() => {
-          setShowInfoModal(false);
-        }}
-      />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
+      <TeachDetailsModal modalVisible={teachDetails} onCancel={() => setTeachDetails(false)} />
+      <CardInfo visible={cardInfo} onCancel={() => setCardInfo(false)} />
     </div>
   );
 };
