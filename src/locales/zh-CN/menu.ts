@@ -50,8 +50,7 @@ export default {
 
   // 指导老师管理
   'menu.teacher': '指导老师管理',
-  'menu.teacher.select': '选拔申请',
-  'menu.teacher.employ': '选聘管理',
+  'menu.teacher.store': '指导老师库',
   'menu.teacher.list': '社团指导列表',
   'menu.teacher.examine': '考核自评',
 

@@ -6,7 +6,7 @@ import React, { useRef, useState } from 'react';
 import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
 const MemberCom: React.FC<{}> = () => {
@@ -79,7 +79,7 @@ const MemberCom: React.FC<{}> = () => {
       fixed: 'right',
       render: (_) => (
         <>
-          <a>调整</a>
+          <a>编辑</a>
           <Divider type="vertical" />
           <a>删除</a>
         </>
@@ -99,12 +99,18 @@ const MemberCom: React.FC<{}> = () => {
           return className;
         }}
         toolBarRender={(_action, { selectedRows }) => [
+          <Button type={'primary'}>
+            <PlusOutlined /> 添加
+          </Button>,
+          <Button type={'primary'}>
+            <CopyOutlined /> 复制
+          </Button>,
           <Button type="default">
             <DownloadOutlined /> 导出
           </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Button>
-              <DownloadOutlined /> 批量导出
+              <DownloadOutlined /> 选中导出
             </Button>
           ),
         ]}

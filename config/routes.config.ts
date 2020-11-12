@@ -83,8 +83,7 @@ const teacherData: FileType = {
   path: 'teacher',
   icon: 'form',
   children: [
-    'select',
-    'employ',
+    'store',
     'list',
     'examine'
   ]

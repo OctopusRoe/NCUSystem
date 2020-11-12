@@ -43,7 +43,6 @@ const { TextArea } = Input
 
 const Delete: React.FC<DeleteProps> = (props) => {
 
-  
   const { formValue, canTeacherUse, teacherCount, canDepartmentUse, departmentCount, dispatch } = props
 
   // 控制刷新
@@ -257,18 +256,22 @@ const Delete: React.FC<DeleteProps> = (props) => {
             }
           </Form.List>
         </FormItem>
-        <Form.Item  {...formItemLayout} name={'pickTeacher'} label={'指导老师审批'}>
+        <Form.Item  {...formItemLayout} label={'指导老师审批'}>
           <Input.Group compact>
-            <Select style={{ width: '25%' }} placeholder={'请选择'}>
-              {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
-                    {item.name}
-                  </Option>
-                ))
-              }
-            </Select>
-            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            <Form.Item noStyle>
+              <Select style={{ width: '25%' }} placeholder={'请选择'}>
+                {
+                  teacherValue.map((item: any, index: number) => (
+                    <Option value={item.phone} key={index}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item name={'teacherCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
+              <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
             <Button
               style={{width: '25%'}}
               onClick={teacherCountDown}
@@ -279,18 +282,22 @@ const Delete: React.FC<DeleteProps> = (props) => {
             </Button>
           </Input.Group>
         </Form.Item>
-        <Form.Item  {...formItemLayout} name={'pickDepartment'} label={'指导部门审批'}>
+        <Form.Item  {...formItemLayout} label={'指导部门审批'}>
           <Input.Group compact>
-            <Select style={{ width: '25%' }} placeholder={'请选择'}>
-              {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
-                    {item.name}
-                  </Option>
-                ))
-              }
-            </Select>
-            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            <Form.Item noStyle>
+              <Select style={{ width: '25%' }} placeholder={'请选择'}>
+                {
+                  teacherValue.map((item: any, index: number) => (
+                    <Option value={item.phone} key={index}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item name={'departmentCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
+              <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
             <Button
               style={{width: '25%'}}
               onClick={departmentCountDown}
