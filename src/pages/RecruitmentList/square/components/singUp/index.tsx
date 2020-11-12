@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Card, Table, Popover, Tag, Switch, message } from 'antd'
+import { Card, Table, Popover, Tag, Switch, message, Badge } from 'antd'
 
 import { TableListItem } from './data'
 
@@ -26,6 +26,7 @@ const testData = () => {
       requirement: `测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求${i}`,
       recruit: '10',
       report: '100',
+      status: i % 3 === 1 ? 1 : 0,
       option: false
     }
     valueList.push(value)
@@ -92,6 +93,22 @@ const SingUp: React.FC<{}> = (props) => {
       dataIndex: 'report',
       width: '10%',
       key: 'report',
+    },
+    {
+      title: '录取状态',
+      dataIndex: 'status',
+      width: '10%',
+      key: 'status',
+      render: (e, record) => {
+        switch(e) {
+          case 0:
+            return <Badge status={'success'} text={'已录取'} />
+            break;
+          default:
+            return <Badge status={'default'} text={'未录取'} />
+            break;
+        }
+      }
     },
     {
       title: '报名',

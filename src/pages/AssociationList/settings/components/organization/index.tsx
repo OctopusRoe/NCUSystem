@@ -15,7 +15,6 @@ const FormItem = Form.Item
 
 const Organization: React.FC<OrganizationProps> = (props) => {
 
-  console.log(props)
   const { valueList, dispatch } = props
 
   // input 输入框属性

@@ -1,6 +1,6 @@
 //
 
-import { Button, Divider } from 'antd';
+import { Button, Divider, message } from 'antd';
 
 import React, { useRef, useState } from 'react';
 import { queryRule } from './service';
@@ -9,9 +9,22 @@ import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
+import AddForm from './components/addForm'
+
 const MemberCom: React.FC<{}> = () => {
+
+  message.config({
+    maxCount: 1
+  })
+
   const actionRef = useRef<ActionType>();
+  
   const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
+
+  const [addVisible, setAddVisible] = useState<boolean>(false)
+
+  const [ formValue, setFormValue ] = useState<any>({})
+  
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '届数',
@@ -87,6 +100,30 @@ const MemberCom: React.FC<{}> = () => {
     },
   ];
 
+  // 导出方法
+  const Download = (selectedRows: any) => {
+    if ( selectedRows && selectedRows.length > 0) {
+      message.success({
+        content: '已下载选中条目',
+        duration: 3
+      })
+      return
+    }
+    message.success({
+      content: '已下载全部条目',
+      duration: 3
+    })
+  }
+
+  const onBlur = (e: string) => {
+    setFormValue({
+      name: 'OctopusRoe',
+      sex: '男',
+      college: '信息工程学院',
+      class: '测试班级1'
+    })
+  }
+
   return (
     <>
       <ProTable<TableListItem>
@@ -99,26 +136,22 @@ const MemberCom: React.FC<{}> = () => {
           return className;
         }}
         toolBarRender={(_action, { selectedRows }) => [
-          <Button type={'primary'}>
+          <Button type={'primary'} onClick={() => setAddVisible(true)} >
             <PlusOutlined /> 添加
           </Button>,
           <Button type={'primary'}>
             <CopyOutlined /> 复制
           </Button>,
-          <Button type="default">
-            <DownloadOutlined /> 导出
-          </Button>,
-          selectedRows && selectedRows.length > 0 && (
-            <Button>
-              <DownloadOutlined /> 选中导出
-            </Button>
-          ),
+          <Button type="default" onClick={() => Download(selectedRows)}>
+            <DownloadOutlined /> { selectedRows && selectedRows.length > 0 ? '导出选中' : '导出全部' }
+          </Button>
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{}}
         scroll={{ x: 1500 }}
       />
+      <AddForm addVisible={addVisible} onCancel={() => setAddVisible(false)} onBlur={onBlur} formValue={formValue} />
       <DetailsModal
         modalVisible={DetailsModalVisible}
         onCancel={() => setDetailsModalVisible(false)}
