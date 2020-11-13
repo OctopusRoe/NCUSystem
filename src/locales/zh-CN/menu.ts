@@ -6,12 +6,12 @@ export default {
 
   // 社团管理菜单
   'menu.association': '社团管理',
+  'menu.association.active': '活动申请',
   'menu.association.apply': '注册申请',
   'menu.association.settings': '信息变更',
   'menu.association.member': '成员管理',
   'menu.association.recruitment': '招新管理',
   'menu.association.recruitmentsquare': '招新广场',
-  'menu.association.active': '活动管理',
   'menu.association.activesquare': '活动广场',
   'menu.association.addresslist': '社团通讯录',
   'menu.association.upgrade': '升级申请',

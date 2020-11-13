@@ -22,6 +22,7 @@ const associationData: FileType = {
   icon: 'windows',
   children: [
     'apply',
+    'active',
     'settings',
     'member',
     'addresslist',
