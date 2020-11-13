@@ -128,7 +128,7 @@ const Student: React.FC<{}> = () => {
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
-        // rowSelection={{}}
+        //rowSelection={{}}
       />
       <AddModal modalVisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
       <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />

@@ -21,11 +21,11 @@ const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo);
 };
 
-const onFinish2 = (values: any) => {
+const onFinishSingle = (values: any) => {
   console.log('Success:', values);
 };
 
-const onFinishFailed2 = (errorInfo: any) => {
+const onFinishMultiple = (errorInfo: any) => {
   console.log('Failed:', errorInfo);
 };
 
@@ -145,8 +145,8 @@ const AddModal: React.FC<AddModalProps> = (props) => {
               {...layout}
               name="add-upload"
               initialValues={{ remember: true }}
-              onFinish={onFinish2}
-              onFinishFailed={onFinishFailed2}
+              onFinish={onFinishSingle}
+              onFinishFailed={onFinishMultiple}
               hideRequiredMark //去除前面红色*号
               autoComplete={'off'} //输入框输入记录
             >

@@ -64,7 +64,7 @@ const List: React.FC<{}> = () => {
       key: 'teacher',
       render: (text, record) => {
         return (
-          <Button type={'link'} size={'small'} onClick={() =>console.log(record)}>
+              <Button type={'link'} size={'small'} onClick={()=>setTeachDetails(true) }>
             {text}
           </Button>
         );
