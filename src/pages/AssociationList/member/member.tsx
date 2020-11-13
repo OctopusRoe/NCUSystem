@@ -1,4 +1,4 @@
-//
+// 成员管理 页面
 
 import { Button, Divider, message } from 'antd';
 
@@ -10,6 +10,7 @@ import { DownloadOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons'
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
 import AddForm from './components/addForm'
+import CopyMember from './components/copyMember'
 
 const MemberCom: React.FC<{}> = () => {
 
@@ -19,11 +20,20 @@ const MemberCom: React.FC<{}> = () => {
 
   const actionRef = useRef<ActionType>();
   
-  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
+  // 控制显示任务信息模态框
+  const [ DetailsModalVisible, setDetailsModalVisible ] = useState(false);
 
-  const [addVisible, setAddVisible] = useState<boolean>(false)
+  // 控制添加模态框
+  const [ addVisible, setAddVisible ] = useState<boolean>(false)
 
+  // 控制复制模态框
+  const [ copyVisible, setCopyVisible ] = useState<boolean>(false)
+
+  // 添加人员的服务器返回数据
   const [ formValue, setFormValue ] = useState<any>({})
+
+  // 选中的人员列表
+  const [ copyList, setCopyList ] = useState<any>([])
   
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -102,6 +112,7 @@ const MemberCom: React.FC<{}> = () => {
 
   // 导出方法
   const Download = (selectedRows: any) => {
+
     if ( selectedRows && selectedRows.length > 0) {
       message.success({
         content: '已下载选中条目',
@@ -139,7 +150,18 @@ const MemberCom: React.FC<{}> = () => {
           <Button type={'primary'} onClick={() => setAddVisible(true)} >
             <PlusOutlined /> 添加
           </Button>,
-          <Button type={'primary'}>
+          <Button type={'primary'} onClick={
+            () => {
+              if (selectedRows && selectedRows.length > 0) {
+                setCopyVisible(true)
+                return
+              }
+              message.warning({
+                content: '请选择成员',
+                duration: 3
+              })
+            }
+          } >
             <CopyOutlined /> 复制
           </Button>,
           <Button type="default" onClick={() => Download(selectedRows)}>
@@ -152,10 +174,8 @@ const MemberCom: React.FC<{}> = () => {
         scroll={{ x: 1500 }}
       />
       <AddForm addVisible={addVisible} onCancel={() => setAddVisible(false)} onBlur={onBlur} formValue={formValue} />
-      <DetailsModal
-        modalVisible={DetailsModalVisible}
-        onCancel={() => setDetailsModalVisible(false)}
-      />
+      <CopyMember copyVisible={copyVisible} onCancel={() => setCopyVisible(false)} copyList={[]} selectList={['2019届','2020届','2021届']} />
+      <DetailsModal modalVisible={DetailsModalVisible} onCancel={() => setDetailsModalVisible(false)} />
     </>
   );
 };

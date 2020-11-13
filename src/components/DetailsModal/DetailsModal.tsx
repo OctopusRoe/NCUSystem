@@ -94,6 +94,7 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
       visible={modalVisible}
       onCancel={onCancel}
       width="1200px"
+      destroyOnClose
     >
       <div>
       <Row>

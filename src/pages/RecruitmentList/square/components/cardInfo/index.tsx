@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Modal, Row, Col, Divider, Image, Switch, Table, Popover, message, Tag, Button } from 'antd'
+import { Modal, Row, Col, Divider, Image, Switch, Table, Popover, message, Tag } from 'antd'
 import { ClockCircleOutlined } from '@ant-design/icons'
 
 import FormatGrid from './formartgrid'
@@ -152,6 +152,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
 
   return (
     <Modal
+      destroyOnClose
       visible={visible}
       onCancel={onCancel}
       width={1200}

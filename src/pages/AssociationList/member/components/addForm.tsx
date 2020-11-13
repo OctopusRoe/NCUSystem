@@ -1,6 +1,7 @@
 import React, { useState, useRef, ButtonHTMLAttributes } from 'react';
 import { Modal, Form, Input, Button } from 'antd';
-import UploadView from './uploadView'
+
+import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 interface AddFormProps {
   addVisible: boolean;
@@ -24,6 +25,14 @@ const formItemLayout = {
 const FormItem = Form.Item
 
 const AddForm: React.FC<AddFormProps> = (props) => {
+
+  // input 输入框属性
+  const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
+    one: {
+      message: '请输入新增成员学号!',
+      placeHodel: '请输入成员学号',
+    }
+  }
   
   const { addVisible, formValue, onBlur, onCancel } = props;
 
@@ -50,16 +59,17 @@ const AddForm: React.FC<AddFormProps> = (props) => {
             {...formItemLayout}
             name={'studentID'}
             label={'学号'}
-            rules={[
-              {
-                required: true,
-                message: '请输入学号!'
-              }
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: '请输入学号!'
+            //   }
+            // ]}
           >
-            <Input placeholder={'请输入学号'} onBlur={(e) => onBlur(e.target.value)} />
+            {/* <Input placeholder={'请输入学号'} onBlur={(e) => onBlur(e.target.value)} /> */}
+            <FormListCom formListName={'memberList'} info={info} showInput={{two: false, three: false}} />
           </FormItem>
-          <FormItem
+          {/* <FormItem
             {...formItemLayout}
             name={'name'}
             label={'姓名'}
@@ -102,7 +112,7 @@ const AddForm: React.FC<AddFormProps> = (props) => {
                 {formValue.class ? formValue.class : null}
               </div>
             </div>
-          </FormItem>
+          </FormItem> */}
           <FormItem style={{display: 'none'}}>
             <Button htmlType={'submit'} ref={button} />
           </FormItem>
