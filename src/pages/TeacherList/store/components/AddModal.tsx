@@ -1,6 +1,6 @@
 import { Button, DatePicker, Form, Input } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 interface AddModalProps {
   modalVisible: boolean;
