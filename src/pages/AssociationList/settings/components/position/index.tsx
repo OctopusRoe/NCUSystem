@@ -2,19 +2,21 @@
 
 import React, { useState, useRef } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Input, Divider } from 'antd';
+import { Button, Input, Divider, Popconfirm, message } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-
-import CreateForm from './components/CreateForm';
+import AddModal from './components/AddModal';
+import EditModal from './components/EditModal';
 import { TableListItem } from './data.d';
 import { queryRule } from './service';
+import DeatilsModal from '@/components/DetailsModal/DetailsModal';
 
 const { Search } = Input;
 
 const Position: React.FC<{}> = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [addMOdalVisible, setAddModalViaible] = useState(false);
+  const [editMOdalVisible, setEditModalViaible] = useState(false);
+  const [deatilsModal, setDeatilsModal] = useState(false);
+  const [stepFormValues, setStepFormValues] = useState<any>({});
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -30,19 +32,26 @@ const Position: React.FC<{}> = () => {
       width: '25%',
       key: 'positionLeader',
       hideInSearch: true,
+      render: (text) => {
+        return (
+          <Button type={'link'} size={'small'} onClick={() => setDeatilsModal(true)}>
+            {text}
+          </Button>
+        );
+      },
     },
     {
       title: '社团骨干',
-      dataIndex: 'positionVIP',
+      dataIndex: 'communityBackbone',
       width: '20%',
-      key: 'positionVIP',
+      key: 'communityBackbone',
       hideInSearch: true,
     },
     {
       title: '排序号',
-      dataIndex: 'srot',
+      dataIndex: 'number',
       width: '15%',
-      key: 'srot',
+      key: 'number',
       hideInSearch: true,
     },
     {
@@ -54,18 +63,34 @@ const Position: React.FC<{}> = () => {
         <>
           <a
             onClick={() => {
-              handleUpdateModalVisible(true);
+              setEditModalViaible(true);
               setStepFormValues(record);
             }}
           >
             编辑
           </a>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
+
+  //搜索框 Search事件
+  const onSearch = (value: any) => {
+    console.log(value);
+  };
 
   return (
     <div>
@@ -75,15 +100,21 @@ const Position: React.FC<{}> = () => {
         actionRef={actionRef}
         headerTitle={'职务设置'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton />,
-          <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>
+          <Search enterButton onSearch={onSearch} />,
+          <Button type="primary" onClick={() => setAddModalViaible(true)}>
             <PlusOutlined /> 新增
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} />
+      <AddModal modalVisible={addMOdalVisible} onCancel={() => setAddModalViaible(false)} />
+      <DeatilsModal modalVisible={deatilsModal} onCancel={() => setDeatilsModal(false)} />
+      <EditModal
+        modalVisible={editMOdalVisible}
+        onCancel={() => setEditModalViaible(false)}
+        formValue={stepFormValues}
+      />
     </div>
   );
 };

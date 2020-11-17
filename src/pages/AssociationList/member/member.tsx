@@ -1,6 +1,6 @@
 // 成员管理 页面
 
-import { Button, Divider, message } from 'antd';
+import { Button, Divider, message, Popconfirm } from 'antd';
 
 import React, { useRef, useState } from 'react';
 import { queryRule } from './service';
@@ -9,32 +9,31 @@ import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
 
-import AddForm from './components/addForm'
-import CopyMember from './components/copyMember'
+import AddForm from './components/addForm';
+import CopyMember from './components/copyMember';
 
 const MemberCom: React.FC<{}> = () => {
-
   message.config({
-    maxCount: 1
-  })
+    maxCount: 1,
+  });
 
   const actionRef = useRef<ActionType>();
-  
+
   // 控制显示任务信息模态框
-  const [ DetailsModalVisible, setDetailsModalVisible ] = useState(false);
+  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
 
   // 控制添加模态框
-  const [ addVisible, setAddVisible ] = useState<boolean>(false)
+  const [addVisible, setAddVisible] = useState<boolean>(false);
 
   // 控制复制模态框
-  const [ copyVisible, setCopyVisible ] = useState<boolean>(false)
+  const [copyVisible, setCopyVisible] = useState<boolean>(false);
 
   // 添加人员的服务器返回数据
-  const [ formValue, setFormValue ] = useState<any>({})
+  const [formValue, setFormValue] = useState<any>({});
 
   // 选中的人员列表
-  const [ copyList, setCopyList ] = useState<any>([])
-  
+  const [copyList, setCopyList] = useState<any>([]);
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '届数',
@@ -54,7 +53,11 @@ const MemberCom: React.FC<{}> = () => {
       key: 'name',
       fixed: 'left',
       render: (text, record) => {
-        return <Button size={'small'} type={'link'} onClick={() => setDetailsModalVisible(true)}>{text}</Button>;
+        return (
+          <Button size={'small'} type={'link'} onClick={() => setDetailsModalVisible(true)}>
+            {text}
+          </Button>
+        );
       },
     },
     {
@@ -104,36 +107,47 @@ const MemberCom: React.FC<{}> = () => {
         <>
           <a>编辑</a>
           <Divider type="vertical" />
-          <a>删除</a>
+          <Popconfirm title={'是否要删除?'} onCancel={cancel} onConfirm={confirm}>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
   ];
 
+  //取消删除
+  const cancel = () => {
+    message.error('取消删除');
+  };
+
+  //删除成功
+  const confirm = () => {
+    message.success('删除成功');
+  };
+
   // 导出方法
   const Download = (selectedRows: any) => {
-
-    if ( selectedRows && selectedRows.length > 0) {
+    if (selectedRows && selectedRows.length > 0) {
       message.success({
         content: '已下载选中条目',
-        duration: 3
-      })
-      return
+        duration: 3,
+      });
+      return;
     }
     message.success({
       content: '已下载全部条目',
-      duration: 3
-    })
-  }
+      duration: 3,
+    });
+  };
 
   const onBlur = (e: string) => {
     setFormValue({
       name: 'OctopusRoe',
       sex: '男',
       college: '信息工程学院',
-      class: '测试班级1'
-    })
-  }
+      class: '测试班级1',
+    });
+  };
 
   return (
     <>
@@ -147,35 +161,49 @@ const MemberCom: React.FC<{}> = () => {
           return className;
         }}
         toolBarRender={(_action, { selectedRows }) => [
-          <Button type={'primary'} onClick={() => setAddVisible(true)} >
+          <Button type={'primary'} onClick={() => setAddVisible(true)}>
             <PlusOutlined /> 添加
           </Button>,
-          <Button type={'primary'} onClick={
-            () => {
+          <Button
+            type={'primary'}
+            onClick={() => {
               if (selectedRows && selectedRows.length > 0) {
-                setCopyVisible(true)
-                return
+                setCopyVisible(true);
+                return;
               }
               message.warning({
                 content: '请选择成员',
-                duration: 3
-              })
-            }
-          } >
+                duration: 3,
+              });
+            }}
+          >
             <CopyOutlined /> 复制
           </Button>,
           <Button type="default" onClick={() => Download(selectedRows)}>
-            <DownloadOutlined /> { selectedRows && selectedRows.length > 0 ? '导出选中' : '导出全部' }
-          </Button>
+            <DownloadOutlined /> {selectedRows && selectedRows.length > 0 ? '导出选中' : '导出全部'}
+          </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{}}
         scroll={{ x: 1500 }}
       />
-      <AddForm addVisible={addVisible} onCancel={() => setAddVisible(false)} onBlur={onBlur} formValue={formValue} />
-      <CopyMember copyVisible={copyVisible} onCancel={() => setCopyVisible(false)} copyList={[]} selectList={['2019届','2020届','2021届']} />
-      <DetailsModal modalVisible={DetailsModalVisible} onCancel={() => setDetailsModalVisible(false)} />
+      <AddForm
+        addVisible={addVisible}
+        onCancel={() => setAddVisible(false)}
+        onBlur={onBlur}
+        formValue={formValue}
+      />
+      <CopyMember
+        copyVisible={copyVisible}
+        onCancel={() => setCopyVisible(false)}
+        copyList={[]}
+        selectList={['2019届', '2020届', '2021届']}
+      />
+      <DetailsModal
+        modalVisible={DetailsModalVisible}
+        onCancel={() => setDetailsModalVisible(false)}
+      />
     </>
   );
 };
