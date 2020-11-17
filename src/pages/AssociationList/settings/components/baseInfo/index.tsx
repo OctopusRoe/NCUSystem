@@ -280,66 +280,74 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         >
           <CropImgView id="syssimpleimg" />
         </Form.Item>
-        <Form.Item  {...formItemLayout} label={'指导老师审批'}>
-          <Input.Group compact>
-            <Form.Item
-              noStyle
-              name={'teacherPhone'}
-              rules={[{required: true, message: '请选择指导老师!'}]}
-            >
-              <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectTeacher}>
-                {
-                  teacherValue.map((item: any, index: number) => (
-                    <Option value={item.phone} key={index}>
-                      {item.name}
-                    </Option>
-                  ))
-                }
-              </Select>
-            </Form.Item>
-            <Form.Item name={'teacherCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
-              <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            </Form.Item>
-            <Button
-              style={{width: '25%'}}
-              onClick={teacherCountDown}
-              disabled={canTeacherUse ? false : true}
-              type={canTeacherUse ? 'primary' : 'default'}
-            >
-              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
-        <Form.Item  {...formItemLayout} label={'指导部门审批'}>
-          <Input.Group compact>
-            <Form.Item
-              noStyle
-              name={'departmentPhone'}
-              rules={[{required: true, message: '请选择指导指导部门!'}]}
-            >
-              <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectDepartment}>
-                {
-                  teacherValue.map((item: any, index: number) => (
-                    <Option value={item.phone} key={index}>
-                      {item.name}
-                    </Option>
-                  ))
-                }
-              </Select>
-            </Form.Item>
-            <Form.Item name={'departmentCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
-              <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            </Form.Item>
-            <Button
-              style={{width: '25%'}}
-              onClick={departmentCountDown}
-              disabled={canDepartmentUse ? false : true}
-              type={canDepartmentUse ? 'primary' : 'default'}
-            >
-              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
+        <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
+        <Input.Group compact>
+          <Form.Item
+            name={'teacherPhone'}
+            style={{display: 'inline-block', width: '25%'}}
+            rules={[{required: true, message: '请选择指导老师!'}]}
+          >
+            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
+              {
+                teacherValue.map((item: any, index: number) => (
+                  <Option value={item.phone} key={index}>
+                    {item.name}
+                  </Option>
+                ))
+              }
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name={'teacherCode'}
+            style={{display: 'inline-block', width: '50%'}}
+            rules={[{required: true, message: '请输入手机验证码!'}]}
+          >
+            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+          </Form.Item>
+          <Button
+            style={{width: '25%'}}
+            onClick={teacherCountDown}
+            disabled={canTeacherUse ? false : true}
+            type={canTeacherUse ? 'primary' : 'default'}
+          >
+            {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
+          </Button>
+        </Input.Group>
+      </Form.Item>
+      <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
+        <Input.Group compact>
+          <Form.Item
+            name={'departmentPhone'}
+            style={{display: 'inline-block', width: '25%'}}
+            rules={[{required: true, message: '请选择指导部门!'}]}
+          >
+            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
+              {
+                teacherValue.map((item: any, index: number) => (
+                  <Option value={item.phone} key={index}>
+                    {item.name}
+                  </Option>
+                ))
+              }
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name={'departmentCode'}
+            style={{display: 'inline-block', width: '50%'}}
+            rules={[{required: true, message: '请输入手机验证码!'}]}
+          >
+            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+          </Form.Item>
+          <Button
+            style={{width: '25%'}}
+            onClick={departmentCountDown}
+            disabled={canDepartmentUse ? false : true}
+            type={canDepartmentUse ? 'primary' : 'default'}
+          >
+            {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
+          </Button>
+        </Input.Group>
+      </Form.Item>
         <Form.Item
           {...submitFormLayout}
         >

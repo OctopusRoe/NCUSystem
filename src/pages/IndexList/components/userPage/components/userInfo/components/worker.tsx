@@ -52,10 +52,8 @@ const WorkerInfo: React.FC<WorkerInfoProps> = (props) => {
   const { info } = props
   const {workerName, workerID, workderSex, cardID, nation, college, department } = info
 
-  const [ geographicList, setGeographicList ] = useState<string[]>([])
+  const [ geographicList, setGeographicList ] = useState<{[name: string]: string}>({})
 
-  const [ birthPlaceError, setBirthPlaceError ] = useState<any>('')
-  const [ birthPlaceStr, setBirthPlaceStr ] = useState<string|null>(null)
 
   const onFinish = (e: any) => {
     console.log(e)
@@ -63,15 +61,7 @@ const WorkerInfo: React.FC<WorkerInfoProps> = (props) => {
 
   const getGeographicValue = (e: any) => {
     setGeographicList(e)
-    setBirthPlaceError('')
-    setBirthPlaceStr(null)
-  }
 
-  const checkOut = () => {
-    if (geographicList.length === 0 ) {
-      setBirthPlaceError('error')
-      setBirthPlaceStr('请选择籍贯!')
-    }
   }
 
   return (
@@ -152,8 +142,7 @@ const WorkerInfo: React.FC<WorkerInfoProps> = (props) => {
         <FormItem
           {...formItemLayout}
           label={'籍贯'}
-          validateStatus={birthPlaceError}
-          help={birthPlaceStr}
+          style={{marginBottom: '0px'}}
         >
           <GeographicView onFinish={getGeographicValue} />
         </FormItem>
@@ -243,7 +232,7 @@ const WorkerInfo: React.FC<WorkerInfoProps> = (props) => {
         <FormItem
           {...submitFormLayout}
         >
-          <Button type={'primary'} size={'large'} htmlType={'submit'} onClick={checkOut}>保存</Button>
+          <Button type={'primary'} size={'large'} htmlType={'submit'}>保存</Button>
         </FormItem>
       </Form>
     </>

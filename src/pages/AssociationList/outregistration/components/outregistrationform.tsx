@@ -5,6 +5,8 @@ import { Form, Input, message, Button, DatePicker, Select } from 'antd';
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
 import { connect, Dispatch } from 'umi';
 
+import PlaceView from '@/components/placeView/placeView'
+
 interface OutregistrationformProps {
   canTeacherUse: boolean
   teacherCount: number
@@ -168,7 +170,7 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
   useEffect(()=>{}, [count])
 
   // 表单数据获取
-  const handleFinish = (e: any) => {
+  const onFinish = (e: any) => {
     message.success('ok');
     console.log(e);
   }
@@ -185,7 +187,7 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
 
   return (
     <Form
-      onFinish={handleFinish}
+      onFinish={onFinish}
       style={{ paddingTop: '12px' }}
       layout={'horizontal'}
       autoComplete={'off'}
@@ -220,8 +222,12 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
       >
         <TextArea showCount maxLength={100} rows={6} placeholder={'请输入外出事由'} />
       </FormItem>
-      <FormItem {...formItemLayout} label={'外出地点'} name={'place'}>
-        <Input />
+      <FormItem
+        {...formItemLayout}
+        label={'外出地点'}
+        style={{marginBottom: '0px'}}
+      >
+        <PlaceView />
       </FormItem>
       <FormItem {...formItemLayout} label={'外出负责人'}>
         <FormListCom
@@ -241,14 +247,14 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
           removeFun={memberRemove}
         />
       </FormItem>
-      <Form.Item  {...formItemLayout} label={'指导老师审批'}>
+      <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
         <Input.Group compact>
           <Form.Item
-            noStyle
             name={'teacherPhone'}
+            style={{display: 'inline-block', width: '25%'}}
             rules={[{required: true, message: '请选择指导老师!'}]}
           >
-            <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectTeacher}>
+            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
               {
                 teacherValue.map((item: any, index: number) => (
                   <Option value={item.phone} key={index}>
@@ -258,8 +264,12 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
               }
             </Select>
           </Form.Item>
-          <Form.Item name={'teacherCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
-            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+          <Form.Item
+            name={'teacherCode'}
+            style={{display: 'inline-block', width: '50%'}}
+            rules={[{required: true, message: '请输入手机验证码!'}]}
+          >
+            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
           </Form.Item>
           <Button
             style={{width: '25%'}}
@@ -271,14 +281,14 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
           </Button>
         </Input.Group>
       </Form.Item>
-      <Form.Item  {...formItemLayout} label={'指导部门审批'}>
+      <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
         <Input.Group compact>
           <Form.Item
-            noStyle
             name={'departmentPhone'}
-            rules={[{required: true, message: '请选择指导指导部门!'}]}
+            style={{display: 'inline-block', width: '25%'}}
+            rules={[{required: true, message: '请选择指导部门!'}]}
           >
-            <Select style={{ width: '25%' }} placeholder={'请选择'} onChange={selectDepartment}>
+            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
               {
                 teacherValue.map((item: any, index: number) => (
                   <Option value={item.phone} key={index}>
@@ -288,8 +298,12 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
               }
             </Select>
           </Form.Item>
-          <Form.Item name={'departmentCode'} rules={[{required: true, message: '请输入手机验证码!'}]} noStyle>
-            <Input style={{ width: '50%', borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+          <Form.Item
+            name={'departmentCode'}
+            style={{display: 'inline-block', width: '50%'}}
+            rules={[{required: true, message: '请输入手机验证码!'}]}
+          >
+            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
           </Form.Item>
           <Button
             style={{width: '25%'}}

@@ -6,7 +6,7 @@ const Geographic = require('./pca.json')
 const { Option } = Select
 
 interface GeographicViewProps {
-  onFinish?: (value: string[]) => void
+  onFinish?: (value: {[name:string]:string}) => void
 }
 
 const GeographicView: React.FC<GeographicViewProps> = (props) => {
@@ -43,19 +43,20 @@ const GeographicView: React.FC<GeographicViewProps> = (props) => {
 
   const onFinish = (value: string) => {
     if (props.onFinish) {
-      props.onFinish([province, city, value])
+      props.onFinish({province: province,city: city,region: value})
     }
   }
 
   return (
     <div style={{width: '100%'}}>
       <Form.Item
-        noStyle
         name={'province'}
+        style={{display: 'inline-block', width: '33%'}}
+        rules={[{required: true, message: '请选择省份!'}]}
       >
         <Select
           showSearch
-          style={{width: '33%'}}
+          style={{width: '100%'}}
           placeholder={'请选择省份'}
           onSelect={getCity}
           >
@@ -63,12 +64,13 @@ const GeographicView: React.FC<GeographicViewProps> = (props) => {
         </Select>
       </Form.Item>
       <Form.Item
-        noStyle
         name={'city'}
+        style={{display: 'inline-block', width: '33%', marginLeft: '0.5%'}}
+        rules={[{required: true, message: '请选择城市!'}]}
       >
         <Select
           showSearch
-          style={{width: '33%', marginLeft: '0.5%'}}
+          style={{width: '100%'}}
           placeholder={'请选择城市'}
           onSelect={getRegion}
         >
@@ -76,12 +78,13 @@ const GeographicView: React.FC<GeographicViewProps> = (props) => {
         </Select>
       </Form.Item>
       <Form.Item
-        noStyle
         name={'district'}
+        style={{display: 'inline-block', width: '33%', marginLeft: '0.5%'}}
+        rules={[{required: true, message: '请选择区/县!'}]}
       >
         <Select
           showSearch
-          style={{width: '33%', marginLeft: '0.5%'}}
+          style={{width: '100%'}}
           placeholder={'请选择区/县'}
           onSelect={onFinish}
         >
