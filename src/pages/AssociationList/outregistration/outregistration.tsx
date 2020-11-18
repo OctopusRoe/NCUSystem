@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 
-import { FormattedMessage, Dispatch, connect } from 'umi';
+import { FormattedMessage, Dispatch, connect, useIntl } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import styles from './base.less';

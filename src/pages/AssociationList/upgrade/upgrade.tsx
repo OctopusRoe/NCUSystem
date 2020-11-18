@@ -4,8 +4,8 @@ import { Button, Card, Input, Form, Select, Upload, Table } from 'antd';
 import { connect, Dispatch } from 'umi';
 import React, { FC, useEffect, useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
-import Success from './components/Result/success';
-import Fail from './components/Result/fail';
+import Success from './components/success';
+import Fail from './components/fail';
 
 const FormItem = Form.Item;
 
