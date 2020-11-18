@@ -4,7 +4,7 @@ import { PlusOutlined, PrinterOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
-import { StateType } from '../../model';
+import { StateType } from '../../model'
 
 import styles from './index.less';
 
