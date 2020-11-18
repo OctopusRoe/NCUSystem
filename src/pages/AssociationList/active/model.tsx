@@ -1,17 +1,32 @@
-export interface StepstateType {
+import { Reducer } from 'umi'
+
+export interface CreateActiveState {
+  typeList: string[]
   canTeacherUse: boolean
   teacherCount: number
   canDepartmentUse: boolean
   departmentCount: number
+  teacherValue: {name:string,phone:string}[]
 }
 
-export default {
-  namespace: 'applyStep5',
+export interface CreateActiveType {
+  namespace: string
+  state: CreateActiveState
+  reducers: {
+    setTeacherCount: Reducer<CreateActiveState>
+    setDepartmentCount: Reducer<CreateActiveState>
+  }
+}
+
+const CreateActiveModel: CreateActiveType = {
+  namespace: 'createActive',
   state: {
+    typeList: ['类型1','类型2','类型3','类型4','类型5'],
     canTeacherUse: true,
     teacherCount: 1,
     canDepartmentUse: true,
     departmentCount: 1,
+    teacherValue: [{name: '姓名1', phone: '123123'},{name: '姓名2', phone: '123123123'}],
   },
   reducers: {
     // 设置老师倒计时
@@ -32,3 +47,5 @@ export default {
     }
   }
 }
+
+export default CreateActiveModel

@@ -1,15 +1,24 @@
-// 发布新活动 组件
+// 活动修改 抽屉组件
 
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { Drawer, Form, Input, Select, DatePicker, Button, Space } from 'antd'
+import { values } from 'lodash'
 
-import CropImgView from '@/components/CropImgview'
-
-interface CreateActiveProps {
+interface modifyDrawerProps {
   visible: boolean
   typeList: string[]
   onClose: () => void
+  value: {
+    name?: string,
+    type?: string,
+    sponsor?: string,
+    organizer?: string,
+    time?: any,
+    place?: string,
+    scale?: string,
+    info?: string
+  }
 }
 
 const FormItem = Form.Item
@@ -28,18 +37,21 @@ const formItemLayout = {
   },
 };
 
-const CreateActive: React.FC<CreateActiveProps> = (props) => {
+const modifyDrawer: React.FC<modifyDrawerProps> = (props) => {
   
-  const { visible, typeList, onClose } = props
-  
+  const { visible, value, typeList, onClose } = props
+  const button = useRef<HTMLButtonElement>(null)
+
   const onFinish = (e: any) => {
     console.log(e)
+    console.log(e.time[0].format('YYYY-MM-DD h:mm:ss'))
   }
 
   return (
     <Drawer
-      title={'发布活动'}
+      destroyOnClose
       visible={visible}
+      title={'修改申请'}
       onClose={onClose}
       width={800}
       bodyStyle={{paddingBottom: '0px'}}
@@ -47,7 +59,7 @@ const CreateActive: React.FC<CreateActiveProps> = (props) => {
         <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end', paddingRight: '25px'}}>
           <Space>
             <Button onClick={onClose}>取消</Button>
-            <Button onClick={()=>document.getElementById('create-active-form-button')?.click()} type={'primary'}>提交</Button>
+            <Button type={'primary'} onClick={()=> button.current?.click()}>提交</Button>
           </Space>
         </div>
       }
@@ -56,6 +68,7 @@ const CreateActive: React.FC<CreateActiveProps> = (props) => {
         autoComplete={'off'}
         hideRequiredMark
         onFinish={onFinish}
+        initialValues={value}
       >
         <FormItem
           {...formItemLayout}
@@ -167,19 +180,9 @@ const CreateActive: React.FC<CreateActiveProps> = (props) => {
         >
           <Input.TextArea placeholder={'请输入活动详情'} maxLength={400} rows={10} showCount />
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          name={'image'}
-          label={'活动海报'}
-          style={{margin: '0'}}
-          extra={
-            <p>请上传1200px * 500px像素图片</p>
-          }
-        >
-          <CropImgView id={'create-active-form-img'} />
-        </FormItem>
+
         <FormItem style={{display:'none'}}>
-          <Button id={'create-active-form-button'} htmlType={'submit'} />
+          <Button ref={button} htmlType={'submit'} />
         </FormItem>
         
       </Form>
@@ -187,4 +190,4 @@ const CreateActive: React.FC<CreateActiveProps> = (props) => {
   )
 }
 
-export default CreateActive
+export default modifyDrawer

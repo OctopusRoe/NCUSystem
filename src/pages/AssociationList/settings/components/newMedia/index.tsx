@@ -143,7 +143,7 @@ const NewMedia: React.FC<{}> = () => {
         rowKey="key"
         search={false}
         actionRef={actionRef}
-        headerTitle={'机构设置'}
+        headerTitle={'网络平台'}
         toolBarRender={(action, { selectedRows }) => [
           <Search enterButton />,
           <Button type="primary" onClick={() => handleModalVisible(true)} size={'middle'}>

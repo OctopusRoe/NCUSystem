@@ -5,7 +5,10 @@ import { Button, Form, Input, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
+
 import styles from './index.less';
+
+import { StepstateType } from './model'
 
 interface Step3Props {
   data?: StateType['step'];
@@ -261,7 +264,7 @@ const Step5: React.FC<Step3Props> = (props) => {
   );
 };
 
-export default connect(({ formAndstepForm, applyStep5 }: { formAndstepForm: StateType, applyStep5: any }) => ({
+export default connect(({ formAndstepForm, applyStep5 }: { formAndstepForm: StateType, applyStep5: StepstateType }) => ({
   data: formAndstepForm.step,
   canTeacherUse: applyStep5.canTeacherUse,
   teacherCount: applyStep5.teacherCount,
