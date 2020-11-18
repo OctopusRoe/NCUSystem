@@ -1,6 +1,6 @@
 import { Effect, Reducer } from 'umi';
 
-import { fakeSubmitForm } from './service';
+import { fakeSubmitForm } from './service'
 
 export interface StateType {
   current?: string;

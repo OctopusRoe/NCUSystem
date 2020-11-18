@@ -1,11 +1,10 @@
-import { CloseCircleOutlined, ExclamationCircleOutlined, ExclamationOutlined, RightOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Button, Card, Result } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi';
+import { FormattedMessage, useIntl } from 'umi';
 import React, { Fragment } from 'react';
 
 import { GridContent } from '@ant-design/pro-layout';
 import styles from './index.less';
-import { FormItemLabelProps } from 'antd/lib/form/FormItemLabel';
 import { SuccessProps } from 'antd/es/progress/progress';
 
 const Content = (
@@ -26,18 +25,21 @@ const Content = (
   </Fragment>
 );
 
-
 const Fail: React.FC<SuccessProps> = () => {
+  const intl = useIntl();
   return (
     <GridContent>
       <Card bordered={false}>
         <Result
           status="error"
-          title={formatMessage({ id: 'resultandfail.error.title' })}
-          subTitle={formatMessage({ id: 'resultandfail.error.description' })}
+          title={intl.formatMessage({ id: 'resultandfail.error.title' })}
+          subTitle={intl.formatMessage({ id: 'resultandfail.error.description' })}
           extra={
             <Button type="primary">
-              <FormattedMessage id="resultandfail.error.btn-text" defaultMessage="Return to modify" />
+              <FormattedMessage
+                id="resultandfail.error.btn-text"
+                defaultMessage="Return to modify"
+              />
             </Button>
           }
           style={{ marginTop: 48, marginBottom: 16 }}
@@ -46,8 +48,7 @@ const Fail: React.FC<SuccessProps> = () => {
         </Result>
       </Card>
     </GridContent>
-  )
-}
+  );
+};
 
-
-export default Fail
+export default Fail;

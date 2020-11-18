@@ -1,6 +1,5 @@
-import { DingdingOutlined } from '@ant-design/icons';
 import { Button, Card, Steps, Result, Descriptions } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi';
+import { FormattedMessage, useIntl } from 'umi';
 import React, { Fragment } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 
@@ -9,8 +8,6 @@ import { SuccessProps } from 'antd/lib/progress/progress';
 import classNames from 'classnames';
 
 const { Step } = Steps;
-
-
 
 const desc1 = (
   <div className={classNames(styles.textSecondary, styles.stepDescription)}>
@@ -31,25 +28,6 @@ const desc2 = (
   </div>
 );
 
-
-const content = (
-  <>
-    <Descriptions
-      title={formatMessage({
-        id: 'resultandsuccess.success.operate-title',
-        defaultMessage: 'Project Name',
-      })}
-    ></Descriptions>
-    <br />
-    <Steps  current={1}>
-      <Step title="注册登记" description={desc1} />
-      <Step title="业务指导单位" description={desc2} />
-      <Step title="校团委" />
-      <Step title="完成" />
-    </Steps>
-  </>
-);
-
 const extra = (
   <Fragment>
     <Button type="primary">
@@ -59,13 +37,32 @@ const extra = (
 );
 
 const Success: React.FC<SuccessProps> = () => {
+  const intl = useIntl();
+
+  const content = (
+    <>
+      <Descriptions
+        title={intl.formatMessage({
+          id: 'resultandsuccess.success.operate-title',
+          defaultMessage: 'Project Name',
+        })}
+      ></Descriptions>
+      <br />
+      <Steps current={1}>
+        <Step title="注册登记" description={desc1} />
+        <Step title="业务指导单位" description={desc2} />
+        <Step title="校团委" />
+        <Step title="完成" />
+      </Steps>
+    </>
+  );
   return (
     <GridContent>
       <Card bordered={false}>
         <Result
           status="success"
-          title={formatMessage({ id: 'resultandsuccess.success.title' })}
-          subTitle={formatMessage({ id: 'resultandsuccess.success.description' })}
+          title={intl.formatMessage({ id: 'resultandsuccess.success.title' })}
+          subTitle={intl.formatMessage({ id: 'resultandsuccess.success.description' })}
           extra={extra}
           style={{ marginBottom: 16 }}
         >

@@ -8,7 +8,7 @@ import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
-
+import EditModal from './components/editModal';
 import AddForm from './components/addForm';
 import CopyMember from './components/copyMember';
 
@@ -18,6 +18,9 @@ const MemberCom: React.FC<{}> = () => {
   });
 
   const actionRef = useRef<ActionType>();
+
+  //编辑人员modal框
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   // 控制显示任务信息模态框
   const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
@@ -31,8 +34,8 @@ const MemberCom: React.FC<{}> = () => {
   // 添加人员的服务器返回数据
   const [formValue, setFormValue] = useState<any>({});
 
-  // 选中的人员列表
-  const [copyList, setCopyList] = useState<any>([]);
+  //编辑人员的返回数据
+  const [editValue, setEditValue] = useState<any>({});
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -103,9 +106,16 @@ const MemberCom: React.FC<{}> = () => {
       valueType: 'option',
       width: '10%',
       fixed: 'right',
-      render: (_) => (
+      render: (_, record) => (
         <>
-          <a>编辑</a>
+          <a
+            onClick={() => {
+              setEditModalVisible(true);
+              setEditValue(record);
+            }}
+          >
+            编辑
+          </a>
           <Divider type="vertical" />
           <Popconfirm title={'是否要删除?'} onCancel={cancel} onConfirm={confirm}>
             <a>删除</a>
@@ -203,6 +213,11 @@ const MemberCom: React.FC<{}> = () => {
       <DetailsModal
         modalVisible={DetailsModalVisible}
         onCancel={() => setDetailsModalVisible(false)}
+      />
+      <EditModal
+        onCancel={() => setEditModalVisible(false)}
+        modalVisible={editModalVisible}
+        formValue={editValue}
       />
     </>
   );

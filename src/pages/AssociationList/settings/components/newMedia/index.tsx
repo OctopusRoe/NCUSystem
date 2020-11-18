@@ -120,7 +120,7 @@ const NewMedia: React.FC<{}> = () => {
         rowKey="key"
         search={false}
         actionRef={actionRef}
-        headerTitle={'机构设置'}
+        headerTitle={''}
         toolBarRender={(action, {}) => [
           <Search enterButton onSearch={onSearch} />,
           <Button type="primary" onClick={() => setAddModalVisible(true)}>

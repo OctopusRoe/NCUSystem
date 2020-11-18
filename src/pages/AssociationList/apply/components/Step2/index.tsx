@@ -1,6 +1,6 @@
 // 申请第2步组件
 import React from 'react';
-import { Form, Button, Input, Select, Radio } from 'antd';
+import { Form, Button, Input, Radio } from 'antd';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
 import styles from './index.less';
@@ -44,12 +44,13 @@ const Step2: React.FC<Step2Props> = (props) => {
     }
   };
 
+  const { validateFields } = form;
   const onValidateForm = async () => {
-    // const values = await validateFields();
+    const values = await validateFields();
     if (dispatch) {
       dispatch({
         type: 'formAndstepForm/saveStepFormData',
-        // payload: values,
+        payload: values,
       });
       dispatch({
         type: 'formAndstepForm/saveCurrentStep',
@@ -66,6 +67,7 @@ const Step2: React.FC<Step2Props> = (props) => {
         layout="horizontal"
         className={styles.stepForm}
         hideRequiredMark
+        autoComplete="off"
       >
         <Form.Item label="姓名" name="name">
           <Input style={{ width: '50%' }} disabled={true} />
@@ -73,24 +75,29 @@ const Step2: React.FC<Step2Props> = (props) => {
         <Form.Item label="学号" name="stuid">
           <Input style={{ width: '50%' }} disabled={true} />
         </Form.Item>
-        <Form.Item label="是否挂科" name="test">
-          <Radio.Group >
-            <Radio value={1}>是</Radio>
-            <Radio value={2}>否</Radio>
+        <Form.Item
+          label="是否挂科"
+          name="test"
+          rules={[{ required: true, message: '请选择是否挂科' }]}
+        >
+          <Radio.Group>
+            <Radio value="true">是</Radio>
+            <Radio value="false">否</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item
           label="学习成绩班级排名"
           name="ranking"
+          rules={[{ required: true, message: '请输入学习成绩班级排名' }]}
         >
           <Input style={{ width: '100px' }} suffix={<div style={{ color: '#bfbfbf' }}>%</div>} />
         </Form.Item>
         <Form.Item
           label="在校期间所获荣誉"
-          name="awards"
-          rules={[{ required: true, message: '请输入获奖情况' }]}
+          name="honor"
+          rules={[{ required: true, message: '请输入校期间所获荣誉' }]}
         >
-          <Input.TextArea rows={4} />
+          <Input.TextArea rows={4} placeholder="请输入在校期间所获荣誉" />
         </Form.Item>
         <Form.Item
           wrapperCol={{
@@ -109,18 +116,6 @@ const Step2: React.FC<Step2Props> = (props) => {
           </Button>
         </Form.Item>
       </Form>
-      {/* <Divider style={{ margin: '40px 0 24px' }} />
-      <div className={styles.desc}>
-        <h3>说明</h3>
-        <h4>转账到支付宝账户</h4>
-        <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-       </p>
-        <h4>转账到银行卡</h4>
-        <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-       </p>
-      </div> */}
     </>
   );
 };

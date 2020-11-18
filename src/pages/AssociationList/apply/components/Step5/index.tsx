@@ -1,11 +1,12 @@
 // 申请最后1步组件
 
-import { PlusOutlined, PrinterOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Select, Upload } from 'antd';
+import ApplyUploadView from '@/components/ApplyUploadView/uploadView';
+import { PrinterOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
-import { StateType } from '../../model';
 import styles from './index.less';
+import { StateType } from '../../model';
 
 interface Step3Props {
   data?: StateType['step'];
@@ -36,13 +37,21 @@ interface FormInfo {
 const { Option } = Select;
 
 const Step5: React.FC<Step3Props> = (props) => {
-  const { data, dispatch, formInfo, canTeacherUse, teacherCount, canDepartmentUse, departmentCount } = props;
+  const {
+    data,
+    dispatch,
+    formInfo,
+    canTeacherUse,
+    teacherCount,
+    canDepartmentUse,
+    departmentCount,
+  } = props;
   const [form] = Form.useForm();
   if (!data) {
     return null;
   }
 
-  const { validateFields, getFieldsValue } = form;
+  const { getFieldsValue } = form;
 
   const onPrev = () => {
     if (dispatch) {
@@ -61,45 +70,45 @@ const Step5: React.FC<Step3Props> = (props) => {
     }
   };
 
-  const { teacherValue, associationType, associationGrade, department } = formInfo;
+  const { teacherValue } = formInfo;
 
   // 保存指导老师电话
-  const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
+  const [getTeacherPhone, setGetTeacherPhone] = useState<string>('');
 
   // 保存指导部门电话
-  const [ getDepartmentPhone, setGetDepartmentPhone ] = useState<string>('')
+  const [getDepartmentPhone, setGetDepartmentPhone] = useState<string>('');
 
   // 选择指导老师电话
   const selectTeacher = (e: string) => {
-    setGetTeacherPhone(e)
-  }
+    setGetTeacherPhone(e);
+  };
 
   // 选择指导部门电话
   const selectDepartment = (e: string) => {
-    setGetDepartmentPhone(e)
-  }
+    setGetDepartmentPhone(e);
+  };
 
   // 老师设置倒计时方法
   const teacherCountDown = () => {
     if (getTeacherPhone === '') {
-      return
+      return;
     }
     dispatch({
       type: 'applyStep5/setTeacherCount',
-      payload: [60, false]
-    })
-  }
+      payload: [60, false],
+    });
+  };
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
     if (getDepartmentPhone === '') {
-      return
+      return;
     }
     dispatch({
       type: 'applyStep5/setDepartmentCount',
-      payload: [60, false]
-    })
-  }
+      payload: [60, false],
+    });
+  };
 
   // 老师倒计时
   useEffect(() => {
@@ -107,16 +116,16 @@ const Step5: React.FC<Step3Props> = (props) => {
       setTimeout(() => {
         dispatch({
           type: 'applyStep5/setTeacherCount',
-          payload: [teacherCount - 1, false]
-        })
-      }, 1000)
+          payload: [teacherCount - 1, false],
+        });
+      }, 1000);
     } else {
       dispatch({
         type: 'applyStep5/setTeacherCount',
-        payload: [1, true]
-      })
+        payload: [1, true],
+      });
     }
-  },[teacherCount])
+  }, [teacherCount]);
 
   // 部门倒计时
   useEffect(() => {
@@ -124,16 +133,20 @@ const Step5: React.FC<Step3Props> = (props) => {
       setTimeout(() => {
         dispatch({
           type: 'applyStep5/setDepartmentCount',
-          payload: [departmentCount - 1, false]
-        })
-      }, 1000)
+          payload: [departmentCount - 1, false],
+        });
+      }, 1000);
     } else {
       dispatch({
         type: 'applyStep5/setDepartmentCount',
-        payload: [1, true]
-      })
+        payload: [1, true],
+      });
     }
-  }, [departmentCount])
+  }, [departmentCount]);
+
+  const onFinish = (value: any) => {
+    console.log(value);
+  };
 
   return (
     <>
@@ -141,6 +154,7 @@ const Step5: React.FC<Step3Props> = (props) => {
         {...formItemLayout}
         form={form}
         layout="horizontal"
+        onFinish={onFinish}
         className={styles.stepForm}
         hideRequiredMark
       >
@@ -150,98 +164,90 @@ const Step5: React.FC<Step3Props> = (props) => {
             打印《南昌大学学生社团成立申请表》
           </Button>
         </Form.Item>
-        <Form.Item label="拍照上传">
-          <Upload
-            name="logo1"
-            listType="picture-card"
-            className="avatar-uploader"
-            showUploadList={false}
-          >
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>正面</div>
-            </div>
-          </Upload>
-          <Upload
-            name="logo2"
-            listType="picture-card"
-            className="avatar-uploader"
-            showUploadList={false}
-          >
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>反面</div>
-            </div>
-          </Upload>
+        <Form.Item
+          label="拍照上传"
+          name="positive"
+          rules={[{ required: true, message: '请上传申请材料正面' }]}
+        >
+          <ApplyUploadView id="positive" imgTip="正面" />
         </Form.Item>
-        <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'teacherPhone'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导老师!'}]}
-          >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
-              {
-                teacherValue.map((item: any, index: number) => (
+        <Form.Item
+          wrapperCol={{
+            xs: { span: 24, offset: 0 },
+            sm: {
+              span: formItemLayout.wrapperCol.span,
+              offset: formItemLayout.labelCol.span,
+            },
+          }}
+          name="reverse"
+          rules={[{ required: true, message: '请上传申请材料反面' }]}
+        >
+          <ApplyUploadView id="reverse" imgTip="反面" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px' }}>
+          <Input.Group compact>
+            <Form.Item
+              name={'teacherPhone'}
+              style={{ display: 'inline-block', width: '25%' }}
+              rules={[{ required: true, message: '请选择指导老师!' }]}
+            >
+              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
+                {teacherValue.map((item: any, index: number) => (
                   <Option value={item.phone} key={index}>
                     {item.name}
                   </Option>
-                ))
-              }
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name={'teacherCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
-          >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={teacherCountDown}
-            disabled={canTeacherUse ? false : true}
-            type={canTeacherUse ? 'primary' : 'default'}
-          >
-            {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
-      <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'departmentPhone'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导部门!'}]}
-          >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-              {
-                teacherValue.map((item: any, index: number) => (
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name={'teacherCode'}
+              style={{ display: 'inline-block', width: '50%' }}
+              rules={[{ required: true, message: '请输入手机验证码!' }]}
+            >
+              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
+            <Button
+              style={{ width: '25%' }}
+              onClick={teacherCountDown}
+              disabled={canTeacherUse ? false : true}
+              type={canTeacherUse ? 'primary' : 'default'}
+            >
+              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
+            </Button>
+          </Input.Group>
+        </Form.Item>
+        <Form.Item {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px' }}>
+          <Input.Group compact>
+            <Form.Item
+              name={'departmentPhone'}
+              style={{ display: 'inline-block', width: '25%' }}
+              rules={[{ required: true, message: '请选择指导部门!' }]}
+            >
+              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
+                {teacherValue.map((item: any, index: number) => (
                   <Option value={item.phone} key={index}>
                     {item.name}
                   </Option>
-                ))
-              }
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name={'departmentCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
-          >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={departmentCountDown}
-            disabled={canDepartmentUse ? false : true}
-            type={canDepartmentUse ? 'primary' : 'default'}
-          >
-            {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name={'departmentCode'}
+              style={{ display: 'inline-block', width: '50%' }}
+              rules={[{ required: true, message: '请输入手机验证码!' }]}
+            >
+              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
+            <Button
+              style={{ width: '25%' }}
+              onClick={departmentCountDown}
+              disabled={canDepartmentUse ? false : true}
+              type={canDepartmentUse ? 'primary' : 'default'}
+            >
+              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
+            </Button>
+          </Input.Group>
+        </Form.Item>
         <Form.Item
           wrapperCol={{
             xs: { span: 24, offset: 0 },
@@ -251,7 +257,9 @@ const Step5: React.FC<Step3Props> = (props) => {
             },
           }}
         >
-          <Button type="primary" htmlType={'submit'}>提 交</Button>
+          <Button type="primary" htmlType={'submit'}>
+            提 交
+          </Button>
           <Button onClick={onPrev} style={{ marginLeft: 8 }}>
             上一步
           </Button>
@@ -261,10 +269,12 @@ const Step5: React.FC<Step3Props> = (props) => {
   );
 };
 
-export default connect(({ formAndstepForm, applyStep5 }: { formAndstepForm: StateType, applyStep5: any }) => ({
-  data: formAndstepForm.step,
-  canTeacherUse: applyStep5.canTeacherUse,
-  teacherCount: applyStep5.teacherCount,
-  canDepartmentUse: applyStep5.canDepartmentUse,
-  departmentCount: applyStep5.departmentCount,
-}))(Step5);
+export default connect(
+  ({ formAndstepForm, applyStep5 }: { formAndstepForm: StateType; applyStep5: any }) => ({
+    data: formAndstepForm.step,
+    canTeacherUse: applyStep5.canTeacherUse,
+    teacherCount: applyStep5.teacherCount,
+    canDepartmentUse: applyStep5.canDepartmentUse,
+    departmentCount: applyStep5.departmentCount,
+  }),
+)(Step5);

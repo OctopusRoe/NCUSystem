@@ -5,7 +5,6 @@ import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
 import styles from './index.less';
 import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons';
-import moment from 'moment';
 
 const { Option } = Select;
 
@@ -42,12 +41,13 @@ const Step1: React.FC<Step1Props> = (props) => {
   if (!data) {
     return null;
   }
+  const { validateFields } = form;
   const onValidateForm = async () => {
-    // const values = await validateFields();
+    const values = await validateFields();
     if (dispatch) {
       dispatch({
         type: 'formAndstepForm/saveStepFormData',
-        // payload: values,
+        payload: values,
       });
       dispatch({
         type: 'formAndstepForm/saveCurrentStep',
@@ -56,6 +56,19 @@ const Step1: React.FC<Step1Props> = (props) => {
     }
   };
 
+  const typeValue = [
+    '文化体育类',
+    '学术科技类',
+    '志愿公益类',
+    '创新创业类',
+    '思想政治类',
+    '自律互助类',
+    '其他类',
+  ];
+
+  const levelValue = ['一级社团', '二级社团', '三级社团'];
+
+  const unitValue = ['指导部门1', '指导部门2', '指导部门3', '指导部门'];
   return (
     <>
       <Form
@@ -64,43 +77,47 @@ const Step1: React.FC<Step1Props> = (props) => {
         layout="horizontal"
         className={styles.stepForm}
         hideRequiredMark
+        autoComplete="off"
         validateMessages={validateMessages}
       >
         <Form.Item
           label="社团中文全称"
-          name="corporatename"
+          name="chineseName"
           rules={[{ required: true, message: '请输入社团全称' }]}
         >
-          <Input placeholder="" />
+          <Input placeholder="请输入社团全称" />
         </Form.Item>
         <Form.Item
           label="社团英文全称"
-          name="corporatename"
-          rules={[{ required: true, message: '请输入社团简称' }]}
+          name="englishName"
+          rules={[{ required: true, message: '请输入社团英文全称' }]}
         >
-          <Input placeholder="" />
+          <Input placeholder="请输入社团英文全称" />
         </Form.Item>
         <Form.Item
           label="社团类别"
-          name="clubclass"
+          name="communityCategory"
           rules={[{ required: true, message: '请选择社团类别' }]}
         >
           <Select placeholder="请选择社团类别" style={{ width: '50%' }}>
-            <Option value="1">文化体育类</Option>
-            <Option value="2">学术科技类</Option>
-            <Option value="3">志愿公益类</Option>
-            <Option value="4">创新创业类</Option>
-            <Option value="5">思想政治类</Option>
-            <Option value="6">自律互助类</Option>
-            <Option value="7">其他类</Option>
+            {typeValue.map((item: any, index: any) => (
+              <Option value={item} key={`communityCategory${index}`}>
+                {item}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item
           label="社团级别"
-          name="clublevel"
+          name="communityLevel"
           rules={[{ required: true, message: '请选择社团级别' }]}
         >
           <Select placeholder="请选择社团级别" style={{ width: '50%' }}>
+            {levelValue.map((item: any, index: any) => (
+              <Option value={item} key={`communityLevel${index}`}>
+                {item}
+              </Option>
+            ))}
             <Option value="1">一级社团</Option>
             <Option value="2">二级社团</Option>
             <Option value="3">三级社团</Option>
@@ -108,13 +125,15 @@ const Step1: React.FC<Step1Props> = (props) => {
         </Form.Item>
         <Form.Item
           label="业务指导单位"
-          name="department"
+          name="guideUnit"
           rules={[{ required: true, message: '请选择业务指导单位' }]}
         >
           <Select placeholder="请选择业务指导单位" style={{ width: '50%' }}>
-            <Option value="1">指导部门1</Option>
-            <Option value="2">指导部门2</Option>
-            <Option value="3">指导部门3</Option>
+            {unitValue.map((item: any, index: any) => (
+              <Option value={item} key={`guideUnit${index}`}>
+                {item}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
 
@@ -125,7 +144,7 @@ const Step1: React.FC<Step1Props> = (props) => {
               <span style={{ color: '#00000073' }}>（草案）</span>
             </span>
           }
-          name="objective"
+          name="communityAssociation"
           rules={[{ required: true, message: '请上传社团章程' }]}
         >
           <Upload showUploadList={false} fileList={uploadFileList}>
@@ -144,19 +163,11 @@ const Step1: React.FC<Step1Props> = (props) => {
               </span>
             </span>
           }
-          name="scale"
+          name="communityMembers"
           rules={[{ required: true, message: '请输入成员数量' }]}
         >
           <Input style={{ width: '100px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} />
         </Form.Item>
-        {/* <Form.Item
-          label="社团成立时间"
-          name="time"
-          rules={[{ required: true, message: '请输入成立时间' }]}
-        >
-          <DatePicker picker="year" defaultValue={moment(time)}/>
-        </Form.Item> */}
-
         <Form.Item
           wrapperCol={{
             xs: { span: 24, offset: 0 },
