@@ -75,6 +75,7 @@ const AssociationList: React.FC<AssociationListProps> = (props) => {
     case '/association/member':
     case '/association/settings':
     case '/association/upgrade':
+    case '/association/active':
       return (
         <PageHeaderWrapper
           content={<PageHeaderContent currentUser={currentUser} />}

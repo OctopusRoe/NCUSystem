@@ -120,12 +120,9 @@ const NewMedia: React.FC<{}> = () => {
         rowKey="key"
         search={false}
         actionRef={actionRef}
-        headerTitle={''}
-        toolBarRender={(action, {}) => [
-          <Search enterButton onSearch={onSearch} />,
-          <Button type="primary" onClick={() => setAddModalVisible(true)}>
-            <PlusOutlined /> 新增
-          </Button>,
+        headerTitle={'网络平台'}
+        toolBarRender={(action, { selectedRows }) => [
+          <Search enterButton placeholder={'请输入'} />,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
