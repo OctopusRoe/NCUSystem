@@ -1,19 +1,16 @@
 // 活动审批 组件
 
-// 外出审批 组件
-
-import { Divider } from 'antd';
+import { Divider, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import DetailsModal from '@/components/DetailsModal/DetailsModal';
 import ApprovalDrawer from './components/ApprovalDrawer';
 
 const Approval: React.FC<{}> = () => {
-  const [DetailsModalVisible, setDetailsModalVisible] = useState(false);
   const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
   const actionRef = useRef<ActionType>();
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '活动名称',
@@ -23,13 +20,7 @@ const Approval: React.FC<{}> = () => {
       render: (text, record) => {
         return (
           <>
-            <a
-              onClick={() => {
-                setDetailsModalVisible(true);
-              }}
-            >
-              {record.name}
-            </a>
+            <a onClick={() =>{} }>{record.name}</a>
           </>
         );
       },
@@ -86,6 +77,10 @@ const Approval: React.FC<{}> = () => {
     },
   ];
 
+
+
+
+
   return (
     <div>
       <ProTable<TableListItem>
@@ -94,12 +89,6 @@ const Approval: React.FC<{}> = () => {
         rowKey="key"
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
-      />
-      <DetailsModal
-        modalVisible={DetailsModalVisible}
-        onCancel={() => {
-          setDetailsModalVisible(false);
-        }}
       />
       <ApprovalDrawer
         drawerVisible={ApprovalDrawerVisible}

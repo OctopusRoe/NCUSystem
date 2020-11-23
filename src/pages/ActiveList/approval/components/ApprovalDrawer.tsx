@@ -19,7 +19,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>社团中文全称：</p>
+                    <p style={{ color: '#939393' }}>活动名称：</p>
                   </Col>
                 </Row>
               </Col>
@@ -33,7 +33,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>社团英文全称：</p>
+                    <p style={{ color: '#939393' }}>活动类型：</p>
                   </Col>
                 </Row>
               </Col>
@@ -47,7 +47,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>社团类别：</p>
+                    <p style={{ color: '#939393' }}>活动时间：</p>
                   </Col>
                 </Row>
               </Col>
@@ -58,38 +58,11 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
                   </Col>
                 </Row>
               </Col>
+             
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>社团级别：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>一级社团</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>申请人：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>曲丽丽</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>外出事由：</p>
+                    <p style={{ color: '#939393' }}>活动详情：</p>
                   </Col>
                 </Row>
               </Col>
@@ -107,7 +80,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>指导单位：</p>
+                    <p style={{ color: '#939393' }}>主办单位：</p>
                   </Col>
                 </Row>
               </Col>
@@ -121,7 +94,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>指导审批人：</p>
+                    <p style={{ color: '#939393' }}>承办单位：</p>
                   </Col>
                 </Row>
               </Col>
@@ -135,7 +108,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>离/返校时间：</p>
+                    <p style={{ color: '#939393' }}>活动地点：</p>
                   </Col>
                 </Row>
               </Col>
@@ -149,28 +122,14 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={8}>
                 <Row justify="end">
                   <Col>
-                    <p style={{ color: '#939393' }}>外出地点：</p>
+                    <p style={{ color: '#939393' }}>活动规模：</p>
                   </Col>
                 </Row>
               </Col>
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>XXXXXXXXXXXXXXX</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>外出负责人：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>XXX</p>
+                    <p>一级社团</p>
                   </Col>
                 </Row>
               </Col>
@@ -231,7 +190,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     >
       <div>
         <Tab1 />
-        <Divider style={{ fontSize: '16px' }}>外出成员</Divider>
+        <Divider style={{ fontSize: '16px' }}>活动海报</Divider>
         <Tab2 />
       </div>
       <Drawer

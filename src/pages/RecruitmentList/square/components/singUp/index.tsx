@@ -1,20 +1,19 @@
 // 我的报名 组件
 
-import React from 'react'
+import React from 'react';
 
-import { Card, Table, Popover, Tag, Switch, message, Badge } from 'antd'
+import { Card, Table, Popover, Tag, Switch, message, Badge } from 'antd';
 
-import { TableListItem } from './data'
+import { TableListItem } from './data';
 
 // 改变鼠标样式
 const changeMouseStyle = {
-  cursor: 'pointer'
-}
+  cursor: 'pointer',
+};
 
 // 测试数据
 const testData = () => {
-
-  const valueList = []
+  const valueList = [];
 
   for (let i = 0; i < 100; i++) {
     const value = {
@@ -27,17 +26,15 @@ const testData = () => {
       recruit: '10',
       report: '100',
       status: i % 3 === 1 ? 1 : 0,
-      option: false
-    }
-    valueList.push(value)
+      option: false,
+    };
+    valueList.push(value);
   }
 
-  return valueList
-  
-}
+  return valueList;
+};
 
 const SingUp: React.FC<{}> = (props) => {
-
   const columns: TableListItem[] = [
     {
       title: '届数',
@@ -57,36 +54,35 @@ const SingUp: React.FC<{}> = (props) => {
     {
       title: '职务',
       dataIndex: 'position',
-      key: 'position', 
+      key: 'position',
     },
     {
       title: '招新要求',
       dataIndex: 'requirement',
       key: 'requirement',
       render: (_, record) => {
-  
         const text = (
           <div>
-            <p style={{width: '200px'}}>
-              {record.requirement}
-            </p>
+            <p style={{ width: '200px' }}>{record.requirement}</p>
           </div>
-        )
-  
+        );
+
         return (
           <div>
             <Popover content={text} trigger={'click'}>
-              <Tag color={"blue"} style={changeMouseStyle}>查看</Tag>
+              <Tag color={'blue'} style={changeMouseStyle}>
+                查看
+              </Tag>
             </Popover>
           </div>
-        )
-      }
+        );
+      },
     },
     {
       title: '招新数',
       dataIndex: 'recruit',
       width: '10%',
-      key: 'recruit'
+      key: 'recruit',
     },
     {
       title: '报名数',
@@ -100,15 +96,15 @@ const SingUp: React.FC<{}> = (props) => {
       width: '10%',
       key: 'status',
       render: (e, record) => {
-        switch(e) {
+        switch (e) {
           case 0:
-            return <Badge status={'success'} text={'已录取'} />
+            return <Badge status={'success'} text={'已录取'} />;
             break;
           default:
-            return <Badge status={'default'} text={'未录取'} />
+            return <Badge status={'default'} text={'未录取'} />;
             break;
         }
-      }
+      },
     },
     {
       title: '报名',
@@ -117,11 +113,17 @@ const SingUp: React.FC<{}> = (props) => {
       key: 'option',
       render: (e, record) => (
         <>
-          <Switch checkedChildren="已报名" unCheckedChildren="未报名" onChange={(event)=>{sginUp(event, e, record)}} />
+          <Switch
+            checkedChildren="已报名"
+            unCheckedChildren="未报名"
+            onChange={(event) => {
+              sginUp(event, e, record);
+            }}
+          />
         </>
       ),
     },
-  ]
+  ];
 
   // Switch 组件的报名方法
   const sginUp = (event: boolean, e: any, record: any) => {
@@ -129,22 +131,26 @@ const SingUp: React.FC<{}> = (props) => {
       message.warning({
         content: '取消成功',
         duration: 5,
-      })
-      return
+      });
+      return;
     }
-  }
+  };
 
   return (
-
     <Card>
       <Table
-         rowKey="key"
-         columns={columns}
-         dataSource={testData()}
-         pagination={{size: 'small', showSizeChanger: false, pageSize: 20, showTotal: (a,b)=>false}}
+        rowKey="key"
+        columns={columns}
+        dataSource={testData()}
+        pagination={{
+          size: 'small',
+          showSizeChanger: false,
+          pageSize: 20,
+          showTotal: (a, b) => false,
+        }}
       />
     </Card>
-  )
-}
+  );
+};
 
-export default SingUp
+export default SingUp;
