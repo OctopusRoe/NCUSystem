@@ -80,7 +80,7 @@ const Model: LoginModelType = {
         status: payload.status,
         type: payload.type,
       };
-    },
+    }
   },
 };
 

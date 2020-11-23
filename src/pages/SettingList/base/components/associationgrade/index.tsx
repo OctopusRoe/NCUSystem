@@ -2,10 +2,13 @@
 
 import React from 'react';
 
-import { Row, Col, Form, Button} from 'antd';
+import { Row, Col, Form, Button } from 'antd';
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
+
+import { AssociationGradeState } from './model'
+import { underline } from 'chalk';
 
 interface AssociationGradeProps {
   dispatch: Dispatch
@@ -27,14 +30,30 @@ const AssociationGrade: React.FC<AssociationGradeProps> = (props) => {
   }
   
   const onFinish = (e: any) => {
-    console.log(e)
-  }
 
-  const removeFun = (index: number) => {
+    const list = JSON.parse(JSON.stringify(e['base-association-grade']))
+
+    if (list.length !== 0) {
+      Array.isArray(list) && list.forEach((item: any, index: number) => {
+        item.name = item.one
+        if (item.id) {
+          return 
+        }
+        item.id = 0
+      })
+    }
+
     dispatch({
-      type: 'base-association-grade/rmFormValue',
-      payload: index
+      type: 'baseAssociationGrade/upGrade',
+      payload: list
     })
+
+    setTimeout(() => {
+      dispatch ({
+        type: 'baseAssociationGrade/getGrade'
+      })
+    }, 1 * 1000)
+
   }
 
   return (
@@ -67,9 +86,9 @@ const AssociationGrade: React.FC<AssociationGradeProps> = (props) => {
 }
 
 export default connect(
-  (state: any) => {
+  ({baseAssociationGrade}: { baseAssociationGrade: AssociationGradeState}) => {
     return {
-      valueList: state['base-association-grade'].valueList
+      valueList: baseAssociationGrade.valueList,
     }
   }
 )(AssociationGrade)

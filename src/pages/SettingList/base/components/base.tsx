@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Button, Input, Form, message, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { connect, FormattedMessage, useIntl } from 'umi';
+import { connect, FormattedMessage, useIntl, Dispatch } from 'umi';
 
 import { CurrentUser } from '../data.d';
 import UploadView from '@/components/UploadView/uploadView';
@@ -12,6 +12,7 @@ import styles from './BaseView.less';
 
 interface BaseViewProps {
   currentUser?: CurrentUser;
+  dispatch: Dispatch
 }
 
 const formItemLayout = {
@@ -34,22 +35,16 @@ const submitFormLayout = {
 };
 
 const BaseView: React.FC<BaseViewProps> = (props) => {
+
+  const { dispatch } = props
+  
   const intl = useIntl();
 
-  // const getAvatarURL = () => {
-  //   const { currentUser } = props;
-  //   if (currentUser) {
-  //     if (currentUser.avatar) {
-  //       return currentUser.avatar;
-  //     }
-  //     const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-  //     return url;
-  //   }
-  //   return '';
-  // }
-
   const handleFinish = (e: any) => {
-    message.success(intl.formatMessage({ id: 'setting.basic.update.success' }));
+    dispatch({
+      type: 'baseViewModel/putInfo',
+      payload: e
+    })
     console.log(e);
   };
 

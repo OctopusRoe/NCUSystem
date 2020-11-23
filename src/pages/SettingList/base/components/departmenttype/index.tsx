@@ -7,6 +7,8 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
+import { DepartmentTypeState } from './model'
+
 
 interface DepartmentTypeProps {
   dispatch: Dispatch
@@ -28,14 +30,29 @@ const DepartmentType: React.FC<DepartmentTypeProps> = (props) => {
   }
 
   const onFinish = (e: any) => {
-    console.log(e)
-  }
+    const list = JSON.parse(JSON.stringify(e['base-department-type']))
 
-  const removeFun = (index: number) => {
+    if (list.length !== 0) {
+      Array.isArray(list) && list.forEach((item: any, index: number) => {
+        item.name = item.one
+        if (item.id) {
+          return 
+        }
+        item.id = 0
+      })
+    }
+
     dispatch({
-      type: 'base-online-platform/rmFormValue',
-      payload: index
+      type: 'baseDepartmentType/upType',
+      payload: list
     })
+
+    setTimeout(() => {
+      dispatch({
+        type: 'baseDepartmentType/getType'
+      })
+    }, 1 * 1000)
+    
   }
 
   return (
@@ -68,9 +85,9 @@ const DepartmentType: React.FC<DepartmentTypeProps> = (props) => {
 }
 
 export default connect(
-  (state: any) => {
+  ({ baseDepartmentType }: { baseDepartmentType: DepartmentTypeState }) => {
     return {
-      valueList: state['base-department-type'].valueList
+      valueList: baseDepartmentType.valueList
     }
   }
 )(DepartmentType)

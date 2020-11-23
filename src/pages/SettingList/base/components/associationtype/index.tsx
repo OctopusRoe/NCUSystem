@@ -7,6 +7,8 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
+import { AssociationTypeState } from './model'
+
 interface AssociationTypeProps {
   dispatch: Dispatch
   valueList: any[]
@@ -27,14 +29,29 @@ const AssociationType: React.FC<AssociationTypeProps> = (props) => {
   }
   
   const onFinish = (e: any) => {
-    console.log(e)
-  }
+    const list = JSON.parse(JSON.stringify(e['base-association-type']))
 
-  const removeFun = (index: number) => {
+    if (list.length !== 0) {
+      Array.isArray(list) && list.forEach((item: any, index: number) => {
+        item.name = item.one
+        if (item.id) {
+          return 
+        }
+        item.id = 0
+      })
+    }
+
     dispatch({
-      type: 'base-association-type/rmFormValue',
-      payload: index
+      type: 'baseAssociationType/upType',
+      payload: list
     })
+
+    setTimeout(() => {
+      dispatch({
+        type: 'baseAssociationType/getType'
+      })
+    }, 1 * 1000)
+    
   }
 
   return (
@@ -67,9 +84,9 @@ const AssociationType: React.FC<AssociationTypeProps> = (props) => {
 }
 
 export default connect(
-  (state: any) => {
+  ({ baseAssociationType }: { baseAssociationType: AssociationTypeState }) => {
     return {
-      valueList: state['base-association-type'].valueList
+      valueList: baseAssociationType.valueList
     }
   }
 )(AssociationType)

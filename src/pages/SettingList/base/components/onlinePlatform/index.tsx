@@ -1,11 +1,13 @@
 // 网络平台设置 组件
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import { Row, Col, Form, Button } from 'antd';
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
+
+import { OnlinePlatformState } from './model'
 
 
 interface OnlinePlatformProps {
@@ -28,14 +30,29 @@ const OnlinePlatform: React.FC<OnlinePlatformProps> = (props) => {
   }
   
   const onFinish = (e: any) => {
-    console.log(e)
-  }
+    const list = JSON.parse(JSON.stringify(e['online-Plat-list']))
 
-  const removeFun = (index: number) => {
+    if (list.length !== 0) {
+      Array.isArray(list) && list.forEach((item: any, index: number) => {
+        item.name = item.one
+        if (item.id) {
+          return 
+        }
+        item.id = 0
+      })
+    }
+
     dispatch({
-      type: 'base-online-platform/rmFormValue',
-      payload: index
+      type: 'baseOnlinePlatform/upType',
+      payload: list
     })
+
+    setTimeout(() => {
+      dispatch({
+        type: 'baseOnlinePlatform/getType'
+      })
+    }, 1 * 1000)
+
   }
 
   return (
@@ -55,7 +72,6 @@ const OnlinePlatform: React.FC<OnlinePlatformProps> = (props) => {
             info={info}
             formListName={'online-Plat-list'}
             showInput={{two: false, three: false}}
-            removeFun={removeFun}
           />
           <FormItem>
             <Button type={'primary'} htmlType={'submit'} size={'large'}>提交</Button>
@@ -69,9 +85,9 @@ const OnlinePlatform: React.FC<OnlinePlatformProps> = (props) => {
 }
 
 export default connect(
-  (state: any) => {
+  ({ baseOnlinePlatform }: { baseOnlinePlatform: OnlinePlatformState }) => {
     return {
-      valueList: state['base-online-platform'].valueList
+      valueList: baseOnlinePlatform.valueList
     }
   }
 )(OnlinePlatform)

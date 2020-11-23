@@ -104,6 +104,26 @@ class Base extends Component<SettingsProps, SettingsState> {
     };
   }
 
+  componentDidMount() {
+    // 访问接口处
+    // 获取网络平台类别
+    this.props.dispatch({
+      type: 'baseOnlinePlatform/getType'
+    })
+    // 获取社团级别
+    this.props.dispatch({
+      type: 'baseAssociationGrade/getGrade'
+    })
+    // 获取社团类别
+    this.props.dispatch({
+      type: 'baseAssociationType/getType'
+    })
+    // 获取单位类别
+    this.props.dispatch({
+      type: 'baseDepartmentType/getType'
+    })
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
   }
