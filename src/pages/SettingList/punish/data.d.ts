@@ -25,12 +25,12 @@ export interface TableListData {
 }
 
 export interface TableListParams {
-  status?: string;
+  personId?: string;
   name?: string;
   desc?: string;
   key?: number;
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }

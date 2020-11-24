@@ -1,38 +1,13 @@
 import request from 'umi-request';
 import { TableListParams } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
-    params,
-  });
+//获取全局公共url的函数
+import getPort from '@/services/global';
+
+
+//系统设置 违纪管理 获取违纪列表数据
+export async function getTable(params: TableListParams) {
+  return request.get(
+    getPort(`violatediscipline/query?PageSize=${params.pageSize}&PageIndex=${params.current}`),
+  );
 }
-
-// export async function removeRule(params: { key: number[] }) {
-//   return request('/api/rule', {
-//     method: 'POST',
-//     data: {
-//       ...params,
-//       method: 'delete',
-//     },
-//   });
-// }
-
-// export async function addRule(params: TableListParams) {
-//   return request('/api/rule', {
-//     method: 'POST',
-//     data: {
-//       ...params,
-//       method: 'post',
-//     },
-//   });
-// }
-
-// export async function updateRule(params: TableListParams) {
-//   return request('/api/rule', {
-//     method: 'POST',
-//     data: {
-//       ...params,
-//       method: 'update',
-//     },
-//   });
-// }

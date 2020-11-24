@@ -1,11 +1,10 @@
 // 短信统计 组件
 
 import React, { useRef } from 'react';
-
 import { Card, Row, Col, Divider, Typography, Input } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableListItem } from './data.d';
-import { queryRule } from './service';
+import { getTable } from './service';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -13,8 +12,8 @@ const { Search } = Input;
 const columns: ProColumns<TableListItem>[] = [
   {
     title: '发送对象',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'personId',
+    key: 'personId',
     hideInSearch: true,
   },
   {
@@ -25,14 +24,14 @@ const columns: ProColumns<TableListItem>[] = [
   },
   {
     title: '发送时间',
-    dataIndex: 'time',
-    key: 'time',
+    dataIndex: 'sendTime',
+    key: 'sendTime',
     hideInSearch: true,
   },
   {
     title: '短信内容',
-    dataIndex: 'code',
-    key: 'code',
+    dataIndex: 'content',
+    key: 'content',
     hideInSearch: true,
   },
 ];
@@ -90,14 +89,14 @@ const MessageCom: React.FC<{}> = () => {
       </Card>
       <ProTable<TableListItem>
         style={{ marginTop: '24px' }}
-        rowKey="key"
+        rowKey="id"
         search={false}
         actionRef={actionRef}
         headerTitle={'短信列表'}
         toolBarRender={(action, {}) => [
           <Search enterButton placeholder={'请输入手机号'} onSearch={onSearch} />,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params) => getTable(params)}
         columns={columns}
       />
     </>

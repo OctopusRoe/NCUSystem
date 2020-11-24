@@ -1,7 +1,7 @@
 import { Button, Col, Form, Input, Row, Select, Space, Upload } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
-import UploadView from '@/components/UploadView/uploadView';
+import CropImgview from '@/components/CropImgview';
 
 interface AddModalFormProps {
   modalVisible: boolean;
@@ -29,6 +29,12 @@ const apptype = ['类别1', '类别2', '类别3', '类别4'];
 const AddModal: React.FC<AddModalFormProps> = (porps) => {
   const { modalVisible, onCancel } = porps;
   const { Option } = Select;
+
+  // 获取图片数据
+  const getImgData = (e: any) => {
+    console.log(e);
+  };
+
   return (
     <Modal
       destroyOnClose
@@ -49,7 +55,7 @@ const AddModal: React.FC<AddModalFormProps> = (porps) => {
         autoComplete={'off'} //输入框输入记录
       >
         <Form.Item name="img" label="图标" rules={[{ required: true, message: '请上传图标' }]}>
-          <UploadView id="addmodaling" />
+          <CropImgview id="img" onChange={getImgData} />
         </Form.Item>
         <Form.Item
           name="Name"

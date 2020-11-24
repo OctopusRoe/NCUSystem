@@ -1,4 +1,4 @@
-// 审批页面
+// 注册审批页面
 import { Button, Divider, message, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 import { queryRule } from './service';

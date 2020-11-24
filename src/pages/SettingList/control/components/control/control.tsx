@@ -1,4 +1,4 @@
-// 应用管理组件
+// 应用管理-应用管理 组件
 
 import React, { useRef, useState } from 'react';
 import { Button, Divider, Input, Image, message, Popconfirm } from 'antd';

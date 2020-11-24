@@ -1,41 +1,51 @@
-//支出管理
+//赞助管理
 
 import React, { useRef } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Divider } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
-import { TableListItem } from './data.d';
-import { queryRule } from './service';
+import { TableListItem } from '../data';
+import { queryRule } from '../service';
 
 const { Search } = Input;
 
-const Spending: React.FC<{}> = () => {
+const Income: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '项目名称',
+      title: '赞助类型',
       dataIndex: 'projectname',
       key: 'projectname',
       hideInSearch: true,
     },
     {
-      title: '支出明细',
-      children: [
-        { title: '品名', dataIndex: 'goodsname', key: 'goodsname' },
-        { title: '单价', dataIndex: 'price', key: 'price' },
-        { title: '数量', dataIndex: 'count', key: 'count' },
-        { title: '金额', dataIndex: 'amount', key: 'amount' },
-      ],
-    },
-    {
-      title: '合计',
+      title: '赞助单位',
       dataIndex: 'combined',
       key: 'combined',
       hideInSearch: true,
     },
     {
-      title: '经手人',
+      title: '赞助单位联系人',
+      children: [
+        { title: '姓名', dataIndex: 'goodsname', key: 'goodsname' },
+        { title: '手机号', dataIndex: 'price', key: 'price' },
+      ],
+    },
+    {
+      title: '赞助协议',
+      dataIndex: 'combined',
+      key: 'combined',
+      hideInSearch: true,
+    },
+    {
+      title: '审批人',
+      dataIndex: 'handlers',
+      key: 'handlers',
+      hideInSearch: true,
+    },
+    {
+      title: '校团委审批',
       dataIndex: 'handlers',
       key: 'handlers',
       hideInSearch: true,
@@ -61,9 +71,9 @@ const Spending: React.FC<{}> = () => {
         rowKey="key"
         search={false}
         actionRef={actionRef}
-        headerTitle={'支出管理'}
+        headerTitle={'赞助管理'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton />,
+          <Search enterButton placeholder='请输入'/>,
           <Button type="primary">
             <PlusOutlined /> 新增 
           </Button>,
@@ -75,4 +85,4 @@ const Spending: React.FC<{}> = () => {
   );
 };
 
-export default Spending;
+export default Income;

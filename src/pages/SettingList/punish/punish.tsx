@@ -2,9 +2,8 @@
 
 import React, { useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-
 import { TableListItem } from './data';
-import { queryRule } from './service';
+import { getTable } from './service';
 import { Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
@@ -13,27 +12,27 @@ const Punish: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '学号',
-      dataIndex: 'stuID',
-      key: 'stuID',
+      dataIndex: 'personId',
+      key: 'personId',
       fixed: 'left',
     },
     {
       title: '处分名称',
-      dataIndex: 'disciplinaryName',
-      key: 'disciplinaryName',
+      dataIndex: 'name',
+      key: 'name',
       hideInSearch: true,
     },
     {
       title: '处分日期',
-      dataIndex: 'disciplinaryDate',
-      key: 'disciplinaryDate',
+      dataIndex: 'punishDate',
+      key: 'punishDate',
       hideInSearch: true,
     },
     {
       title: '处分文号',
-      dataIndex: 'disciplinaryTitanic',
+      dataIndex: 'number',
       hideInSearch: true,
-      key: 'disciplinaryTitanic',
+      key: 'number',
     },
   ];
 
@@ -43,13 +42,14 @@ const Punish: React.FC<{}> = () => {
         // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
         headerTitle=""
         actionRef={actionRef}
-        rowKey="key"
+        // search={}
+        rowKey="id"
         toolBarRender={(action, {}) => [
           <Button type="default">
             <UploadOutlined /> 导入
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params) => getTable(params)}
         columns={columns}
       />
     </div>

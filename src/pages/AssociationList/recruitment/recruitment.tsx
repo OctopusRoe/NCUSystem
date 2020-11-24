@@ -1,4 +1,4 @@
-// 招新管理 组件
+// 招新管理  组件
 
 import { Avatar, List, Skeleton } from 'antd';
 import React, { Component } from 'react';

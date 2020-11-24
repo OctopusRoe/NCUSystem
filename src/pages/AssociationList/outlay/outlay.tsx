@@ -9,10 +9,10 @@ import styles from './base.less';
 
 // 菜单组件
 
-import Income from './components/Income';
-import Spending from './components/Spending';
-import Account from './components/Account';
-import Statistical from './components/Statistical';
+import Income from './components/Income/Income';
+import Spending from './components/Spending/Spending';
+import Account from './components/Account/Account';
+import Statistical from './components/Statistical/Statistical';
 
 const { Item } = Menu;
 
