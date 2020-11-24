@@ -1,17 +1,30 @@
 // 班级设置 组件
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Divider, Popconfirm, message } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+
 import { TableListItem } from './data.d';
-import { queryRule } from './service';
-import AddModal from './components/AddMOdal';
+import { connect, Dispatch } from 'umi'
+
+import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
+
+import { SetClassState } from '../../data';
+
+interface SetClassProps {
+  count: number
+  dataSorce: any
+  dispatch: Dispatch
+}
 
 const { Search } = Input;
 
-const SetClass: React.FC<{}> = () => {
+const SetClass: React.FC<SetClassProps> = (props) => {
+
+  const { count, dataSorce, dispatch } = props
+
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setAddmodalVisible] = useState(false);
   const [editmodalVisible, setEditmodalVisible] = useState(false);
@@ -62,6 +75,17 @@ const SetClass: React.FC<{}> = () => {
     console.log(vlaue);
   };
 
+  const onChange = () => {
+    
+  }
+
+  useEffect(() => {
+    dispatch({
+      type: 'baseSetClass/searchClass',
+      payload: {}
+    })
+  }, [])
+
   return (
     <div>
       <ProTable<TableListItem>
@@ -85,7 +109,9 @@ const SetClass: React.FC<{}> = () => {
             <DownloadOutlined /> 导出
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={dataSorce}
+        pagination={{total: count}}
+        onChange={onChange}
         columns={columns}
       />
       <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
@@ -94,4 +120,11 @@ const SetClass: React.FC<{}> = () => {
   );
 };
 
-export default SetClass;
+export default connect(
+  ({ baseSetClass }: { baseSetClass: SetClassState}) => {
+    return {
+      count: baseSetClass.count,
+      dataSorce: baseSetClass.classList
+    }
+  }
+)(SetClass);

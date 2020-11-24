@@ -7,12 +7,12 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
-import { OnlinePlatformState } from './model'
+import { OnlinePlatformState } from '../../data'
 
 
 interface OnlinePlatformProps {
   dispatch: Dispatch
-  valueList: any[]
+  valueList: {one: string, id: number}[]
 }
 
 const FormItem = Form.Item

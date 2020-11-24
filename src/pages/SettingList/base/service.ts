@@ -19,9 +19,51 @@ export async function query() {
   return request('/api/users');
 }
 
-// 系统设置 系统设置 修改
+
+
+// 系统设置 系统信息 修改
 export async function baseInfoUpdata (data: FormData) {
   return request.put(getPort('sysbasicinfo/sysbasicinfocreateorupdate'),{data: data})
+}
+
+// 系统设置 指导单位设置 新增单位
+export async function createDepartment (data: any) {
+  return request.put(getPort('sysbasicorganization/sysbasicorganizationcreateorupdate'), {data: data})
+}
+
+// 系统设置 指导单位设置 获取列表
+export async function searchDepartment (params: {query?: string, PageSize: number, PageIndex: number}) {
+  return request.get(getPort('sysbasicorganization/getsysbasicorganizationlist'), {params: params})
+}
+
+// 系统设置 学年设置 新增学年
+export async function createAcademicYear (data: any) {
+  return request.put(getPort('sysbasicschoolyear/sysbasicschoolyearcreateorupdate'), {data: data})
+}
+
+// 系统设置 学年设置 获取列表
+export async function searchAcademicYear (params: {PageSize: number, PageIndex: number}) {
+  return request.get(getPort('sysbasicschoolyear/getsysbasicschoolyearlist'), {params: params})
+}
+
+// 系统设置 专业知识 新增专业
+export async function createSpecial (data: any) {
+  return request.put(getPort('sysbasicmajor/sysbasicmajorcreateorupdate'), {data: data})
+}
+
+// 系统设置 专业设置 获取列表
+export async function searchSpecial (params: {query?: string, PageSize: number, PageIndex: number}) {
+  return request.get(getPort('sysbasicmajor/getsysbasicmajorlist'), {params: params})
+}
+
+// 系统设置 班级设置 新增班级
+export async function createClass (data: any) {
+  return request.put(getPort('sysbasicclass/sysbasicclasscreateorupdate'), {data: data})
+}
+
+// 系统设置 班级设置 获取列表
+export async function searchClass (params: {query?: string, PageSize: number, PageIndex: number}) {
+  return request.get(getPort('sysbasicclass/getsysbasicclasslist'), {params: params})
 }
 
 // 系统设置 网络平台设置 查询

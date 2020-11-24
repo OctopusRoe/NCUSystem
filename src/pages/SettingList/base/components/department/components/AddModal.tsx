@@ -1,23 +1,32 @@
-import { Button, Form, Input, Select } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
+// 新增新单位 组件
+
+import React, { useRef } from 'react';
+import { Button, Form, Input, Select, Modal } from 'antd';
+
+import { connect, Dispatch } from 'umi'
 
 interface AddModalProps {
   modalvisible: boolean;
+  typeValue: {one: string, id: number}[];
   onCancel: () => void;
+  dispatch: Dispatch
 }
 
-const unitValue = ['类别1', '类别2', '类别3', '类别4'];
-
 const AddModal: React.FC<AddModalProps> = (props) => {
-  const { modalvisible, onCancel } = props;
+
+  const { modalvisible, typeValue, onCancel, dispatch } = props;
+  const button = useRef<HTMLButtonElement>(null)
   const layout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 17 },
   };
 
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  const onFinish = (e: any) => {
+    dispatch({
+      type: 'baseDepartment/addDepartment',
+      payload: e
+    })
+    onCancel()
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -28,7 +37,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
   //modal框确定按钮
   const okChange = () => {
-    document.getElementById('add-submit')?.click();
+    button.current?.click()
   };
 
   return (
@@ -40,6 +49,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         onOk={okChange}
         okText="确定"
         cancelText="取消"
+        destroyOnClose
       >
         <Form
           {...layout}
@@ -52,7 +62,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         >
           <Form.Item
             label="单位号"
-            name="unitID"
+            name="number"
             rules={[{ required: true, message: '请输入单位号' }]}
           >
             <Input placeholder="请输入单位号" />
@@ -60,7 +70,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="单位全称"
-            name="unitname"
+            name="name"
             rules={[{ required: true, message: '请输入单位全称' }]}
           >
             <Input placeholder="请输入单位全称" />
@@ -68,7 +78,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="单位简称"
-            name="unitname1"
+            name="shortName"
             rules={[{ required: true, message: '请输入单位简称' }]}
           >
             <Input placeholder="请输入单位简称" />
@@ -76,13 +86,13 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="单位类别"
-            name="unittype"
+            name="type"
             rules={[{ required: true, message: '请选择单位类别' }]}
           >
             <Select placeholder={'请选择单位类别'}>
-              {unitValue.map((item: any, index: number) => (
-                <Option value={item} key={index}>
-                  {item}
+              {typeValue.map((item: {one: string, id: number}) => (
+                <Option value={item.id} key={item.id}>
+                  {item.one}
                 </Option>
               ))}
             </Select>
@@ -90,22 +100,22 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="子单位"
-            name="chiledunit"
-            rules={[{ required: true, message: '请输入子单位' }]}
+            name="chiled"
+            // rules={[{ required: true, message: '请输入子单位' }]}
           >
             <Input placeholder="请输入子单位" />
           </Form.Item>
 
           <Form.Item
             label="排序号"
-            name="number"
+            name="level"
             rules={[{ required: true, message: '请输入排序号' }]}
           >
             <Input placeholder="请输入排序号" />
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
-            <Button type="primary" htmlType="submit" id="add-submit" />
+            <Button type="primary" htmlType="submit" ref={button} />
           </Form.Item>
         </Form>
       </Modal>
@@ -113,4 +123,4 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default AddModal;
+export default connect()(AddModal);

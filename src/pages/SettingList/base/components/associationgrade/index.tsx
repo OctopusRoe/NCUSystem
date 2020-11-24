@@ -7,12 +7,11 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
-import { AssociationGradeState } from './model'
-import { underline } from 'chalk';
+import { AssociationGradeState } from '../../data'
 
 interface AssociationGradeProps {
   dispatch: Dispatch
-  valueList: any[]
+  valueList: {one: string, id: number}[]
 }
 
 const FormItem = Form.Item

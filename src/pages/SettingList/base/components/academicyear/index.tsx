@@ -1,38 +1,51 @@
 // 学年设置 组件
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, message, Popconfirm } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+
 import { TableListItem } from './data.d';
-import { queryRule } from './service';
+import { connect, Dispatch } from 'umi'
+
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
+import { AcademicYearState } from '../../data';
 
-const AcademicYear: React.FC<{}> = () => {
+interface AcademicYearProps {
+  count: number
+  dataSorce: any
+  dispatch: Dispatch
+}
+
+const AcademicYear: React.FC<AcademicYearProps> = (props) => {
+
+  const { count, dataSorce, dispatch } = props
+
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setaddmodalVisible] = useState(false);
   const [editmodalVisible, seteditmodalVisible] = useState(false);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '学年全称',
-      dataIndex: 'academicfull',
-      key: 'academicfull',
+      dataIndex: 'schoolYearName',
+      key: 'schoolYearName',
     },
     {
       title: '学年简称',
-      dataIndex: 'academicsyssimple',
-      key: 'academicsyssimple',
+      dataIndex: 'schoolYearShortName',
+      key: 'schoolYearShortName',
     },
     {
       title: '时间段',
-      dataIndex: 'academictime',
-      key: 'academictime',
+      dataIndex: 'date',
+      key: 'date',
     },
     {
       title: '当前学年',
-      dataIndex: 'defaulttime',
-      key: 'defaulttime',
+      dataIndex: 'currentYear',
+      key: 'currentYear',
     },
     {
       title: '操作',
@@ -51,6 +64,10 @@ const AcademicYear: React.FC<{}> = () => {
     },
   ];
 
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+
+  }
+
   //删除成功
   const confirm = () => {
     message.success('删除成功');
@@ -60,10 +77,17 @@ const AcademicYear: React.FC<{}> = () => {
     message.error('取消删除');
   };
 
+  useEffect(()=>{
+    dispatch({
+      type: 'baseAcademicYear/searchAcademicYear',
+      payload: {}
+    })
+  }, [])
+
   return (
     <div>
       <ProTable<TableListItem>
-        rowKey="key"
+        rowKey="id"
         search={false}
         actionRef={actionRef}
         headerTitle={'学年设置'}
@@ -72,7 +96,9 @@ const AcademicYear: React.FC<{}> = () => {
             <PlusOutlined /> 新增
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={dataSorce}
+        pagination={{total: count}}
+        onChange={onChange}
         columns={columns}
       />
       <AddModal modalvisible={addmodalVisible} onCancel={() => setaddmodalVisible(false)} />
@@ -81,4 +107,11 @@ const AcademicYear: React.FC<{}> = () => {
   );
 };
 
-export default AcademicYear;
+export default connect(
+  ({ baseAcademicYear }: { baseAcademicYear: AcademicYearState }) => {
+    return {
+      count: baseAcademicYear.count,
+      dataSorce: baseAcademicYear.academicYearList
+    }
+  }
+)(AcademicYear);

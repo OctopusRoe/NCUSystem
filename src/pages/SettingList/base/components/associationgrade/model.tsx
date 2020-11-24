@@ -6,9 +6,7 @@ import { message } from 'antd'
 
 import { getAssociationGrade, upAssociationGrade } from '../../service'
 
-export interface AssociationGradeState {
-  valueList: {one: string,id: number}[]
-}
+import { AssociationGradeState } from '../../data'
 
 export interface AssociationGradeType {
   namespace: string
@@ -57,7 +55,7 @@ const associationGradeModel: AssociationGradeType = {
     },
 
     *upGrade({ payload }, { call, put }) {
-      const back = yield call(upAssociationGrade(payload))
+      const back = yield call(upAssociationGrade, payload)
       if (back.code !== 0) {
         message.error(back.message)
         console.log(back.message)
@@ -67,6 +65,7 @@ const associationGradeModel: AssociationGradeType = {
         type: 'saveGrade',
         payload: back.data
       })
+      message.success('创建成功')
     }
   }
 }

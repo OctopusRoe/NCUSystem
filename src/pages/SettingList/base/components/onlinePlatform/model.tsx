@@ -6,9 +6,7 @@ import { message } from 'antd'
 
 import { getOnlinePlatform, upOnlinePlatform } from '../../service'
 
-export interface OnlinePlatformState {
-  valueList: {one: string,id: number}[]
-}
+import { OnlinePlatformState } from '../../data'
 
 export interface OnlinePlatformType {
   namespace: string
@@ -57,7 +55,7 @@ const onlinePlatformModel: OnlinePlatformType = {
     },
 
     *upType({ payload }, { call, put }) {
-      const back = yield call(upOnlinePlatform(payload))
+      const back = yield call(upOnlinePlatform, payload)
       if (back.code !== 0) {
         message.error(back.message)
         console.log(back.message)
@@ -67,6 +65,7 @@ const onlinePlatformModel: OnlinePlatformType = {
         type: 'saveType',
         payload: back.data
       })
+      message.success('创建成功')
     }
   }
 }

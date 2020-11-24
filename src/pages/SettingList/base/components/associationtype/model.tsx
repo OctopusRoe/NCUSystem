@@ -6,9 +6,7 @@ import { message } from 'antd'
 
 import { getAssociationType, upAssociationType } from '../../service'
 
-export interface AssociationTypeState {
-  valueList: {one: string,id: number}[]
-}
+import { AssociationTypeState } from '../../data'
 
 export interface AssociationTypeType {
   namespace: string
@@ -55,7 +53,7 @@ const associationTypeModel: AssociationTypeType = {
       })
     },
     *upType ({ payload }, { call, put }) {
-      const back = yield call(upAssociationType(payload))
+      const back = yield call(upAssociationType, payload)
       if (back.code !== 0) {
         message.error(back.message)
         console.log(back.message)
@@ -65,6 +63,7 @@ const associationTypeModel: AssociationTypeType = {
         type: 'saveType',
         payload: back.data
       })
+      message.success('创建成功')
     }
   }
 }

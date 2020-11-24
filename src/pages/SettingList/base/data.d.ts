@@ -41,3 +41,62 @@ export interface CurrentUser {
   address: string;
   phone: string;
 }
+
+// 指导单位设置的 state
+export interface DepartmentState {
+  departmentList?: {
+    id: number,
+    name: string,
+    shortName: string,
+    organizationType: number,
+    organizationTypeName: null,
+    level: number,
+    childrens: []
+  }[]
+  count: number
+}
+
+// 学年设置的 state
+export interface AcademicYearState {
+  academicYearList?: {
+    id: number,
+    schoolYearName: string,
+    schoolYearShortName: string,
+    startDate: string,
+    endDate: string,
+    currentYear: string
+  }[]
+  count: number
+}
+
+// 专业设置的 state
+export interface SpecialtyState {
+  specialtyList?: {}[]
+  count: number
+}
+
+// 班级设置的 state
+export interface SetClassState {
+  classList?: {}[]
+  count: number
+}
+
+// 网络平台类型的 state
+export interface OnlinePlatformState {
+  valueList: {one: string,id: number}[]
+}
+
+// 社团级别的 state
+export interface AssociationGradeState {
+  valueList: {one: string,id: number}[]
+}
+
+// 社团类别的 state
+export interface AssociationTypeState {
+  valueList: {one: string,id: number}[]
+}
+
+// 单位类别的 state
+export interface DepartmentTypeState {
+  valueList: {one: string,id: number}[]
+}

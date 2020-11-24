@@ -6,9 +6,7 @@ import { message } from 'antd'
 
 import { getDepartmentType, upDepartmentType } from '../../service'
 
-export interface DepartmentTypeState {
-  valueList: {one: string,id: number}[]
-}
+import { DepartmentTypeState } from '../../data'
 
 export interface DepartmentTypeType {
   namespace: string
@@ -56,7 +54,7 @@ const departmentTypeModel: DepartmentTypeType = {
     },
 
     *upType ({ payload }, { call, put }) {
-      const back = yield call(upDepartmentType(payload))
+      const back = yield call(upDepartmentType, payload)
       if (back.code !== 0) {
         message.error(back.message)
         console.log(back.message)
@@ -66,6 +64,7 @@ const departmentTypeModel: DepartmentTypeType = {
         type: 'saveType',
         payload: back.data
       })
+      message.success('创建成功')
     }
   }
 

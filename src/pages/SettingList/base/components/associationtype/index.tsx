@@ -7,11 +7,11 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
-import { AssociationTypeState } from './model'
+import { AssociationTypeState } from '../../data'
 
 interface AssociationTypeProps {
   dispatch: Dispatch
-  valueList: any[]
+  valueList: {one: string, id: number}[]
 }
 
 const FormItem = Form.Item

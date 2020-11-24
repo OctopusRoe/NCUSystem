@@ -1,17 +1,30 @@
 // 专业设置 组件
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Divider, Popconfirm, message } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+
 import { TableListItem } from './data.d';
-import { queryRule } from './service';
+import { connect, Dispatch } from 'umi'
+
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 
+import { SpecialtyState } from '../../data'
+
+interface SpecialtyProps {
+  count: number
+  dataSorce: any
+  dispatch: Dispatch
+}
+
 const { Search } = Input;
 
-const Specialty: React.FC<{}> = () => {
+const Specialty: React.FC<SpecialtyProps> = (props) => {
+
+  const { count, dataSorce, dispatch } = props
+
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setAddmodalVisible] = useState(false);
   const [editmodalVisible, setEditmodalVisible] = useState(false);
@@ -67,6 +80,17 @@ const Specialty: React.FC<{}> = () => {
     console.log(value);
   };
 
+  const onChange = () => {
+    
+  }
+
+  useEffect(() => {
+    dispatch({
+      type: 'baseSetClass/searchClass',
+      payload: {}
+    })
+  }, [])
+
   return (
     <div>
       <ProTable<TableListItem>
@@ -87,7 +111,9 @@ const Specialty: React.FC<{}> = () => {
             <DownloadOutlined /> 导出
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={dataSorce}
+        pagination={{total: count}}
+        onChange={onChange}
         columns={columns}
       />
       <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
@@ -96,4 +122,11 @@ const Specialty: React.FC<{}> = () => {
   );
 };
 
-export default Specialty;
+export default connect(
+  ({ baseSpecialty }: { baseSpecialty: SpecialtyState }) => {
+    return {
+      count: baseSpecialty.count,
+      dataSorce: baseSpecialty.specialtyList
+    }
+  }
+)(Specialty);

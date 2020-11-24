@@ -11,7 +11,7 @@ import ProLayout, {
 } from '@ant-design/pro-layout';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Link, useIntl, connect, Dispatch, history } from 'umi';
-import { Result, Button } from 'antd';
+import { Result, Button, message } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
@@ -68,6 +68,11 @@ const defaultFooterDom = (
 );
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
+
+  message.config({
+    maxCount: 1
+  })
+
   const {
     dispatch,
     children,

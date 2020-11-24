@@ -7,12 +7,12 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
-import { DepartmentTypeState } from './model'
+import { DepartmentTypeState } from '../../data'
 
 
 interface DepartmentTypeProps {
   dispatch: Dispatch
-  valueList: any[]
+  valueList: {one: string, id: number}[]
 }
 
 const FormItem = Form.Item
@@ -33,6 +33,7 @@ const DepartmentType: React.FC<DepartmentTypeProps> = (props) => {
     const list = JSON.parse(JSON.stringify(e['base-department-type']))
 
     if (list.length !== 0) {
+
       Array.isArray(list) && list.forEach((item: any, index: number) => {
         item.name = item.one
         if (item.id) {

@@ -1,6 +1,8 @@
+// 新增学年 组件
+
+import React, { useRef } from 'react';
 import { Button, DatePicker, Form, Input } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
 
 interface AddModalProps {
   modalvisible: boolean;
@@ -9,6 +11,7 @@ interface AddModalProps {
 
 const AddModal: React.FC<AddModalProps> = (props) => {
   const { modalvisible, onCancel } = props;
+  const button = useRef<HTMLButtonElement>(null)
   const layout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 17 },
@@ -26,7 +29,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
   //modal框确定按钮
   const okChange = () => {
-    document.getElementById('add-btnok')?.click();
+    button.current?.click()
   };
 
   return (
@@ -38,6 +41,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         onOk={okChange}
         okText="确定"
         cancelText="取消"
+        destroyOnClose
       >
         <Form
           {...layout}
@@ -81,7 +85,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
-            <Button type="primary" htmlType="submit" id="add-btnok" />
+            <Button type="primary" htmlType="submit" ref={button} />
           </Form.Item>
         </Form>
       </Modal>
