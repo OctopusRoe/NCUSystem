@@ -1,33 +1,52 @@
-import { Button, DatePicker, Form, Input } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
+import React,{ useRef } from 'react';
+import { Button, DatePicker, Form, Input, Modal } from 'antd';
 
-interface AddModalProps {
+import { connect, Dispatch } from 'umi'
+import moment from 'moment'
+
+interface EditModalProps {
   modalvisible: boolean;
+  formValue: any
   onCancel: () => void;
+  afterClose: () => void;
+  dispatch: Dispatch;
 }
 
-const EditModal: React.FC<AddModalProps> = (props) => {
-  const { modalvisible, onCancel } = props;
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 17 },
-  };
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
+};
+
+const { RangePicker } = DatePicker;
+
+const EditModal: React.FC<EditModalProps> = (props) => {
+  const { modalvisible, formValue, onCancel, afterClose, dispatch } = props;
+
+  const button = useRef<HTMLButtonElement>(null)
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+
+    const data = {
+      id: formValue.id,
+      ...values
+    }
+
+    dispatch({
+      type: 'baseAcademicYear/addAcademicYear',
+      payload: data
+    })
+
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000)
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
 
-  const { RangePicker } = DatePicker;
-
-  //modal框确定按钮
-  const okChange = () => {
-    document.getElementById('edit-btnok')?.click();
-  };
 
   return (
     <>
@@ -35,14 +54,15 @@ const EditModal: React.FC<AddModalProps> = (props) => {
         title="编辑学年"
         visible={modalvisible}
         onCancel={onCancel}
-        onOk={okChange}
+        onOk={() => button.current?.click()}
         okText="确定"
         cancelText="取消"
+        destroyOnClose
       >
         <Form
           {...layout}
           name="edit"
-          initialValues={{ remember: true }}
+          initialValues={formValue}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           hideRequiredMark //去除前面红色*号
@@ -81,7 +101,7 @@ const EditModal: React.FC<AddModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
-            <Button type="primary" htmlType="submit" id="edit-btnok" />
+            <Button type="primary" htmlType="submit" ref={button} />
           </Form.Item>
         </Form>
       </Modal>
@@ -89,4 +109,4 @@ const EditModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default EditModal;
+export default connect()(EditModal);

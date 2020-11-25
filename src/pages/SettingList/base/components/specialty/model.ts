@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd'
 
-import { createSpecial, searchSpecial } from '../../service'
+import { createSpecial, searchSpecial, deleteSpecial } from '../../service'
 
 import { SpecialtyState } from '../../data'
 
@@ -20,6 +20,7 @@ export interface SpecialtyModel {
   effects: {
     addSpecial: Effect
     searchSpecial: Effect
+    deleteSpecial: Effect
   }
 }
 
@@ -68,7 +69,23 @@ const specialtyModel: SpecialtyModel = {
   },
   effects: {
     *addSpecial ({ payload }, { call }) {
+      
+      const data = {
+        id : payload.id ? payload.id : 0,
+        majorNo: payload.majorNo,
+        majorName: payload.majorName,
+        college: payload.college,
+        lengthOfSchooling: payload.lengthOfSchooling
+      }
 
+      const back = yield call(createSpecial, data)
+      if (back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      message.success('创建成功')
     },
     
     *searchSpecial ({ payload }, { call, put}) {
@@ -82,7 +99,7 @@ const specialtyModel: SpecialtyModel = {
       const back = yield call(searchSpecial, params)
       if (back.code !== 0) {
         message.error(back.message)
-        console.log(back.message)
+        console.error(back.message)
         return
       }
 
@@ -100,6 +117,22 @@ const specialtyModel: SpecialtyModel = {
         type: 'loading',
         payload: false
       })
+    },
+
+    *deleteSpecial ({ payload }, { call }) {
+
+      const params = {
+        id : payload
+      }
+
+      const back = yield call(deleteSpecial, params)
+      if (back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      message.success('删除成功')
     }
   }
 }

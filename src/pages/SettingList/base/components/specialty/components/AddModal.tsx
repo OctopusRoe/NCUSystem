@@ -1,34 +1,46 @@
-import { Button, Form, Input, Select } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
+import React, { useRef } from 'react';
+import { Button, Form, Input, Select, Modal } from 'antd';
+
+import { connect, Dispatch } from 'umi'
 
 interface AddModalProps {
   modalvisible: boolean;
   onCancel: () => void;
+  dispatch: Dispatch;
+  afterClose: () => void;
 }
+
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
+};
+
+const { Option } = Select;
 
 const educational = ['4年制', '5年制', '6年制', '8年制'];
 
 const AddModal: React.FC<AddModalProps> = (props) => {
-  const { modalvisible, onCancel } = props;
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 17 },
-  };
+
+  const { modalvisible, onCancel, dispatch, afterClose } = props;
+
+  const button = useRef<HTMLButtonElement>(null)
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+
+    dispatch({
+      type: 'baseSpecialty/addSpecial',
+      payload: values
+    })
+
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000);
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
-  };
-
-  const { Option } = Select;
-
-  //modal框确定按钮
-  const okChange = () => {
-    document.getElementById('add-submit')?.click();
   };
 
   return (
@@ -37,9 +49,10 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         title="新增专业"
         visible={modalvisible}
         onCancel={onCancel}
-        onOk={okChange}
+        onOk={() => button.current?.click()}
         okText="确定"
         cancelText="取消"
+        destroyOnClose
       >
         <Form
           {...layout}
@@ -52,7 +65,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         >
           <Form.Item
             label="专业号"
-            name="specialtyID"
+            name="majorNo"
             rules={[{ required: true, message: '请输入专业号' }]}
           >
             <Input placeholder="请输入专业号" />
@@ -60,7 +73,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="专业名称"
-            name="specialtyname"
+            name="majorName"
             rules={[{ required: true, message: '请输入专业名称' }]}
           >
             <Input placeholder="请输入专业名称" />
@@ -76,7 +89,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="学制"
-            name="educational"
+            name="lengthOfSchooling"
             rules={[{ required: true, message: '请选择学制' }]}
           >
             <Select placeholder={'请选择学制'}>
@@ -89,7 +102,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
-            <Button type="primary" htmlType="submit" id="add-submit" />
+            <Button type="primary" htmlType="submit" ref={button} />
           </Form.Item>
         </Form>
       </Modal>
@@ -97,4 +110,4 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default AddModal;
+export default connect()(AddModal);

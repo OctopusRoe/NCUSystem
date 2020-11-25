@@ -30,6 +30,9 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setAddmodalVisible] = useState(false);
   const [editmodalVisible, setEditmodalVisible] = useState(false);
+
+  const [ rowValue, setRowValue ] = useState<any>({})
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '专业号',
@@ -56,11 +59,14 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
       dataIndex: 'option',
       valueType: 'option',
       width: '10%',
-      render: (_, record) => (
+      render: (_, record: any) => (
         <>
-          <a onClick={() => setEditmodalVisible(true)}>编辑</a>
+          <a onClick={() => {
+            setEditmodalVisible(true)
+            setRowValue(record)
+          }}>编辑</a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+          <Popconfirm title="是否要删除？" onConfirm={() => confirm(record.id)}>
             <a>删除</a>
           </Popconfirm>
         </>
@@ -69,12 +75,17 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
   ];
 
   //删除成功
-  const confirm = () => {
-    message.success('删除成功');
-  };
-  //取消删除
-  const cancel = () => {
-    message.error('取消删除');
+  const confirm = (id: number) => {
+
+    dispatch({
+      type: 'baseSpecialty/deleteSpecial',
+      payload: id
+    })
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000);
+
   };
 
   //搜索框 serach方法
@@ -127,6 +138,19 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
     }
   }, [])
 
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'baseSpecialty/searchSpecial',
+      payload: {}
+    })
+
+    dispatch({
+      type: 'baseSpecialty/loading',
+      payload: true
+    })
+  }
+
   return (
     <div>
       <ProTable<TableListItem>
@@ -153,8 +177,8 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
         columns={columns}
         loading={loading}
       />
-      <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
-      <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
+      <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} afterClose={reloadValue} />
+      <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} afterClose={reloadValue} formValue={rowValue} />
     </div>
   );
 };

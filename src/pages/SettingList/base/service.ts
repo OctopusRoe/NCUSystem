@@ -36,6 +36,11 @@ export async function searchDepartment (params: {query?: string, PageSize: numbe
   return request.get(getPort('sysbasicorganization/getsysbasicorganizationlist'), {params: params})
 }
 
+// 系统设置 指导单位设置 删除
+export async function deleteDepartment (params: {id: number}) {
+  return request.delete(getPort('sysbasicorganization/sysbasicorganizationdelete'), {params: params})
+}
+
 // 系统设置 学年设置 新增学年
 export async function createAcademicYear (data: any) {
   return request.put(getPort('sysbasicschoolyear/sysbasicschoolyearcreateorupdate'), {data: data})
@@ -46,6 +51,11 @@ export async function searchAcademicYear (params: {PageSize: number, PageIndex: 
   return request.get(getPort('sysbasicschoolyear/getsysbasicschoolyearlist'), {params: params})
 }
 
+// 系统设置 学年设置 删除学年
+export async function deleteAcademicYear (params: {id: number}) {
+  return request.delete(getPort('sysbasicschoolyear/sysbasicschoolyeardelte'), {params: params})
+}
+
 // 系统设置 专业知识 新增专业
 export async function createSpecial (data: any) {
   return request.put(getPort('sysbasicmajor/sysbasicmajorcreateorupdate'), {data: data})
@@ -54,6 +64,11 @@ export async function createSpecial (data: any) {
 // 系统设置 专业设置 获取列表
 export async function searchSpecial (params: {query?: string, PageSize: number, PageIndex: number}) {
   return request.get(getPort('sysbasicmajor/getsysbasicmajorlist'), {params: params})
+}
+
+// 系统设置 专业设置 删除
+export async function deleteSpecial (params: {id: number}) {
+  return request.delete(getPort('sysbasicmajor/sysbasicmajordelte'), {params: params})
 }
 
 // 系统设置 班级设置 新增班级

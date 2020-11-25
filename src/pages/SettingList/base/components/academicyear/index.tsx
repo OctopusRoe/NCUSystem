@@ -13,6 +13,8 @@ import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 import { AcademicYearState } from '../../data';
 
+import moment from 'moment'
+
 interface AcademicYearProps {
   count: number
   dataSorce: any
@@ -27,6 +29,8 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setaddmodalVisible] = useState(false);
   const [editmodalVisible, seteditmodalVisible] = useState(false);
+
+  const [ rowValue, setRowValue ] = useState<any>({})
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '学年全称',
@@ -53,11 +57,22 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
       dataIndex: 'option',
       valueType: 'option',
       width: '10%',
-      render: (_, record) => (
+      render: (_, record: any) => (
         <>
-          <a onClick={() => seteditmodalVisible(true)}>编辑</a>
+          <a onClick={() => {
+            seteditmodalVisible(true)
+            setRowValue(
+              {
+                id: record.id,
+                academicfull: record.schoolYearName,
+                academicsyssimple: record.schoolYearShortName,
+                academictime: [moment(record.date.split('~')[0], 'YYYY-MM-DD'), moment(record.date.split('~')[1], 'YYYY-MM-DD')],
+                defaulttime: [moment(record.currentYear.split('-')[0], 'YYYY'), moment(record.currentYear.split('-')[1], 'YYYY')]
+              }
+            )
+          }}>编辑</a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+          <Popconfirm title="是否要删除？" onConfirm={() => confirm(record.id)}>
             <a>删除</a>
           </Popconfirm>
         </>
@@ -83,13 +98,29 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
     })
   }
 
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'baseAcademicYear/searchAcademicYear',
+      payload: {}
+    })
+
+    dispatch({
+      type: 'baseAcademicYear/loading',
+      payload: true
+    })
+  }
+
   //删除成功
-  const confirm = () => {
-    message.success('删除成功');
-  };
-  //取消删除
-  const cancel = () => {
-    message.error('取消删除');
+  const confirm = (id: number) => {
+    dispatch({
+      type: 'baseAcademicYear/deleteAcademicYear',
+      payload: id
+    })
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000);
   };
 
   useEffect(()=>{
@@ -124,8 +155,8 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
         columns={columns}
         loading={loading}
       />
-      <AddModal modalvisible={addmodalVisible} onCancel={() => setaddmodalVisible(false)} />
-      <EditModal modalvisible={editmodalVisible} onCancel={() => seteditmodalVisible(false)} />
+      <AddModal modalvisible={addmodalVisible} onCancel={() => setaddmodalVisible(false)} afterClose={reloadValue} />
+      <EditModal modalvisible={editmodalVisible} onCancel={() => seteditmodalVisible(false)} formValue={rowValue} afterClose={reloadValue} />
     </div>
   );
 };

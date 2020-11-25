@@ -1,29 +1,50 @@
-import { Button, Form, Input, Select } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
-interface AddModalProps {
+import { Button, Form, Input, Select, Modal } from 'antd';
+
+import { connect, Dispatch } from 'umi'
+
+interface EditModalProps {
   modalvisible: boolean;
+  typeValue: {one: string, id: number}[];
+  formValue: any
   onCancel: () => void;
+  afterClose: () => void;
+  dispatch: Dispatch;
 }
 
-const unitValue = ['类别1', '类别2', '类别3', '类别4'];
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
+};
 
-const EditModal: React.FC<AddModalProps> = (props) => {
-  const { modalvisible, onCancel } = props;
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 17 },
-  };
+const { Option } = Select;
+
+const EditModal: React.FC<EditModalProps> = (props) => {
+
+  const { modalvisible, typeValue, formValue, onCancel, afterClose, dispatch } = props;
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    
+    const data = {
+      id: formValue.id,
+      ...values
+    }
+
+    dispatch({
+      type: 'baseDepartment/addDepartment',
+      payload: data
+    })
+
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000);
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
-
-  const { Option } = Select;
 
   //modal框确定按钮
   const okChange = () => {
@@ -39,11 +60,12 @@ const EditModal: React.FC<AddModalProps> = (props) => {
         onOk={okChange}
         okText="确定"
         cancelText="取消"
+        destroyOnClose
       >
         <Form
           {...layout}
           name="edit"
-          initialValues={{ remember: true }}
+          initialValues={formValue}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           hideRequiredMark //去除前面红色*号
@@ -51,7 +73,7 @@ const EditModal: React.FC<AddModalProps> = (props) => {
         >
           <Form.Item
             label="单位号"
-            name="unitID"
+            name="number"
             rules={[{ required: true, message: '请输入单位号' }]}
           >
             <Input placeholder="请输入单位号" />
@@ -59,7 +81,7 @@ const EditModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="单位全称"
-            name="unitname"
+            name="name"
             rules={[{ required: true, message: '请输入单位全称' }]}
           >
             <Input placeholder="请输入单位全称" />
@@ -67,7 +89,7 @@ const EditModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="单位简称"
-            name="unitname1"
+            name="shortName"
             rules={[{ required: true, message: '请输入单位简称' }]}
           >
             <Input placeholder="请输入单位简称" />
@@ -75,13 +97,13 @@ const EditModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="单位类别"
-            name="unittype"
+            name="type"
             rules={[{ required: true, message: '请选择单位类别' }]}
           >
             <Select placeholder={'请选择单位类别'}>
-              {unitValue.map((item: any, index: number) => (
-                <Option value={item} key={index}>
-                  {item}
+              {typeValue.map((item: {one: string, id: number}) => (
+                <Option value={item.id} key={item.id}>
+                  {item.one}
                 </Option>
               ))}
             </Select>
@@ -89,15 +111,15 @@ const EditModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="子单位"
-            name="chiledunit"
-            rules={[{ required: true, message: '请输入子单位' }]}
+            name="chiled"
+            // rules={[{ required: true, message: '请输入子单位' }]}
           >
             <Input placeholder="请输入子单位" />
           </Form.Item>
 
           <Form.Item
             label="排序号"
-            name="number"
+            name="level"
             rules={[{ required: true, message: '请输入排序号' }]}
           >
             <Input placeholder="请输入排序号" />
@@ -112,4 +134,4 @@ const EditModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default EditModal;
+export default connect()(EditModal);

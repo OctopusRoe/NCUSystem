@@ -1,35 +1,45 @@
 // 新增学年 组件
 
 import React, { useRef } from 'react';
-import { Button, DatePicker, Form, Input } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
+import { Button, DatePicker, Form, Input, Modal } from 'antd';
+
+import { connect, Dispatch } from 'umi'
 
 interface AddModalProps {
   modalvisible: boolean;
   onCancel: () => void;
+  dispatch: Dispatch;
+  afterClose: () => void
 }
 
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
+};
+
+const { RangePicker } = DatePicker;
+
 const AddModal: React.FC<AddModalProps> = (props) => {
-  const { modalvisible, onCancel } = props;
+  const { modalvisible, onCancel, afterClose, dispatch } = props;
   const button = useRef<HTMLButtonElement>(null)
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 17 },
-  };
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+
+    dispatch({
+      type: 'baseAcademicYear/addAcademicYear',
+      payload: values
+    })
+
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000)
+
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
-  };
-
-  const { RangePicker } = DatePicker;
-
-  //modal框确定按钮
-  const okChange = () => {
-    button.current?.click()
   };
 
   return (
@@ -38,7 +48,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         title="新增学年"
         visible={modalvisible}
         onCancel={onCancel}
-        onOk={okChange}
+        onOk={() => button.current?.click()}
         okText="确定"
         cancelText="取消"
         destroyOnClose
@@ -46,7 +56,6 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         <Form
           {...layout}
           name="add"
-          initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           hideRequiredMark //去除前面红色*号
@@ -93,4 +102,4 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default AddModal;
+export default connect()(AddModal);

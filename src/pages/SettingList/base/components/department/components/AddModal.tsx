@@ -9,12 +9,13 @@ interface AddModalProps {
   modalvisible: boolean;
   typeValue: {one: string, id: number}[];
   onCancel: () => void;
-  dispatch: Dispatch
+  afterClose: () => void;
+  dispatch: Dispatch;
 }
 
 const AddModal: React.FC<AddModalProps> = (props) => {
 
-  const { modalvisible, typeValue, onCancel, dispatch } = props;
+  const { modalvisible, typeValue, onCancel, afterClose, dispatch } = props;
   const button = useRef<HTMLButtonElement>(null)
   const layout = {
     labelCol: { span: 5 },
@@ -26,7 +27,12 @@ const AddModal: React.FC<AddModalProps> = (props) => {
       type: 'baseDepartment/addDepartment',
       payload: e
     })
+
     onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -35,26 +41,20 @@ const AddModal: React.FC<AddModalProps> = (props) => {
 
   const { Option } = Select;
 
-  //modal框确定按钮
-  const okChange = () => {
-    button.current?.click()
-  };
-
   return (
     <>
       <Modal
         title="新增单位"
         visible={modalvisible}
-        onCancel={onCancel}
-        onOk={okChange}
         okText="确定"
+        onCancel={onCancel}
+        onOk={() => button.current?.click()}
         cancelText="取消"
         destroyOnClose
       >
         <Form
           {...layout}
           name="add"
-          initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           hideRequiredMark //去除前面红色*号

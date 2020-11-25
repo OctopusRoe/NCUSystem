@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd'
 
-import { createDepartment, searchDepartment } from '../../service'
+import { createDepartment, searchDepartment, deleteDepartment } from '../../service'
 
 import { DepartmentState } from '../../data'
 
@@ -20,6 +20,7 @@ export interface DepartmentType {
   effects: {
     addDepartment: Effect
     searchDepartment: Effect
+    deleteDepartment: Effect
   }
 }
 
@@ -78,7 +79,7 @@ const departmentModel: DepartmentType = {
     *addDepartment ({ payload }, { call }) {
       
       const data = {
-        id: 0,
+        id: payload.id ? payload.id : 0,
         number: payload.number,
         name: payload.name,
         shortName: payload.shortName,
@@ -89,7 +90,8 @@ const departmentModel: DepartmentType = {
 
       const back = yield call(createDepartment, data)
       if (back.code !== 0) {
-        console.log(back.message)
+        message.error(back.message)
+        console.error(back.message)
         return
       }
       
@@ -107,7 +109,7 @@ const departmentModel: DepartmentType = {
       const back = yield call(searchDepartment, params)
       if (back.code !== 0) {
         message.error(back.message)
-        console.log(back.message)
+        console.error(back.message)
         return
       }
 
@@ -125,6 +127,22 @@ const departmentModel: DepartmentType = {
         type: 'loading',
         payload: false
       })
+    },
+
+    *deleteDepartment ({ payload }, { call }) {
+
+      const params = {
+        id : payload
+      }
+
+      const back = yield call(deleteDepartment, params)
+      if (back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      message.success('删除成功')
     }
   }
 }

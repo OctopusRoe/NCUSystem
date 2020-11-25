@@ -73,7 +73,13 @@ export interface AcademicYearState {
 
 // 专业设置的 state
 export interface SpecialtyState {
-  specialtyList?: {}[]
+  specialtyList?: {
+    id: number,
+    college: string,
+    lengthOfSchooling: string,
+    majorName: string,
+    majorNo: string
+  }[]
   count: number
   loading: boolean
 }
