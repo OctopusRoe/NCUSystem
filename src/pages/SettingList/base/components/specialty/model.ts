@@ -14,6 +14,8 @@ export interface SpecialtyModel {
   reducers: {
     saveCount: Reducer<SpecialtyState>
     saveSpecial: Reducer<SpecialtyState>
+    loading: Reducer<SpecialtyState>
+    cleanState: Reducer<SpecialtyState>
   }
   effects: {
     addSpecial: Effect
@@ -25,7 +27,8 @@ const specialtyModel: SpecialtyModel = {
   namespace: 'baseSpecialty',
   state: {
     specialtyList: [],
-    count: 0
+    count: 0,
+    loading: true
   },
   reducers: {
     saveCount (state, { payload }) {
@@ -42,6 +45,25 @@ const specialtyModel: SpecialtyModel = {
       return {
         ...newState
       }
+    },
+
+    loading (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.loading = payload
+      return {
+        ...newState
+      }
+    },
+
+    cleanState () {
+      const state = {
+        specialtyList: [],
+        count: 0,
+        loading: true
+      }
+      return {
+        ...state
+      }
     }
   },
   effects: {
@@ -51,6 +73,33 @@ const specialtyModel: SpecialtyModel = {
     
     *searchSpecial ({ payload }, { call, put}) {
 
+      const params = {
+        query: payload.query ? payload.query : '',
+        PageSize: payload.PageSize ? payload.PageSize : 20,
+        PageIndex: payload.PageIndex ? payload.PageIndex : 1,
+      }
+
+      const back = yield call(searchSpecial, params)
+      if (back.code !== 0) {
+        message.error(back.message)
+        console.log(back.message)
+        return
+      }
+
+      yield put({
+        type: 'saveSpecial',
+        payload: back.data
+      })
+
+      yield put({
+        type: 'saveCount',
+        payload: back.count
+      })
+
+      yield put({
+        type: 'loading',
+        payload: false
+      })
     }
   }
 }

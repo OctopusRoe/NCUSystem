@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Divider, Popconfirm, message } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import { TableListItem } from './data.d';
@@ -16,6 +17,7 @@ import { SetClassState } from '../../data';
 interface SetClassProps {
   count: number
   dataSorce: any
+  loading: boolean
   dispatch: Dispatch
 }
 
@@ -23,7 +25,7 @@ const { Search } = Input;
 
 const SetClass: React.FC<SetClassProps> = (props) => {
 
-  const { count, dataSorce, dispatch } = props
+  const { count, dataSorce, loading, dispatch } = props
 
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setAddmodalVisible] = useState(false);
@@ -31,18 +33,18 @@ const SetClass: React.FC<SetClassProps> = (props) => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '班级号',
-      dataIndex: 'classID',
-      key: 'classID',
+      dataIndex: 'classNo',
+      key: 'classNo',
     },
     {
       title: '班级名称',
-      dataIndex: 'classname',
-      key: 'classname',
+      dataIndex: 'className',
+      key: 'className',
     },
     {
       title: '专业号',
-      dataIndex: 'specialtyID',
-      key: 'specialtyID',
+      dataIndex: 'majorNo',
+      key: 'majorNo',
     },
     {
       title: '操作',
@@ -71,12 +73,38 @@ const SetClass: React.FC<SetClassProps> = (props) => {
   };
 
   //搜索框 search方法
-  const onSearch = (vlaue: any) => {
-    console.log(vlaue);
+  const onSearch = (value: any) => {
+    const data = {
+      query: value
+    }
+    dispatch({
+      type: 'baseSetClass/searchClass',
+      payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'baseSetClass/loading',
+      payload: true
+    })
   };
 
-  const onChange = () => {
-    
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current
+    }
+    dispatch({
+      type: 'baseSetClass/searchClass',
+      payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'baseSetClass/loading',
+      payload: true
+    })
   }
 
   useEffect(() => {
@@ -84,6 +112,13 @@ const SetClass: React.FC<SetClassProps> = (props) => {
       type: 'baseSetClass/searchClass',
       payload: {}
     })
+
+    // 退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'baseSetClass/cleanState'
+      })
+    }
   }, [])
 
   return (
@@ -92,7 +127,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
         onExpandedRowsChange={(e) => {
           console.log(e);
         }}
-        rowKey="key"
+        rowKey="id"
         search={false}
         actionRef={actionRef}
         headerTitle={'班级设置'}
@@ -113,6 +148,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
         pagination={{total: count}}
         onChange={onChange}
         columns={columns}
+        loading={loading}
       />
       <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
       <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
@@ -124,7 +160,8 @@ export default connect(
   ({ baseSetClass }: { baseSetClass: SetClassState}) => {
     return {
       count: baseSetClass.count,
-      dataSorce: baseSetClass.classList
+      dataSorce: baseSetClass.classList,
+      loading: baseSetClass.loading
     }
   }
 )(SetClass);

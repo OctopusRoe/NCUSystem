@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Divider, Popconfirm, message } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import { TableListItem } from './data.d';
@@ -16,6 +17,7 @@ import { SpecialtyState } from '../../data'
 interface SpecialtyProps {
   count: number
   dataSorce: any
+  loading: boolean
   dispatch: Dispatch
 }
 
@@ -23,7 +25,7 @@ const { Search } = Input;
 
 const Specialty: React.FC<SpecialtyProps> = (props) => {
 
-  const { count, dataSorce, dispatch } = props
+  const { count, dataSorce, loading, dispatch } = props
 
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setAddmodalVisible] = useState(false);
@@ -31,13 +33,13 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '专业号',
-      dataIndex: 'specialtyID',
-      key: 'specialtyID',
+      dataIndex: 'majorNo',
+      key: 'majorNo',
     },
     {
       title: '专业名称',
-      dataIndex: 'specialtyname',
-      key: 'specialtyname',
+      dataIndex: 'majorName',
+      key: 'majorName',
     },
     {
       title: '学院/单位',
@@ -46,8 +48,8 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
     },
     {
       title: '学制',
-      dataIndex: 'educational',
-      key: 'educational',
+      dataIndex: 'lengthOfSchooling',
+      key: 'lengthOfSchooling',
     },
     {
       title: '操作',
@@ -77,24 +79,58 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
 
   //搜索框 serach方法
   const onSearch = (value: any) => {
-    console.log(value);
+    const data = {
+      query: value
+    }
+
+    dispatch({
+      type: 'baseSpecialty/searchSpecial',
+      payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'baseSpecialty/loading',
+      payload: true
+    })
   };
 
-  const onChange = () => {
-    
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current
+    }
+    dispatch({
+      type: 'baseSpecialty/searchSpecial',
+      payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'baseSpecialty/loading',
+      payload: true
+    })
   }
 
   useEffect(() => {
     dispatch({
-      type: 'baseSetClass/searchClass',
+      type: 'baseSpecialty/searchSpecial',
       payload: {}
     })
+
+    // 退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'baseSpecialty/cleanState'
+      })
+    }
   }, [])
 
   return (
     <div>
       <ProTable<TableListItem>
-        rowKey="key"
+        rowKey="id"
         search={false}
         actionRef={actionRef}
         headerTitle={'专业设置'}
@@ -115,6 +151,7 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
         pagination={{total: count}}
         onChange={onChange}
         columns={columns}
+        loading={loading}
       />
       <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
       <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
@@ -126,7 +163,8 @@ export default connect(
   ({ baseSpecialty }: { baseSpecialty: SpecialtyState }) => {
     return {
       count: baseSpecialty.count,
-      dataSorce: baseSpecialty.specialtyList
+      dataSorce: baseSpecialty.specialtyList,
+      loading: baseSpecialty.loading
     }
   }
 )(Specialty);

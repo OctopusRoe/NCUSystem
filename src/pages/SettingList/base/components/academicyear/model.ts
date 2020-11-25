@@ -16,6 +16,8 @@ export interface AcademicYearModel {
   reducers: {
     saveCount: Reducer<AcademicYearState>
     saveAcademicYear: Reducer<AcademicYearState>
+    loading: Reducer<AcademicYearState>
+    cleanState: Reducer<AcademicYearState>
   },
   effects: {
     addAcademicYear: Effect
@@ -28,7 +30,8 @@ const academicYearModel: AcademicYearModel = {
   namespace: 'baseAcademicYear',
   state: {
     academicYearList: [],
-    count: 0
+    count: 0,
+    loading: true
   },
   reducers:{
     saveCount (state, { payload }) {
@@ -44,6 +47,25 @@ const academicYearModel: AcademicYearModel = {
       newState.academicYearList = payload
       return {
         ...newState
+      }
+    },
+
+    loading (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.loading = payload
+      return {
+        ...newState
+      }
+    },
+
+    cleanState () {
+      const state = {
+        academicYearList: [],
+        count: 0,
+        loading: true
+      }
+      return {
+        ...state
       }
     }
   },
@@ -71,13 +93,20 @@ const academicYearModel: AcademicYearModel = {
         console.log(back.message)
         return
       }
+
       yield put({
         type: 'saveAcademicYear',
         payload: back.data
       })
+
       yield put({
         type: 'saveCount',
         payload: back.count
+      })
+      
+      yield put({
+        type: 'loading',
+        payload: false
       })
     }
   }

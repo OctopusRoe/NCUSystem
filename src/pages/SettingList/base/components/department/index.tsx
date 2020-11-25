@@ -16,6 +16,7 @@ import { DepartmentState, DepartmentTypeState } from '../../data';
 interface DepartmentProps {
   count: number;
   dataSorce: any;
+  loading: boolean
   typeValue: {one: string, id: number}[];
   dispatch: Dispatch;
 }
@@ -24,7 +25,7 @@ const { Search } = Input;
 
 const Department: React.FC<DepartmentProps> = (props) => {
   
-  const { count, typeValue, dataSorce, dispatch } = props
+  const { count, typeValue, dataSorce, loading, dispatch } = props
   
   const [addmodalviaible, setaddmodalvisible] = useState(false);
   const [editmodla, seteditmodal] = useState(false);
@@ -86,6 +87,13 @@ const Department: React.FC<DepartmentProps> = (props) => {
       type: 'baseDepartment/searchDepartment',
       payload: {}
     })
+
+    // 退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'baseDepartment/cleanState'
+      })
+    }
   },[])
 
   //删除成功
@@ -106,6 +114,12 @@ const Department: React.FC<DepartmentProps> = (props) => {
       type: 'baseDepartment/searchDepartment',
       payload: data
     })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'baseDepartment/loading',
+      payload: true
+    })
   };
 
   
@@ -119,6 +133,12 @@ const Department: React.FC<DepartmentProps> = (props) => {
     dispatch({
       type: 'baseDepartment/searchDepartment',
       payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'baseDepartment/loading',
+      payload: true
     })
   }
 
@@ -147,6 +167,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
         pagination={{total: count}}
         onChange={onChange}
         columns={columns}
+        loading={loading}
       />
       <AddModal modalvisible={addmodalviaible} onCancel={() => setaddmodalvisible(false)} typeValue={typeValue} />
       <EditModal modalvisible={editmodla} onCancel={() => seteditmodal(false)} />
@@ -159,7 +180,8 @@ export default connect(
     return {
       typeValue: baseDepartmentType.valueList,
       dataSorce: baseDepartment.departmentList,
-      count: baseDepartment.count
+      count: baseDepartment.count,
+      loading: baseDepartment.loading
     }
   }
 )(Department);

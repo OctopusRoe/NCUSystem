@@ -14,6 +14,8 @@ export interface DepartmentType {
   reducers: {
     saveCount: Reducer<DepartmentState>
     saveDepartment: Reducer<DepartmentState>
+    loading: Reducer<DepartmentState>
+    cleanState: Reducer<DepartmentState>
   }
   effects: {
     addDepartment: Effect
@@ -25,12 +27,15 @@ const departmentModel: DepartmentType = {
   namespace: 'baseDepartment',
   state: {
     departmentList: [],
-    count: 0
+    count: 0,
+    loading: true
   },
   reducers: {
     saveCount (state, { payload }) {
+
       const newState = JSON.parse(JSON.stringify(state))
       newState.count = payload
+
       return {
         ...newState
       }
@@ -44,10 +49,34 @@ const departmentModel: DepartmentType = {
       return {
         ...newState
       }
+    },
+
+    loading (state, { payload }) {
+      
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.loading = payload
+
+      return {
+        ...newState
+      }
+    },
+
+    cleanState () {
+
+      const state = {
+        departmentList: [],
+        count: 0,
+        loading: true
+      }
+      
+      return {
+        ...state
+      }
     }
   },
   effects: {
     *addDepartment ({ payload }, { call }) {
+      
       const data = {
         id: 0,
         number: payload.number,
@@ -57,11 +86,13 @@ const departmentModel: DepartmentType = {
         level: parseInt(payload.level),
         childrenIds: []
       }
+
       const back = yield call(createDepartment, data)
       if (back.code !== 0) {
         console.log(back.message)
         return
       }
+      
       message.success('创建成功')
     },
 
@@ -79,13 +110,20 @@ const departmentModel: DepartmentType = {
         console.log(back.message)
         return
       }
+
       yield put({
         type: 'saveDepartment',
         payload: back.data
       })
+
       yield put({
         type: 'saveCount',
         payload: back.count
+      })
+      
+      yield put({
+        type: 'loading',
+        payload: false
       })
     }
   }

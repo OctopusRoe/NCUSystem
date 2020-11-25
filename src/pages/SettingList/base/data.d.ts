@@ -54,6 +54,7 @@ export interface DepartmentState {
     childrens: []
   }[]
   count: number
+  loading: boolean
 }
 
 // 学年设置的 state
@@ -67,18 +68,21 @@ export interface AcademicYearState {
     currentYear: string
   }[]
   count: number
+  loading: boolean
 }
 
 // 专业设置的 state
 export interface SpecialtyState {
   specialtyList?: {}[]
   count: number
+  loading: boolean
 }
 
 // 班级设置的 state
 export interface SetClassState {
   classList?: {}[]
   count: number
+  loading: boolean
 }
 
 // 网络平台类型的 state

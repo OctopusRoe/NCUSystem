@@ -29,14 +29,15 @@ const associationGradeModel: AssociationGradeType = {
     saveGrade(state: any, { payload }) {
 
       if ( !Array.isArray(payload) ) {
+        message.error('服务器返回了错误的数据')
         console.log('服务器返回了错误的数据')
         return
       }
-
-      state.valueList = payload.map((item: {id: number, name: string, status: number}) => ({one: item.name, id: item.id}))
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.valueList = payload.map((item: {id: number, name: string, status: number}) => ({one: item.name, id: item.id}))
 
       return {
-        ...state
+        ...newState
       }
     }
   },

@@ -16,12 +16,13 @@ import { AcademicYearState } from '../../data';
 interface AcademicYearProps {
   count: number
   dataSorce: any
+  loading: boolean
   dispatch: Dispatch
 }
 
 const AcademicYear: React.FC<AcademicYearProps> = (props) => {
 
-  const { count, dataSorce, dispatch } = props
+  const { count, dataSorce, loading, dispatch } = props
 
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, setaddmodalVisible] = useState(false);
@@ -64,8 +65,22 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
     },
   ];
 
+  // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current
+    }
+    dispatch({
+      type: 'baseAcademicYear/searchAcademicYear',
+      payload: data
+    })
 
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'baseAcademicYear/loading',
+      payload: true
+    })
   }
 
   //删除成功
@@ -82,6 +97,13 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
       type: 'baseAcademicYear/searchAcademicYear',
       payload: {}
     })
+
+    // 退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'baseAcademicYear/cleanState'
+      })
+    }
   }, [])
 
   return (
@@ -100,6 +122,7 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
         pagination={{total: count}}
         onChange={onChange}
         columns={columns}
+        loading={loading}
       />
       <AddModal modalvisible={addmodalVisible} onCancel={() => setaddmodalVisible(false)} />
       <EditModal modalvisible={editmodalVisible} onCancel={() => seteditmodalVisible(false)} />
@@ -111,7 +134,8 @@ export default connect(
   ({ baseAcademicYear }: { baseAcademicYear: AcademicYearState }) => {
     return {
       count: baseAcademicYear.count,
-      dataSorce: baseAcademicYear.academicYearList
+      dataSorce: baseAcademicYear.academicYearList,
+      loading: baseAcademicYear.loading
     }
   }
 )(AcademicYear);
