@@ -1,46 +1,101 @@
 // 短信统计 组件
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Card, Row, Col, Divider, Typography, Input } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableListItem } from './data.d';
-import { getTable } from './service';
+import { PaginationProps } from 'antd/lib/pagination';
+import { SttingsMessage } from './data';
+import { connect, Dispatch } from 'umi';
 
 const { Title } = Typography;
 const { Search } = Input;
 
-const columns: ProColumns<TableListItem>[] = [
-  {
-    title: '发送对象',
-    dataIndex: 'personId',
-    key: 'personId',
-    hideInSearch: true,
-  },
-  {
-    title: '手机号',
-    dataIndex: 'phone',
-    key: 'phone',
-    hideInSearch: true,
-  },
-  {
-    title: '发送时间',
-    dataIndex: 'sendTime',
-    key: 'sendTime',
-    hideInSearch: true,
-  },
-  {
-    title: '短信内容',
-    dataIndex: 'content',
-    key: 'content',
-    hideInSearch: true,
-  },
-];
+interface MessageProps {
+  count: number;
+  dataSorce: any;
+  loading: boolean;
+  dispatch: Dispatch;
+}
 
-const MessageCom: React.FC<{}> = () => {
+const MessageCom: React.FC<MessageProps> = (props) => {
   const actionRef = useRef<ActionType>();
+
+  const { count, dataSorce, loading, dispatch } = props;
   //Search 搜索框
   const onSearch = (value: any) => {
-    console.log(value);
+    const data = {
+      Phone: value,
+    };
+    dispatch({
+      type: 'settingsMessage/searchMessage',
+      payload: data,
+    });
+
+    //修改 table 的loading 值
+    dispatch({
+      type: 'settingsMessage/loading',
+      payload: true,
+    });
+  };
+
+  const columns: ProColumns<TableListItem>[] = [
+    {
+      title: '发送对象',
+      dataIndex: 'personId',
+      key: 'personId',
+      hideInSearch: true,
+    },
+    {
+      title: '手机号',
+      dataIndex: 'phone',
+      key: 'phone',
+      hideInSearch: true,
+    },
+    {
+      title: '发送时间',
+      dataIndex: 'sendTime',
+      key: 'sendTime',
+      hideInSearch: true,
+    },
+    {
+      title: '短信内容',
+      dataIndex: 'content',
+      key: 'content',
+      hideInSearch: true,
+    },
+  ];
+
+  useEffect(() => {
+    dispatch({
+      type: 'settingsMessage/searchMessage',
+      payload: {},
+    });
+    //退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'settingsMessage/cleanState',
+      });
+    };
+  }, []);
+
+  // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current,
+    };
+    dispatch({
+      type: 'settingsMessage/searchMessage',
+      payload: data,
+    });
+
+    //修改 table 的loading 值
+    dispatch({
+      type: 'settingsMessage/loading',
+      payload: true,
+    });
   };
 
   return (
@@ -96,11 +151,21 @@ const MessageCom: React.FC<{}> = () => {
         toolBarRender={(action, {}) => [
           <Search enterButton placeholder={'请输入手机号'} onSearch={onSearch} />,
         ]}
-        request={(params) => getTable(params)}
+        // request={(params) => getTable(params)}
+        dataSource={dataSorce}
+        pagination={{ total: count }}
+        onChange={onChange}
         columns={columns}
+        loading={loading}
       />
     </>
   );
 };
 
-export default MessageCom;
+export default connect(({ settingsMessage }: { settingsMessage: SttingsMessage }) => {
+  return {
+    dataSorce: settingsMessage.messageList,
+    count: settingsMessage.count,
+    loading: settingsMessage.loading,
+  };
+})(MessageCom);

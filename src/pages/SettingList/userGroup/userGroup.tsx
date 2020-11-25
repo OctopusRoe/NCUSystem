@@ -1,15 +1,17 @@
 // 用户组管理页面
 
 import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Popconfirm } from 'antd';
+import { Button, Divider, message, Popconfirm, Input } from 'antd';
 import React, { useState, useRef } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import CreateForm from './components/CreateForm';
 import ChangePerson from './components/ChangePerson';
 import { TableListItem } from './data';
-import { queryRule } from './service';
+
 import EditModal from './components/EditModal';
+
+const { Search } = Input;
 
 const UserGroup: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -87,14 +89,19 @@ const UserGroup: React.FC<{}> = () => {
     message.error('取消删除');
   };
 
+  //Search 搜索框
+  const onSearch = (value: any) => {};
+
   return (
     <div>
       <ProTable<TableListItem>
         // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
         headerTitle="用户组列表"
         actionRef={actionRef}
+        search={false}
         rowKey="key"
         toolBarRender={(action, {}) => [
+          <Search enterButton placeholder={'请输入用户组名称'} onSearch={onSearch} />,
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新增
           </Button>,
@@ -102,7 +109,7 @@ const UserGroup: React.FC<{}> = () => {
             <DownloadOutlined /> 导出
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        // request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
       <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />

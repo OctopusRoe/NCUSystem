@@ -34,3 +34,16 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+//短信统计的 State
+export interface SttingsMessage {
+  messageList?: {
+    id: string;
+    personId: string;
+    phone: string;
+    sendTime: string;
+    content: string;
+  }[];
+  count: number;
+  loading:boolean
+}

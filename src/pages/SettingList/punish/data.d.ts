@@ -34,3 +34,16 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+//违纪管理 的 State
+export interface PunishState {
+  punishList?: {
+    id: string;
+    personId: string;
+    name: string;
+    punishDate: string;
+    number: string;
+  }[];
+  count: number;
+  loading: boolean;
+}
