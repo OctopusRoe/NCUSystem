@@ -11,6 +11,14 @@ export interface TableListItem {
   updatedAt: Date;
   createdAt: Date;
   progress: number;
+  id: number;
+  number: number;
+  name: string;
+  shortName: string;
+  organizationType: number;
+  organizationTypeName: null;
+  level: number;
+  childrens: [];
 }
 
 export interface TableListPagination {

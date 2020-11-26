@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd'
 
-import { createClass, searchClass } from '../../service'
+import { createClass, searchClass, deleteClass, downLoadClass } from '../../service'
 
 import { SetClassState } from '../../data'
 
@@ -20,6 +20,8 @@ export interface SetClassModel {
   effects: {
     addClass: Effect
     searchClass: Effect
+    deleteClass: Effect
+    downLoad: Effect
   }
 }
 
@@ -69,6 +71,23 @@ const setClassModel: SetClassModel = {
   effects: {
     *addClass ({ payload }, { call }) {
 
+      const data = {
+        id: payload.id ? payload.id : 0,
+        classNo: payload.classNo,
+        className: payload.className,
+        majorNo: payload.majorNo,
+        majorName: payload.majorName ? payload.majorName : ''
+      }
+
+      const back = yield call(createClass, data)
+      if (back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      message.success('创建成功')
+
     },
 
     *searchClass ({ payload }, { call, put }) {
@@ -100,6 +119,42 @@ const setClassModel: SetClassModel = {
         type: 'loading',
         payload: false
       })
+    },
+
+    *deleteClass ({ payload }, { call }) {
+
+      const params = {
+        id: payload
+      }
+
+      const back = yield call(deleteClass, params)
+      if (back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      message.success('删除成功')
+    },
+
+    *downLoad ({}, { call }) {
+
+      const back = yield call(downLoadClass)
+      if (back.code && back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      const a = document.createElement('a')
+      const reader = new FileReader()
+      reader.readAsDataURL(back)
+      reader.onload = (e) => {
+        a.download = '班级列表'
+        a.href = e.target?.result as string
+        a.click()
+        a.remove()
+      }
     }
   }
 }

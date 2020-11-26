@@ -11,6 +11,13 @@ export interface TableListItem {
   updatedAt: Date;
   createdAt: Date;
   progress: number;
+  id: number;
+  schoolYearName: string;
+  schoolYearShortName: string;
+  startDate: string;
+  endDate: string;
+  currentYear: string;
+  date: string;
 }
 
 export interface TableListPagination {

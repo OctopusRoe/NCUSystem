@@ -6,6 +6,7 @@ import CropImgview from '@/components/CropImgview';
 interface AddModalFormProps {
   modalVisible: boolean;
   onCancel: () => void;
+  typeValue: {one: string, id: number}[]
 }
 
 const layout = {
@@ -25,9 +26,8 @@ const okChange = () => {
   document.getElementById('add-submit')?.click();
 };
 
-const apptype = ['类别1', '类别2', '类别3', '类别4'];
 const AddModal: React.FC<AddModalFormProps> = (porps) => {
-  const { modalVisible, onCancel } = porps;
+  const { modalVisible, typeValue, onCancel } = porps;
   const { Option } = Select;
 
   // 获取图片数据
@@ -70,9 +70,9 @@ const AddModal: React.FC<AddModalFormProps> = (porps) => {
           rules={[{ required: true, message: '请选择应用类别' }]}
         >
           <Select placeholder={'请选择单位类别'}>
-            {apptype.map((item: any, index: number) => (
-              <Option value={item} key={index}>
-                {item}
+            {typeValue.map((item: any, index: number) => (
+              <Option value={item.one} key={item.one}>
+                {item.one}
               </Option>
             ))}
           </Select>

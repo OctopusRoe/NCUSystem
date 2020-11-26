@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd'
 
-import { createDepartment, searchDepartment, deleteDepartment } from '../../service'
+import { createDepartment, searchDepartment, deleteDepartment, downLoadDepartment } from '../../service'
 
 import { DepartmentState } from '../../data'
 
@@ -21,6 +21,7 @@ export interface DepartmentType {
     addDepartment: Effect
     searchDepartment: Effect
     deleteDepartment: Effect
+    downLoad: Effect
   }
 }
 
@@ -143,6 +144,27 @@ const departmentModel: DepartmentType = {
       }
 
       message.success('删除成功')
+    },
+
+    *downLoad ({},{ call }) {
+      
+      const back = yield call(downLoadDepartment)
+      if (back.code && back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      const a = document.createElement('a')
+      const reader = new FileReader()
+      reader.readAsDataURL(back)
+      reader.onload = (e) => {
+        a.download = '单位数据'
+        a.href = e.target?.result as string
+        a.click()
+        a.remove()
+      }
+
     }
   }
 }

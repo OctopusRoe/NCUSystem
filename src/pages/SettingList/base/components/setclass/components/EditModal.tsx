@@ -1,30 +1,50 @@
-import { Button, Form, Input, Select } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
+import React, { useRef } from 'react';
 
-interface AddModalProps {
+import { Button, Form, Input, Modal} from 'antd';
+
+import { connect, Dispatch } from 'umi'
+
+interface EditModalProps {
   modalvisible: boolean;
+  formValue: any;
   onCancel: () => void;
+  afterClose: () => void;
+  dispatch: Dispatch;
 }
 
-const EditModal: React.FC<AddModalProps> = (props) => {
-  const { modalvisible, onCancel } = props;
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 17 },
-  };
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
+};
+
+const EditModal: React.FC<EditModalProps> = (props) => {
+
+  const { modalvisible, formValue, onCancel, afterClose, dispatch } = props;
+
+  const button = useRef<HTMLButtonElement>(null)
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    
+    const data = {
+      id: formValue.id,
+      ...values
+    }
+
+    dispatch({
+      type: 'baseSetClass/addClass',
+      payload: data
+    })
+
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000)
+    
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
-  };
-
-  //modal框确定按钮
-  const okChange = () => {
-    document.getElementById('add-submit')?.click();
   };
 
   return (
@@ -33,14 +53,15 @@ const EditModal: React.FC<AddModalProps> = (props) => {
         title="新增班级"
         visible={modalvisible}
         onCancel={onCancel}
-        onOk={okChange}
+        onOk={() => button.current?.click()}
         okText="确定"
         cancelText="取消"
+        destroyOnClose
       >
         <Form
           {...layout}
           name="edit"
-          initialValues={{ remember: true }}
+          initialValues={formValue}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           hideRequiredMark //去除前面红色*号
@@ -48,7 +69,7 @@ const EditModal: React.FC<AddModalProps> = (props) => {
         >
           <Form.Item
             label="班级号"
-            name="classID"
+            name="classNo"
             rules={[{ required: true, message: '请输入班级号' }]}
           >
             <Input placeholder="请输入班级号" />
@@ -56,7 +77,7 @@ const EditModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="班级名称"
-            name="classname"
+            name="className"
             rules={[{ required: true, message: '请输入班级名称' }]}
           >
             <Input placeholder="请输入班级名称" />
@@ -64,14 +85,14 @@ const EditModal: React.FC<AddModalProps> = (props) => {
 
           <Form.Item
             label="专业号"
-            name="specialtyID"
+            name="majorNo"
             rules={[{ required: true, message: '请输入专业号' }]}
           >
             <Input placeholder="请输入专业号" />
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
-            <Button type="primary" htmlType="submit" id="add-submit" />
+            <Button type="primary" htmlType="submit" ref={button} />
           </Form.Item>
         </Form>
       </Modal>
@@ -79,4 +100,4 @@ const EditModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default EditModal;
+export default connect()(EditModal);

@@ -1,44 +1,53 @@
 // 应用管理-应用管理 组件
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button, Divider, Input, Image, message, Popconfirm } from 'antd';
-import { TableListItem } from './data.d';
-import { connect } from 'umi';
+import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
-import { queryRule } from '../service';
+
+import { TableListItem } from './data.d';
+import { connect, Dispatch } from 'umi';
+
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 
+import { ControlListState, CategoryState } from '../../data'
+
+interface ControlProps {
+  dataSorce: any
+  count: number
+  loading: boolean
+  typeValue: {one: string, id: number}[]
+  dispatch: Dispatch
+}
+
 const { Search } = Input;
 
-const showImage = () => {
-  document.getElementById('control-table-logo')?.click();
-};
+const Control: React.FC<ControlProps> = (props) => {
 
-const Control: React.FC<{}> = () => {
+  const { dataSorce, count, loading, typeValue, dispatch } = props
+  
   const actionRef = useRef<ActionType>();
   const [addmodalVisible, handAddmodalVisible] = useState(false);
   const [editmodalVisible, setEditmodalVisible] = useState(false);
+  
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '图标',
-      dataIndex: 'logo',
-      key: 'logo',
-      render: (text, record) => {
+      dataIndex: 'src',
+      key: 'src',
+      render: (text, record: any) => {
+        console.log(record)
         return (
           <>
             <img
-              src={
-                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1605588696780&di=b350f01e6ef6896f4dae07890d382d6c&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F01%2F42%2F51%2F90573d7eb6115f6.jpg'
-              }
+              src={record.src}
               style={{ width: '30px', height: '30px', borderRadius: '50%' }}
-              onClick={showImage}
+              onClick={() => document.getElementById('control-table-logo')?.click()}
             />
             <Image
-              src={
-                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1605588696780&di=b350f01e6ef6896f4dae07890d382d6c&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F01%2F42%2F51%2F90573d7eb6115f6.jpg'
-              }
+              src={record.src}
               style={{ display: 'none' }}
               id={'control-table-logo'}
             />
@@ -48,18 +57,18 @@ const Control: React.FC<{}> = () => {
     },
     {
       title: '应用名称',
-      dataIndex: 'appname',
-      key: 'appname',
+      dataIndex: 'appName',
+      key: 'appName',
     },
     {
       title: '应用类别',
-      dataIndex: 'apptype',
-      key: 'apptype',
+      dataIndex: 'menuName',
+      key: 'menuName',
     },
     {
       title: '链接地址',
-      dataIndex: 'linkaddress',
-      key: 'linkaddress',
+      dataIndex: 'appURI',
+      key: 'appURI',
     },
 
     {
@@ -78,6 +87,31 @@ const Control: React.FC<{}> = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    dispatch({
+      type: 'controlList/searchControl',
+      payload: {}
+    })
+  },[])
+
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current
+    }
+    dispatch({
+      type: 'controlList/searchControl',
+      payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'controlList/loading',
+      payload: true
+    })
+  }
 
   //删除成功
   const confirm = () => {
@@ -99,7 +133,7 @@ const Control: React.FC<{}> = () => {
         search={false}
         headerTitle="应用列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Search enterButton placeholder="请输入应用名称" onSearch={onSearch} />,
           <Button type="primary" onClick={() => handAddmodalVisible(true)}>
@@ -109,13 +143,25 @@ const Control: React.FC<{}> = () => {
             <DownloadOutlined /> 导出
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={dataSorce}
+        pagination={{total: count}}
+        onChange={onChange}
         columns={columns}
+        loading={loading}
       />
-      <AddModal onCancel={() => handAddmodalVisible(false)} modalVisible={addmodalVisible} />
+      <AddModal onCancel={() => handAddmodalVisible(false)} modalVisible={addmodalVisible} typeValue={typeValue} />
       <EditModal modalVisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
     </div>
   );
 };
 
-export default connect()(Control);
+export default connect(
+  ({ controlList, controlCategory }: { controlList: ControlListState, controlCategory: CategoryState }) => {
+    return {
+      dataSorce: controlList.controlList,
+      count: controlList.count,
+      loading: controlList.loading,
+      typeValue: controlCategory.valueList
+    }
+  }
+)(Control);

@@ -57,7 +57,7 @@ const AcademicYear: React.FC<AcademicYearProps> = (props) => {
       dataIndex: 'option',
       valueType: 'option',
       width: '10%',
-      render: (_, record: any) => (
+      render: (_, record) => (
         <>
           <a onClick={() => {
             seteditmodalVisible(true)

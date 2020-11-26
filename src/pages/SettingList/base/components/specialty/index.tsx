@@ -59,7 +59,7 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
       dataIndex: 'option',
       valueType: 'option',
       width: '10%',
-      render: (_, record: any) => (
+      render: (_, record) => (
         <>
           <a onClick={() => {
             setEditmodalVisible(true)

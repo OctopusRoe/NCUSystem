@@ -30,7 +30,7 @@ const associationGradeModel: AssociationGradeType = {
 
       if ( !Array.isArray(payload) ) {
         message.error('服务器返回了错误的数据')
-        console.log('服务器返回了错误的数据')
+        console.error('服务器返回了错误的数据')
         return
       }
       const newState = JSON.parse(JSON.stringify(state))
@@ -46,7 +46,7 @@ const associationGradeModel: AssociationGradeType = {
       const back = yield call(getAssociationGrade)
       if (back.code !== 0) {
         message.error(back.message)
-        console.log(back.message)
+        console.error(back.message)
         return
       }
       yield put({
@@ -59,14 +59,14 @@ const associationGradeModel: AssociationGradeType = {
       const back = yield call(upAssociationGrade, payload)
       if (back.code !== 0) {
         message.error(back.message)
-        console.log(back.message)
+        console.error(back.message)
         return
       }
       yield put({
         type: 'saveGrade',
         payload: back.data
       })
-      message.success('创建成功')
+      message.success('更新成功')
     }
   }
 }

@@ -46,6 +46,7 @@ export interface CurrentUser {
 export interface DepartmentState {
   departmentList?: {
     id: number,
+    number: number,
     name: string,
     shortName: string,
     organizationType: number,
@@ -65,7 +66,8 @@ export interface AcademicYearState {
     schoolYearShortName: string,
     startDate: string,
     endDate: string,
-    currentYear: string
+    currentYear: string,
+    date: string
   }[]
   count: number
   loading: boolean
@@ -86,27 +88,33 @@ export interface SpecialtyState {
 
 // 班级设置的 state
 export interface SetClassState {
-  classList?: {}[]
+  classList?: {
+    id: number,
+    classNo: string,
+    className: string,
+    majorNo: string,
+    majorName: string
+  }[]
   count: number
   loading: boolean
 }
 
 // 网络平台类型的 state
 export interface OnlinePlatformState {
-  valueList: {one: string,id: number}[]
+  valueList: {one: string, id: number}[]
 }
 
 // 社团级别的 state
 export interface AssociationGradeState {
-  valueList: {one: string,id: number}[]
+  valueList: {one: string, id: number}[]
 }
 
 // 社团类别的 state
 export interface AssociationTypeState {
-  valueList: {one: string,id: number}[]
+  valueList: {one: string, id: number}[]
 }
 
 // 单位类别的 state
 export interface DepartmentTypeState {
-  valueList: {one: string,id: number}[]
+  valueList: {one: string, id: number}[]
 }

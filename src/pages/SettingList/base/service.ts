@@ -3,24 +3,6 @@ import request from 'umi-request';
 // 获取全局公共URL的函数
 import getPort from '@/services/global'
 
-export async function queryCurrent() {
-  return request('/api/currentUser');
-}
-
-export async function queryProvince() {
-  return request('/api/geographic/province');
-}
-
-export async function queryCity(province: string) {
-  return request(`/api/geographic/city/${province}`);
-}
-
-export async function query() {
-  return request('/api/users');
-}
-
-
-
 // 系统设置 系统信息 修改
 export async function baseInfoUpdata (data: FormData) {
   return request.put(getPort('sysbasicinfo/sysbasicinfocreateorupdate'),{data: data})
@@ -39,6 +21,11 @@ export async function searchDepartment (params: {query?: string, PageSize: numbe
 // 系统设置 指导单位设置 删除
 export async function deleteDepartment (params: {id: number}) {
   return request.delete(getPort('sysbasicorganization/sysbasicorganizationdelete'), {params: params})
+}
+
+// 系统设置 指导单位设置 导出
+export async function downLoadDepartment () {
+  return request.get(getPort('sysbasicorganization/sysbasicorganizationexport'), {headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }, responseType: 'blob'})
 }
 
 // 系统设置 学年设置 新增学年
@@ -71,6 +58,11 @@ export async function deleteSpecial (params: {id: number}) {
   return request.delete(getPort('sysbasicmajor/sysbasicmajordelte'), {params: params})
 }
 
+// 系统设置 专业设置 导出
+export async function downLoadSpecial () {
+  return request.get(getPort('sysbasicmajor/sysbasicmajorexport'), {headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}, responseType: 'blob'})
+}
+
 // 系统设置 班级设置 新增班级
 export async function createClass (data: any) {
   return request.put(getPort('sysbasicclass/sysbasicclasscreateorupdate'), {data: data})
@@ -79,6 +71,16 @@ export async function createClass (data: any) {
 // 系统设置 班级设置 获取列表
 export async function searchClass (params: {query?: string, PageSize: number, PageIndex: number}) {
   return request.get(getPort('sysbasicclass/getsysbasicclasslist'), {params: params})
+}
+
+// 系统设置 班级设置 删除
+export async function deleteClass (params: {id: number}) {
+  return request.delete(getPort('sysbasicclass/sysbasicclassdelte'), {params: params})
+}
+
+// 系统设置 班级设置 导出
+export async function downLoadClass () {
+  return request.get(getPort(''), {headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}, responseType: 'blob'})
 }
 
 // 系统设置 网络平台设置 查询

@@ -6,7 +6,7 @@ import styles from './style.less';
 import Control from './components/control/control';
 import Category from './components/category/category';
 import { Menu } from 'antd';
-import { CurrentUser, Dispatch, FormattedMessage } from 'umi';
+import { CurrentUser, Dispatch, FormattedMessage, connect } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 
 const { Item } = Menu;
@@ -17,6 +17,7 @@ interface SettingsProps {
 }
 
 type SettingsStateKeys = 'control' | 'category' ;
+
 interface SettingsState {
   mode: 'inline' | 'horizontal';
   menuMap: {
@@ -39,6 +40,14 @@ class ControlPage extends Component<SettingsProps, SettingsState> {
       menuMap,
       selectKey: 'control',
     };
+  }
+
+  componentDidMount () {
+    // 访问接口处
+    // 获取应用类别
+    this.props.dispatch({
+      type: 'controlCategory/getCategory'
+    })
   }
 
   getMenu = () => {
@@ -124,4 +133,4 @@ class ControlPage extends Component<SettingsProps, SettingsState> {
   }
 }
 
-export default ControlPage;
+export default connect()(ControlPage);

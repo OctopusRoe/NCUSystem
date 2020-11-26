@@ -5,6 +5,8 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
+import { CategoryState } from '../../data'
+
 interface CategoryProps {
   dispatch: Dispatch
   valueList: any[]
@@ -65,9 +67,9 @@ const Category: React.FC<CategoryProps> = (props) => {
 }
 
 export default connect(
-  (state: any) => {
+  ({ controlCategory }: { controlCategory: CategoryState }) => {
     return {
-      valueList: state['control-category'].valueList
+      valueList: controlCategory.valueList
     }
   }
 )(Category)

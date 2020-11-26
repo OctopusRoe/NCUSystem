@@ -66,7 +66,7 @@ const onlinePlatformModel: OnlinePlatformType = {
         type: 'saveType',
         payload: back.data
       })
-      message.success('创建成功')
+      message.success('更新成功')
     }
   }
 }

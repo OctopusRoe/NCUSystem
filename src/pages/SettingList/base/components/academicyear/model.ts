@@ -8,8 +8,6 @@ import { createAcademicYear, searchAcademicYear, deleteAcademicYear } from '../.
 
 import { AcademicYearState } from '../../data'
 
-import moment from 'moment'
-
 export interface AcademicYearModel {
   namespace: string,
   state: AcademicYearState,

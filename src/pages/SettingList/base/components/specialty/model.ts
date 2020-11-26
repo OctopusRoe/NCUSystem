@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd'
 
-import { createSpecial, searchSpecial, deleteSpecial } from '../../service'
+import { createSpecial, searchSpecial, deleteSpecial, downLoadSpecial } from '../../service'
 
 import { SpecialtyState } from '../../data'
 
@@ -21,6 +21,7 @@ export interface SpecialtyModel {
     addSpecial: Effect
     searchSpecial: Effect
     deleteSpecial: Effect
+    downLoad: Effect
   }
 }
 
@@ -133,6 +134,26 @@ const specialtyModel: SpecialtyModel = {
       }
 
       message.success('删除成功')
+    },
+
+    *downLoad ({}, { call }) {
+
+      const back = yield call(downLoadSpecial)
+      if (back.code && back.code !== 0) {
+        message.error(back.message)
+        console.error(back.message)
+        return
+      }
+
+      const a = document.createElement('a')
+      const reader = new FileReader()
+      reader.readAsDataURL(back)
+      reader.onload = (e) => {
+        a.download = '专业列表'
+        a.href = e.target?.result as string
+        a.click()
+        a.remove()
+      }
     }
   }
 }

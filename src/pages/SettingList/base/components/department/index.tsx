@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { PlusOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Button, Input, Divider, Popconfirm, message } from 'antd';
+import { Button, Input, Divider, Popconfirm } from 'antd';
 import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
@@ -70,7 +70,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
       dataIndex: 'option',
       valueType: 'option',
       width: '15%',
-      render: (_, record: any) => (
+      render: (_, record) => (
         <>
           <a onClick={() => {
             seteditmodal(true)
@@ -170,6 +170,12 @@ const Department: React.FC<DepartmentProps> = (props) => {
     })
   }
 
+  const downLoad = () => {
+    dispatch({
+      type: 'baseDepartment/downLoad'
+    })
+  }
+
   return (
     <div>
       <ProTable<TableListItem>
@@ -187,7 +193,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
           >
             <PlusOutlined /> 新增
           </Button>,
-          <Button type="default">
+          <Button type="default" onClick={downLoad}>
             <DownloadOutlined /> 导出
           </Button>,
         ]}
