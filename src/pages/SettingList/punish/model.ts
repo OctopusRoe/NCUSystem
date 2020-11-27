@@ -5,6 +5,7 @@ import { message } from 'antd';
 
 import { queryPunish, getPunishTemplate, upLoadPunish } from './service';
 
+
 import { PunishState } from './data';
 
 export interface PunishType {

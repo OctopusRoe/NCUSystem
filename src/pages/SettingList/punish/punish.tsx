@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import ProTable, { ProColumns } from '@ant-design/pro-table';
+
 import { TableListItem, PunishState } from './data';
 import { Button, Input } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -135,6 +136,7 @@ const Punish: React.FC<PunishProps> = (props) => {
       type: 'settingPunish/getTemplate'
     })
   }
+
 
   return (
     <div>

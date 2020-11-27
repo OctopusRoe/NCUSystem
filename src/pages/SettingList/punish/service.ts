@@ -21,3 +21,4 @@ export async function getPunishTemplate () {
 export async function upLoadPunish (data: FormData) {
   return request.post(getPort('violatediscipline/import'), {data: data})
 }
+
