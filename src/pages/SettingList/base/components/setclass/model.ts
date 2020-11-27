@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd'
 
-import { createClass, searchClass, deleteClass, downLoadClass } from '../../service'
+import { createClass, searchClass, deleteClass, downLoadClass, getClassTemplate, upLoadClass } from '../../service'
 
 import { SetClassState } from '../../data'
 
@@ -22,6 +22,8 @@ export interface SetClassModel {
     searchClass: Effect
     deleteClass: Effect
     downLoad: Effect
+    getTemplate: Effect
+    upLoad: Effect
   }
 }
 
@@ -81,12 +83,12 @@ const setClassModel: SetClassModel = {
 
       const back = yield call(createClass, data)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
-      message.success('创建成功')
+      message.success('成功')
 
     },
 
@@ -100,8 +102,8 @@ const setClassModel: SetClassModel = {
 
       const back = yield call(searchClass, params)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.log(back.message)
+        message.error(back.msg)
+        console.log(back.msg)
         return
       }
 
@@ -129,8 +131,8 @@ const setClassModel: SetClassModel = {
 
       const back = yield call(deleteClass, params)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
@@ -141,8 +143,8 @@ const setClassModel: SetClassModel = {
 
       const back = yield call(downLoadClass)
       if (back.code && back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
@@ -155,6 +157,40 @@ const setClassModel: SetClassModel = {
         a.click()
         a.remove()
       }
+    },
+
+    *getTemplate ({}, { call }) {
+      const back = yield call(getClassTemplate)
+      if (back.code && back.code !==0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      const a = document.createElement('a')
+      const reader = new FileReader()
+      reader.readAsDataURL(back)
+      reader.onload = (e) => {
+        a.download = '班级模板'
+        a.href = e.target?.result as string
+        a.click()
+        a.remove()
+      }
+    },
+
+    *upLoad ({ payload }, { call }) {
+
+      const data = new FormData()
+      data.append('file', payload)
+
+      const back = yield call(upLoadClass, data)
+      if (back.code !== 0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      message.success(back.msg)
     }
   }
 }

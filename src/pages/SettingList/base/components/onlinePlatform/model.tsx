@@ -30,7 +30,7 @@ const onlinePlatformModel: OnlinePlatformType = {
       
       if ( !Array.isArray(payload) ) {
         message.error('服务器返回了错误的数据')
-        console.log('服务器返回了错误的数据')
+        console.error('服务器返回了错误的数据')
         return
       }
       const newState = JSON.parse(JSON.stringify(state))
@@ -45,8 +45,8 @@ const onlinePlatformModel: OnlinePlatformType = {
     *getType(_, { put, call }) {
       const back = yield call(getOnlinePlatform)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.log(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       yield put({
@@ -58,8 +58,8 @@ const onlinePlatformModel: OnlinePlatformType = {
     *upType({ payload }, { call, put }) {
       const back = yield call(upOnlinePlatform, payload)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.log(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       yield put({

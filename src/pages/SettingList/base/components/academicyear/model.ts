@@ -82,11 +82,11 @@ const academicYearModel: AcademicYearModel = {
 
       const back = yield call(createAcademicYear, data)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
-      message.success('创建成功')
+      message.success('成功')
     },
 
     *searchAcademicYear ({ payload }, { call, put }) {
@@ -98,8 +98,8 @@ const academicYearModel: AcademicYearModel = {
 
       const back = yield call(searchAcademicYear, params)
       if (back.code !== 0 ) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
@@ -127,8 +127,8 @@ const academicYearModel: AcademicYearModel = {
 
       const back = yield call(deleteAcademicYear, params)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 

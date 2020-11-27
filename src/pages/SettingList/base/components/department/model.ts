@@ -91,12 +91,12 @@ const departmentModel: DepartmentType = {
 
       const back = yield call(createDepartment, data)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       
-      message.success('创建成功')
+      message.success('成功')
     },
 
     *searchDepartment ({ payload }, { call, put }) {
@@ -109,8 +109,8 @@ const departmentModel: DepartmentType = {
 
       const back = yield call(searchDepartment, params)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
@@ -138,8 +138,8 @@ const departmentModel: DepartmentType = {
 
       const back = yield call(deleteDepartment, params)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
@@ -150,8 +150,8 @@ const departmentModel: DepartmentType = {
       
       const back = yield call(downLoadDepartment)
       if (back.code && back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 

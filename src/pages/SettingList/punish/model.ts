@@ -3,7 +3,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd';
 
-import { queryPunish } from './service';
+import { queryPunish, getPunishTemplate, upLoadPunish } from './service';
 
 import { PunishState } from './data';
 
@@ -18,6 +18,8 @@ export interface PunishType {
   };
   effects: {
     searchPunish: Effect;
+    getTemplate: Effect;
+    upLoad: Effect;
   };
 }
 
@@ -87,6 +89,41 @@ const punishModel: PunishType = {
         payload: false,
       });
     },
+
+    *getTemplate ({}, { call }) {
+
+      const back = yield call(getPunishTemplate)
+      if (back.code && back.code !==0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      const a = document.createElement('a')
+      const reader = new FileReader()
+      reader.readAsDataURL(back)
+      reader.onload = (e) => {
+        a.download = '违纪模板'
+        a.href = e.target?.result as string
+        a.click()
+        a.remove()
+      }
+    },
+
+    *upLoad ({ payload }, { call }) {
+
+      const data = new FormData()
+      data.append('file', payload)
+
+      const back = yield call(upLoadPunish, data)
+      if (back.code !== 0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      message.success(back.msg)
+    }
   },
 };
 

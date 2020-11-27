@@ -1,14 +1,15 @@
 // 班级设置 组件
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Divider, Popconfirm, message } from 'antd';
+import { Button, Input, Divider, Popconfirm } from 'antd';
 import { PaginationProps } from 'antd/lib/pagination';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 
 import { TableListItem } from './data.d';
 import { connect, Dispatch } from 'umi'
 
+import DownLoadModal from '@/components/DownLoadModal/DownLoadModal';
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 
@@ -27,9 +28,9 @@ const SetClass: React.FC<SetClassProps> = (props) => {
 
   const { count, dataSorce, loading, dispatch } = props
 
-  const actionRef = useRef<ActionType>();
   const [addmodalVisible, setAddmodalVisible] = useState(false);
   const [editmodalVisible, setEditmodalVisible] = useState(false);
+  const [downmodalVisible, setDownmodalVisible] = useState(false);
 
   const [ rowValue, setRowValue ] = useState<any>({})
 
@@ -143,6 +144,33 @@ const SetClass: React.FC<SetClassProps> = (props) => {
     })
   }
 
+  const downLoad = () => {
+    dispatch({
+      type: 'baseSetClass/downLoad'
+    })
+  }
+
+  // 导入的方法
+  const upLoadFunc = (e: any) => {
+    dispatch({
+      type: 'baseSetClass/upLoad',
+      payload: e.file.file.originFileObj
+    })
+
+    setDownmodalVisible(false)
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000);
+  }
+
+  // 下载模板的方法
+  const downLoadFunc = () => {
+    dispatch({
+      type: 'baseSetClass/getTemplate'
+    })
+  }
+
   return (
     <div>
       <ProTable<TableListItem>
@@ -151,18 +179,17 @@ const SetClass: React.FC<SetClassProps> = (props) => {
         }}
         rowKey="id"
         search={false}
-        actionRef={actionRef}
         headerTitle={'班级设置'}
         toolBarRender={(action, { selectedRows }) => [
           <Search enterButton placeholder={'请输入班级名称'} onSearch={onSearch} />,
           <Button type="primary" onClick={() => setAddmodalVisible(true)}>
             <PlusOutlined /> 新增
           </Button>,
-          <Button>
+          <Button onClick={() => setDownmodalVisible(true)}>
             <UploadOutlined />
             导入
           </Button>,
-          <Button>
+          <Button onClick={downLoad} >
             <DownloadOutlined /> 导出
           </Button>,
         ]}
@@ -174,6 +201,12 @@ const SetClass: React.FC<SetClassProps> = (props) => {
       />
       <AddModal modalvisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} afterClose={reloadValue} />
       <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} afterClose={reloadValue} formValue={rowValue} />
+      <DownLoadModal
+        modalVisible={downmodalVisible}
+        onCancel={() => setDownmodalVisible(false)}
+        upLoadFunc={upLoadFunc}
+        downLoadFunc={downLoadFunc}
+      />
     </div>
   );
 };

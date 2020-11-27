@@ -45,8 +45,8 @@ const categoryModel: CategoryModelType = {
     *getCategory ({ payload }, { call, put }) {
       const back = yield call(getControl)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       yield put({
@@ -58,8 +58,8 @@ const categoryModel: CategoryModelType = {
     *upCategory ({ payload }, { call, put }) {
       const back = yield call(upControl, payload)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       yield put({

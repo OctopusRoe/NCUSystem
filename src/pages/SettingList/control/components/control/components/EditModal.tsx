@@ -1,89 +1,117 @@
-import { Button, Col, Form, Input, Row, Select, Space, Upload } from 'antd';
+import React, { useRef } from 'react';
+import { Button, Form, Input, Select } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
 import UploadView from '@/components/UploadView/uploadView';
 
-interface AddModalFormProps {
+import { connect, Dispatch } from 'umi'
+
+interface EditModalProps {
   modalVisible: boolean;
+  typeValue: {one: string, id: number}[];
+  formValue: any;
   onCancel: () => void;
+  afterClose: () => void;
+  dispatch: Dispatch;
 }
 
 const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 17 },
 };
-const onFinish = (values: any) => {
-  console.log('Success:', values);
-};
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo);
-};
+const { Option } = Select;
 
-//modal框确定按钮
-const okChange = () => {
-  document.getElementById('edit-submit')?.click();
-};
+const EditModal: React.FC<EditModalProps> = (porps) => {
+  
+  const { modalVisible, typeValue, formValue, onCancel, afterClose, dispatch } = porps;
+  
+  const button = useRef<HTMLButtonElement>(null)
 
-const apptype = ['类别1', '类别2', '类别3', '类别4'];
-const EditModal: React.FC<AddModalFormProps> = (porps) => {
-  const { modalVisible, onCancel } = porps;
-  const { Option } = Select;
+  const onFinish = (values: any) => {
+
+    if (typeof values.menuName === 'string') {
+      values.menuName = typeValue.filter((item: {one: string}) => item.one === values.menuName)[0].id
+    }
+    
+    console.log(values)
+
+    const data = {
+      id: formValue.id,
+      ...values
+    }
+
+    dispatch({
+      type: 'controlList/addControl',
+      payload: data
+    })
+
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000);
+
+  };
+  
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+  
   return (
     <Modal
       destroyOnClose
       title="编辑应用"
       visible={modalVisible}
       onCancel={onCancel}
-      onOk={okChange}
+      onOk={() => button.current?.click()}
       okText="确定"
       cancelText="取消"
     >
       <Form
         {...layout}
         name="edit"
-        initialValues={{ remember: true }}
+        initialValues={formValue}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         hideRequiredMark //去除前面红色*号
         autoComplete={'off'} //输入框输入记录
       >
-        <Form.Item name="img" label="图标" rules={[{ required: true, message: '请上传图标' }]}>
-          <UploadView id="addmodaling" />
+        <Form.Item name="appIco" label="图标">
+          <UploadView id="category-img-view" />
         </Form.Item>
         <Form.Item
-          name="Name"
+          name="appName"
           label="应用名称"
           rules={[{ required: true, message: '请输入应用名称' }]}
         >
           <Input placeholder="请输入应用名称" />
         </Form.Item>
         <Form.Item
-          name="class"
+          name="menuName"
           label="应用类别"
           rules={[{ required: true, message: '请选择应用类别' }]}
         >
           <Select placeholder={'请选择单位类别'}>
-            {apptype.map((item: any, index: number) => (
-              <Option value={item} key={index}>
-                {item}
+            {typeValue.map((item: {one: string, id: number}) => (
+              <Option value={item.id} key={item.one}>
+                {item.one}
               </Option>
             ))}
           </Select>
         </Form.Item>
         <Form.Item
-          name="ip"
+          name="appURI"
           label="链接地址"
           rules={[{ required: true, message: '请输入链接地址' }]}
         >
           <Input placeholder="请输入链接地址" />
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
-          <Button type="primary" htmlType="submit" id="edit-submit" />
+          <Button type="primary" htmlType="submit" ref={button} />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default EditModal;
+export default connect()(EditModal);

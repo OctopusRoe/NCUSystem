@@ -1,12 +1,14 @@
 // 违纪管理 组件
 
-import React, { useRef, useEffect } from 'react';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import React, { useState, useEffect } from 'react';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 import { TableListItem, PunishState } from './data';
 import { Button, Input } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
 import { PaginationProps } from 'antd/lib/pagination';
+
+import DownLoadModal from '@/components/DownLoadModal/DownLoadModal';
 
 const { Search } = Input;
 interface PunishProps {
@@ -17,8 +19,11 @@ interface PunishProps {
 }
 
 const Punish: React.FC<PunishProps> = (props) => {
-  const actionRef = useRef<ActionType>();
+
   const { count, dataSorce, loading, dispatch } = props;
+
+  const [downmodalVisible, setDownmodalVisible] = useState(false);
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '学号',
@@ -97,27 +102,63 @@ const Punish: React.FC<PunishProps> = (props) => {
     });
   };
 
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'settingPunish/searchPunish',
+      payload: {}
+    })
+
+    dispatch({
+      type: 'settingPunish/loading',
+      payload: true
+    })
+  }
+
+  // 导入的方法
+  const upLoadFunc = (e: any) => {
+    dispatch({
+      type: 'settingPunish/upLoad',
+      payload: e.file.file.originFileObj
+    })
+
+    setDownmodalVisible(false)
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000);
+  }
+
+  // 下载模板的方法
+  const downLoadFunc = () => {
+    dispatch({
+      type: 'settingPunish/getTemplate'
+    })
+  }
+
   return (
     <div>
       <ProTable<TableListItem>
-        // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
         headerTitle=""
         search={false}
-        actionRef={actionRef}
-        // search={}
         rowKey="id"
         toolBarRender={(action, {}) => [
           <Search enterButton placeholder={'请输入学号'} onSearch={onSearch} />,
-          <Button type="default">
+          <Button type="default" onClick={() => setDownmodalVisible(true)}>
             <UploadOutlined /> 导入
           </Button>,
         ]}
-        // request={(params) => getTable(params)}
         dataSource={dataSorce}
         pagination={{ total: count }}
         onChange={onChange}
         columns={columns}
         loading={loading}
+      />
+      <DownLoadModal
+        modalVisible={downmodalVisible}
+        onCancel={() => setDownmodalVisible(false)}
+        upLoadFunc={upLoadFunc}
+        downLoadFunc={downLoadFunc}
       />
     </div>
   );

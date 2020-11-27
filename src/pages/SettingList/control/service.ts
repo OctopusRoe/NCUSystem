@@ -23,6 +23,11 @@ export async function deleteControl (params: {id: number}) {
   return request.delete(getPort('application/applicationdelete'), {params: params})
 }
 
+// 应用管理 应用管理 导出
+export async function downloadControl () {
+  return request.get(getPort('application/export'), {headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}, responseType: 'blob'})
+}
+
 // 应用管理 应用类别 查询
 export async function getControl () {
   return request.get(getPort('application/getapplicationmenus'))

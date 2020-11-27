@@ -58,6 +58,16 @@ export async function deleteSpecial (params: {id: number}) {
   return request.delete(getPort('sysbasicmajor/sysbasicmajordelte'), {params: params})
 }
 
+// 系统设置 专业设置 模板下载
+export async function getSpecialTemplate () {
+  return request.get(getPort('sysbasicmajor/template'), {headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}, responseType: 'blob'})
+}
+
+// 系统设置 专业设置 导入
+export async function upLoadSpecial (data: FormData) {
+  return request.put(getPort('sysbasicmajor/sysbasicmajorimport'), {data: data})
+}
+
 // 系统设置 专业设置 导出
 export async function downLoadSpecial () {
   return request.get(getPort('sysbasicmajor/sysbasicmajorexport'), {headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}, responseType: 'blob'})
@@ -76,6 +86,16 @@ export async function searchClass (params: {query?: string, PageSize: number, Pa
 // 系统设置 班级设置 删除
 export async function deleteClass (params: {id: number}) {
   return request.delete(getPort('sysbasicclass/sysbasicclassdelte'), {params: params})
+}
+
+// 系统设置 班级设置 模板下载
+export async function getClassTemplate () {
+  return request.get(getPort('sysbasicclass/template'), {headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}, responseType: 'blob'})
+}
+
+// 系统设置 班级设置 导入
+export async function upLoadClass (data: FormData) {
+  return request.post(getPort('sysbasicclass/import'), {data: data})
 }
 
 // 系统设置 班级设置 导出

@@ -45,8 +45,8 @@ const associationTypeModel: AssociationTypeType = {
     *getType (_, { call, put }) {
       const back = yield call(getAssociationType)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.log(back.message)
+        message.error(back.msg)
+        console.log(back.msg)
         return
       }
       yield put({
@@ -57,8 +57,8 @@ const associationTypeModel: AssociationTypeType = {
     *upType ({ payload }, { call, put }) {
       const back = yield call(upAssociationType, payload)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.log(back.message)
+        message.error(back.msg)
+        console.log(back.msg)
         return
       }
       yield put({

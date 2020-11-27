@@ -27,14 +27,28 @@ const Category: React.FC<CategoryProps> = (props) => {
   }
   
   const onFinish = (e: any) => {
-    console.log(e)
-  }
+    const list = JSON.parse(JSON.stringify(e['control-category']))
 
-  const removeFun = (index: number) => {
+    if (list.length !== 0) {
+      Array.isArray(list) && list.forEach((item: any, index: number) => {
+        item.name = item.one
+        if (item.id) {
+          return 
+        }
+        item.id = 0
+      })
+    }
+
     dispatch({
-      type: 'base-association-grade/rmFormValue',
-      payload: index
+      type: 'controlCategory/upCategory',
+      payload: list
     })
+
+    setTimeout(() => {
+      dispatch({
+        type: 'controlCategory/getCategory'
+      })
+    }, 1 * 1000)
   }
 
   return (

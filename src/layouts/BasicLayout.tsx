@@ -20,6 +20,8 @@ import logo from '../assets/logo.svg';
 
 import style from './BasicLayout.less'
 
+import request from 'umi-request'
+
 const noMatch = (
   <Result
     status={403}
@@ -71,6 +73,29 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 
   message.config({
     maxCount: 1
+  })
+  
+  request.interceptors.response.use((response) => {
+
+    const codeMaps = {
+      400: '无效的请求消息',
+      502: '网关错误',
+      503: '服务不可用，服务器暂时过载或维护',
+      504: '网关超时',
+    };
+    
+    switch (response.status) {
+      case 400:
+      case 502:
+      case 503:
+      case 504:
+        message.error( codeMaps[response.status]);
+        break;
+      default:
+        return response
+    }
+
+    return response
   })
 
   const {

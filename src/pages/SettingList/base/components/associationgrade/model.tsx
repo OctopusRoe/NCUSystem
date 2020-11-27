@@ -45,8 +45,8 @@ const associationGradeModel: AssociationGradeType = {
     *getGrade({ payload }, { call, put }) {
       const back = yield call(getAssociationGrade)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       yield put({
@@ -58,8 +58,8 @@ const associationGradeModel: AssociationGradeType = {
     *upGrade({ payload }, { call, put }) {
       const back = yield call(upAssociationGrade, payload)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       yield put({

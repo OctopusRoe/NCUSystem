@@ -30,7 +30,7 @@ const departmentTypeModel: DepartmentTypeType = {
       
       if ( !Array.isArray(payload) ) {
         message.error('服务器返回了错误的数据')
-        console.log('服务器返回了错误的数据')
+        console.error('服务器返回了错误的数据')
         return
       }
       const newState = JSON.parse(JSON.stringify(state))
@@ -45,8 +45,8 @@ const departmentTypeModel: DepartmentTypeType = {
     *getType (_, { call, put }) {
       const back = yield call(getDepartmentType)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.log(back.message)
+        message.error(back.msg)
+        console.log(back.msg)
         return
       }
       yield put({
@@ -58,8 +58,8 @@ const departmentTypeModel: DepartmentTypeType = {
     *upType ({ payload }, { call, put }) {
       const back = yield call(upDepartmentType, payload)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.log(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       yield put({

@@ -43,7 +43,8 @@ const baseViewModel: BaseViewModelType = {
 
       const back = yield call(baseInfoUpdata(formData))
       if (back.code !== 0) {
-        message.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
       message.success('保存成功')

@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi'
 
 import { message } from 'antd'
 
-import { createControl, searchControl, deleteControl } from '../../service'
+import { createControl, searchControl, deleteControl, downloadControl } from '../../service'
 
 import { ControlListState } from '../../data'
 
@@ -23,6 +23,7 @@ export interface ControlModel {
     addControl: Effect
     searchControl: Effect
     deleteControl: Effect
+    downLoad: Effect
   }
 }
 
@@ -73,15 +74,20 @@ const controlModel: ControlModel = {
     *addControl ({ payload }, { call }) {
 
       const data = new FormData()
+      data.append('Id', payload.id ? payload.id : 0)
+      data.append('Ico', payload.appIco.originFileObj)
+      data.append('AppName', payload.appName)
+      data.append('AppURI', payload.appURI)
+      data.append('MenuId', payload.menuName)
 
       const back = yield call(createControl, data)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
-      message.success('新增成功')
+      message.success('上传成功')
     },
 
     *searchControl ({ payload }, { call, put }) {
@@ -94,8 +100,8 @@ const controlModel: ControlModel = {
 
       const back = yield call(searchControl, params)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
@@ -127,12 +133,32 @@ const controlModel: ControlModel = {
 
       const back = yield call(deleteControl, params)
       if (back.code !== 0) {
-        message.error(back.message)
-        console.error(back.message)
+        message.error(back.msg)
+        console.error(back.msg)
         return
       }
 
       message.success('删除成功')
+    },
+
+    *downLoad ({}, { call }) {
+
+      const back = yield call(downloadControl)
+      if (back.code && back.code !== 0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      const a = document.createElement('a')
+      const reader = new FileReader()
+      reader.readAsDataURL(back)
+      reader.onload = (e) => {
+        a.download = '应用列表'
+        a.href = e.target?.result as string
+        a.click()
+        a.remove()
+      }
     }
   }
 }
