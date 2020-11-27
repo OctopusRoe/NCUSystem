@@ -1,9 +1,9 @@
 // 违纪管理 组件
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableListItem, PunishState } from './data';
-import { Button, Input } from 'antd';
+import { Button, Input, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
 import { PaginationProps } from 'antd/lib/pagination';
@@ -18,6 +18,7 @@ interface PunishProps {
 
 const Punish: React.FC<PunishProps> = (props) => {
   const actionRef = useRef<ActionType>();
+  const [num, setnum] = useState(1);
   const { count, dataSorce, loading, dispatch } = props;
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -97,20 +98,40 @@ const Punish: React.FC<PunishProps> = (props) => {
     });
   };
 
+  //导入
+  const onImport = (info: any) => {
+    const data = info.file.originFileObj;
+    dispatch({
+      type: 'settingPunish/importPunish',
+      payload: data,
+    });
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'settingPunish/loading',
+      payload: true,
+    });
+
+    dispatch({
+      type: 'settingPunish/searchPunish',
+      payload: {},
+    });
+  };
+
   return (
     <div>
       <ProTable<TableListItem>
-        // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
         headerTitle=""
         search={false}
         actionRef={actionRef}
-        // search={}
         rowKey="id"
         toolBarRender={(action, {}) => [
           <Search enterButton placeholder={'请输入学号'} onSearch={onSearch} />,
-          <Button type="default">
-            <UploadOutlined /> 导入
-          </Button>,
+          <Upload showUploadList={false} accept={'.xlsx,.xls'} onChange={onImport}>
+            <Button type="default">
+              <UploadOutlined /> 导入
+            </Button>
+          </Upload>,
         ]}
         // request={(params) => getTable(params)}
         dataSource={dataSorce}

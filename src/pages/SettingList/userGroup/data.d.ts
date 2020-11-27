@@ -34,3 +34,16 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+//用户组管理的 state
+export interface UserGroupState {
+  userGroupList?: {
+    id: number;
+    groupName: string;
+    access: [];
+    groupUserCount: number;
+    remark: string;
+  }[];
+  count: number;
+  loading: boolean;
+}

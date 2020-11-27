@@ -1,32 +1,38 @@
+//用户组管理  新增用户组组件
 import React from 'react';
 import { Modal, Form, Input, Button } from 'antd';
+import { connect, Dispatch } from 'umi';
 
 interface CreateFormProps {
   modalVisible: boolean;
   onCancel: () => void;
+  dispatch: Dispatch;
+  afterClose: () => void;
 }
 
 const InputArea = Input.TextArea;
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
+};
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
-  const { modalVisible, onCancel } = props;
+  const { modalVisible, onCancel, dispatch, afterClose } = props;
 
   //modal框确定按钮
   const okChange = () => {
     document.getElementById('add-submit')?.click();
   };
 
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 17 },
-  };
-
   const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+    dispatch({
+      type: 'settingUserGroup/addUserGroup',
+      payload: values,
+    });
+    onCancel();
+    setTimeout(() => {
+      afterClose();
+    }, 0.5 * 1000);
   };
 
   return (
@@ -44,19 +50,18 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         name="add"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         hideRequiredMark //去除前面红色*号
         autoComplete={'off'} //输入框输入记录
       >
         <Form.Item
-          name={'name'}
+          name={'groupName'}
           label={'用户组名称'}
           rules={[{ required: true, message: '请输入用户组名称' }]}
         >
           <Input placeholder="请输入用户组名称" />
         </Form.Item>
         <Form.Item
-          name={'desc'}
+          name={'remark'}
           label={'描述'}
           rules={[{ required: true, message: '请输入用户组描述' }]}
         >
@@ -70,4 +75,4 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default CreateForm;
+export default connect()(CreateForm);

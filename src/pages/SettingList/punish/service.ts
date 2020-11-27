@@ -11,3 +11,8 @@ export async function queryPunish(params: {
 }) {
   return request.get(getPort('violatediscipline/query'), { params: params });
 }
+
+//系统设置  违纪管理 导入列表
+export async function importPunish(data: any) {
+  return request.post(getPort('violatediscipline/import'), { data: data });
+}

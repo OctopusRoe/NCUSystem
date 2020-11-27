@@ -3,7 +3,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd';
 
-import { queryPunish } from './service';
+import { queryPunish, importPunish } from './service';
 
 import { PunishState } from './data';
 
@@ -18,6 +18,7 @@ export interface PunishType {
   };
   effects: {
     searchPunish: Effect;
+    importPunish: Effect;
   };
 }
 
@@ -86,6 +87,17 @@ const punishModel: PunishType = {
         type: 'loading',
         payload: false,
       });
+    },
+    *importPunish({ payload }, { call }) {
+      const file = new FormData();
+      file.append('file', payload);
+      const back = yield call(importPunish, file);
+      if (back.code !== 0) {
+        message.error(back.message);
+        console.error(back.message);
+        return;
+      }
+      message.success(back.msg);
     },
   },
 };
