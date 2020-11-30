@@ -1,38 +1,7 @@
 import request from 'umi-request';
-import { TableListParams } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
-    params,
-  });
-}
+import getPort from '@/services/global'
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
-  });
-}
-
-export async function addRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
-  });
+export async function searchMember (params: {name?: string, session?: string, PageSize: number, PageIndex: number, Communityid: string}) {
+  return request.get(getPort('communityguidancemember/getcommunityguidancememberlist'), {params: params})
 }

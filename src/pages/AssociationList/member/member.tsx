@@ -1,9 +1,8 @@
 // 成员管理 页面
 
-import { Button, Divider, message, Popconfirm } from 'antd';
+import { Button, Divider, Input, message, Popconfirm } from 'antd';
 
 import React, { useRef, useState } from 'react';
-import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons';
@@ -11,6 +10,7 @@ import DetailsModal from '@/components/DetailsModal/DetailsModal';
 import EditModal from './components/editModal';
 import AddForm from './components/addForm';
 import CopyMember from './components/copyMember';
+import { render } from 'bizcharts/lib/g-components';
 
 const MemberCom: React.FC<{}> = () => {
   message.config({
@@ -62,6 +62,11 @@ const MemberCom: React.FC<{}> = () => {
           </Button>
         );
       },
+      renderFormItem: () => {
+        return (
+          <Input autoComplete={'off'} placeholder={'123'} />
+        )
+      }
     },
     {
       title: '学号',
@@ -193,10 +198,11 @@ const MemberCom: React.FC<{}> = () => {
             <DownloadOutlined /> {selectedRows && selectedRows.length > 0 ? '导出选中' : '导出全部'}
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
-        rowSelection={{}}
-        scroll={{ x: 1500 }}
+        onSubmit={(params) => {
+          console.log(params)
+        }}
+        onReset={() => {console.log(1)}}
       />
       <AddForm
         addVisible={addVisible}
