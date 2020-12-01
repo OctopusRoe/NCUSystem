@@ -68,6 +68,11 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
     });
     window.addEventListener('resize', this.resize);
     this.resize();
+
+    dispatch({
+      type: 'associationOrganization/getOrganization',
+      payload: '1'
+    })
   }
 
   componentWillUnmount() {

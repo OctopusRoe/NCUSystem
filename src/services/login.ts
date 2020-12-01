@@ -1,10 +1,16 @@
 import request from '@/utils/request';
 
+import getPort from './global'
+
 export interface LoginParamsType {
   userName: string;
   password: string;
   mobile: string;
   captcha: string;
+}
+
+export async function baseLogin (data: FormData) {
+  return request.post(getPort('auth/sign'), {data: data})
 }
 
 export async function fakeAccountLogin(params: LoginParamsType) {

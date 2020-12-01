@@ -43,6 +43,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
   };
   settings: Settings;
   dispatch: Dispatch;
+  token: any;
 }
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumbNameMap: {
@@ -73,6 +74,20 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 
   message.config({
     maxCount: 1
+  })
+
+  const { token } = props
+
+  request.interceptors.request.use((url, option) => {
+
+    option.headers = {
+      Authorization: token.token as any
+    }
+
+    return {
+      url,
+      option
+    }
   })
   
   request.interceptors.response.use((response) => {
@@ -114,7 +129,24 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       dispatch({
         type: 'user/fetchCurrent',
       });
+
+      dispatch({
+        type: 'global/handleToken'
+      })
     }
+
+    const time = setInterval(() => {
+      dispatch({
+        type: 'global/renewalToken',
+        payload: token.personId
+      })
+    }, 60 * 60 * 1000)
+
+    return (
+      () => {
+        clearInterval(time)
+      }
+    )
   }, []);
   /**
    * init variables
@@ -185,5 +217,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 
 export default connect(({ global, settings }: ConnectState) => ({
   collapsed: global.collapsed,
+  token: global.token,
   settings,
 }))(BasicLayout);

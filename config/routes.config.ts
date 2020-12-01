@@ -148,14 +148,30 @@ function CreateRouter( fileData: FileType ) {
 export default [{
   path: '/',
   // component: '../layouts/SecurityLayout',
-  routes: [{
+  routes: [
+    {
+      path: '/user',
+      component: '../layouts/UserLayout',
+      routes: [
+        {
+          path: '/user',
+          redirect: '/user/login',
+        },
+        {
+          name: 'login',
+          path: '/user/login',
+          component: './user/login',
+        },
+      ],
+    },
+    {
     path: '/',
     name: 'test',
     component: '../layouts/BasicLayout',
     // authority: ['admin', 'user'],
     routes: [{
         path: '/',
-        redirect: '/index',
+        redirect: '/user/login',
       },
       // 首页 router
       CreateRouter(indexData),

@@ -1,17 +1,18 @@
 import request from 'umi-request';
 
-export async function queryCurrent() {
-  return request('/api/currentUser');
+import getPort from '@/services/global'
+
+// 社团管理 信息变更 基本信息
+export async function getAssociationBaseInfo () {
+  return request.get(getPort('community/getinfo'))
 }
 
-export async function queryProvince() {
-  return request('/api/geographic/province');
+// 社团管理 信息变更 部门设置 查询部门
+export async function getOrganization (data: FormData) {
+  return request.post(getPort('community/querydepartment'), {data: data})
 }
 
-export async function queryCity(province: string) {
-  return request(`/api/geographic/city/${province}`);
-}
-
-export async function query() {
-  return request('/api/users');
+// 社团管理 信息变更 部门设置 修改部门
+export async function upOrganization (data: {params: {}, data: {}}) {
+  return request.post(getPort('community/updatedepartment'), {...data})
 }

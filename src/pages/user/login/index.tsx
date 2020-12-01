@@ -1,6 +1,6 @@
 import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
 import { Alert, Checkbox } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, connect, Dispatch } from 'umi';
 import { StateType } from '@/models/login';
 import { LoginParamsType } from '@/services/login';
@@ -30,18 +30,24 @@ const LoginMessage: React.FC<{
 );
 
 const Login: React.FC<LoginProps> = (props) => {
-  const { userLogin = {}, submitting } = props;
+  const { userLogin = {}, submitting, dispatch } = props;
   const { status, type: loginType } = userLogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState<string>('account');
 
   const handleSubmit = (values: LoginParamsType) => {
-    const { dispatch } = props;
     dispatch({
       type: 'login/login',
       payload: { ...values, type },
     });
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'login/autoLogin'
+    })
+  }, [])
+
   return (
     <div className={styles.main}>
       <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
@@ -51,7 +57,7 @@ const Login: React.FC<LoginProps> = (props) => {
           )}
 
           <UserName
-            name="userName"
+            name="uname"
             placeholder="用户名: admin or user"
             rules={[
               {
@@ -61,7 +67,7 @@ const Login: React.FC<LoginProps> = (props) => {
             ]}
           />
           <Password
-            name="password"
+            name="pwd"
             placeholder="密码: ant.design"
             rules={[
               {

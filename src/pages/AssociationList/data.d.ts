@@ -114,3 +114,7 @@ export interface RadarDataType {
   name: string;
   value: number;
 }
+
+export interface AssociationState {
+  associationId: string
+}

@@ -1,9 +1,12 @@
 import { stringify } from 'querystring';
 import { history, Reducer, Effect } from 'umi';
 
-import { fakeAccountLogin } from '@/services/login';
+import { message } from 'antd'
+
+import { fakeAccountLogin, baseLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { ClockCircleOutlined } from '@ant-design/icons';
 
 export interface StateType {
   status?: 'ok' | 'error';
@@ -16,6 +19,7 @@ export interface LoginModelType {
   state: StateType;
   effects: {
     login: Effect;
+    autoLogin: Effect;
     logout: Effect;
   };
   reducers: {
@@ -31,31 +35,53 @@ const Model: LoginModelType = {
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
-      // Login successfully
-      if (response.status === 'ok') {
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params as { redirect: string };
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = '/';
-            return;
-          }
-        }
-        history.replace(redirect || '/');
+    // 手动登录的方法
+    *login ({ payload }, { call, put }) {
+      const data = new FormData()
+      data.append('uname', payload.uname)
+      data.append('pwd', payload.pwd)
+      const back = yield call(baseLogin, data)
+      if (back.code !== 0) {
+        message.error(back.msg)
+        return
       }
+      const time = new Date()
+      time.setTime(time.getTime() + 5 * 24 * 60 * 60 * 1000 )
+
+      const value = {
+        token: back.data,
+        personId: payload.uname,
+        pwd: payload.pwd,
+        time: time.toString()
+      }
+
+      document.cookie = `NCUAssociation=${JSON.stringify(value)};expires=${time.toString()}`
+      history.push('/index')
+    },
+
+    // 自动登录的方法
+    *autoLogin (_, { call, put }) {
+      const tokenValue = document.cookie.split(';').filter((item: string) => item.indexOf('NCUAssociation') > -1)
+      if ( tokenValue.length === 0 ) {
+        return
+      }
+      const token = JSON.parse(tokenValue[0].split('=')[1])
+      const now = new Date()
+      const time = new Date(token.time)
+
+      if (time.getTime() < now.getTime()) {
+        return
+      }
+
+      const data = {
+        uname: token.personId,
+        pwd: token.pwd
+      }
+
+      yield put({
+        type: 'login',
+        payload: data
+      })
     },
 
     logout() {

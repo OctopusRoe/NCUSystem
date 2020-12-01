@@ -140,5 +140,5 @@ export async function getDepartmentType () {
 
 // 系统设置 单位类别 修改
 export async function upDepartmentType (data: FormData) {
-  return request.put(getPort('sysbasicorganizationtype/sysbasicorganizationtypecreateorupdateordeletebat'))
+  return request.put(getPort('sysbasicorganizationtype/sysbasicorganizationtypecreateorupdateordeletebat'), {data: data})
 }

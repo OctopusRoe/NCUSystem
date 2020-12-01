@@ -2,20 +2,25 @@
 
 import React from 'react'
 import { Row, Col, Form, Button} from 'antd';
-import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
+import FormListCom from '@/components/FormListCom/formlistcom'
 
 import { connect, Dispatch } from 'umi'
 
+import { OrganizationState } from '../../data'
+
+import { AssociationState } from '../../../data'
+
 interface OrganizationProps {
   dispatch: Dispatch
-  valueList: any[]
+  valueList: {one: string, id: number}[]
+  associationId: string
 }
 
 const FormItem = Form.Item
 
 const Organization: React.FC<OrganizationProps> = (props) => {
 
-  const { valueList, dispatch } = props
+  const { valueList, associationId, dispatch } = props
 
   // input 输入框属性
   const info = {
@@ -27,7 +32,34 @@ const Organization: React.FC<OrganizationProps> = (props) => {
   }
   
   const onFinish = (e: any) => {
-    console.log(e)
+    const list = JSON.parse(JSON.stringify(e['base-association-type']))
+
+    if (list.length !== 0) {
+      Array.isArray(list) && list.forEach((item: any) => {
+        item.name = item.one
+        if (item.id) {
+          return
+        }
+        item.id = '0'
+      })
+    }
+
+    const data = {
+      params: '1',
+      data: list
+    }
+
+    dispatch({
+      type: 'associationOrganization/upOrganization',
+      payload: data
+    })
+
+    setTimeout(() => {
+      dispatch({
+        type: 'associationOrganization/getOrganization',
+        payload: associationId
+      })
+    }, 1 * 1000)
   }
 
   return (
@@ -60,9 +92,15 @@ const Organization: React.FC<OrganizationProps> = (props) => {
 }
 
 export default connect(
-  ({associationOrganization}: {associationOrganization: any}) => {
+  ({associationOrganization, associationControl}: 
+    {
+      associationOrganization: OrganizationState,
+      associationControl: AssociationState
+      
+    }) => {
     return {
-      valueList: associationOrganization.valueList
+      valueList: associationOrganization.valueList,
+      associationId: associationControl.associationId
     }
   }
 )(Organization)

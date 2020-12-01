@@ -1,8 +1,9 @@
-import { Subscription, Reducer, Effect } from 'umi';
+import { Subscription, Reducer, Effect, history } from 'umi';
 
 import { NoticeIconData } from '@/components/NoticeIcon';
-import { queryNotices } from '@/services/user';
+import { queryNotices, renewalToken } from '@/services/user';
 import { ConnectState } from './connect.d';
+
 
 export interface NoticeItem extends NoticeIconData {
   id: string;
@@ -13,6 +14,7 @@ export interface NoticeItem extends NoticeIconData {
 export interface GlobalModelState {
   collapsed: boolean;
   notices: NoticeItem[];
+  token: any
 }
 
 export interface GlobalModelType {
@@ -22,8 +24,10 @@ export interface GlobalModelType {
     fetchNotices: Effect;
     clearNotices: Effect;
     changeNoticeReadState: Effect;
+    renewalToken: Effect;
   };
   reducers: {
+    handleToken: Reducer<GlobalModelState>
     changeLayoutCollapsed: Reducer<GlobalModelState>;
     saveNotices: Reducer<GlobalModelState>;
     saveClearedNotices: Reducer<GlobalModelState>;
@@ -37,9 +41,23 @@ const GlobalModel: GlobalModelType = {
   state: {
     collapsed: false,
     notices: [],
+    token: {}
   },
 
   effects: {
+    *renewalToken ({ payload }, { call }) {
+
+      const params = {
+        personId: payload
+      }
+
+      const back = yield call(renewalToken, params)
+      if (back.code === -1) {
+        history.push('/user/login')
+        console.error(back.msg)
+        return
+      }
+    },
     *fetchNotices(_, { call, put, select }) {
       const data = yield call(queryNotices);
       yield put({
@@ -101,7 +119,36 @@ const GlobalModel: GlobalModelType = {
   },
 
   reducers: {
-    changeLayoutCollapsed(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    handleToken(state, { payload }) {
+      const tokenValue = document.cookie.split(';').filter((item: string) => item.indexOf('NCUAssociation') > -1)
+      if ( tokenValue.length === 0  ) {
+        history.push('/user/login')
+        return {
+          collapsed: false,
+          notices: [],
+          token: {},
+        }
+      }
+      const token = JSON.parse(tokenValue[0].split('=')[1])
+      const now = new Date()
+      const time = new Date(token.time)
+
+      if (time.getTime() < now.getTime()) {
+        history.push('/user/login')
+        return {
+          collapsed: false,
+          notices: [],
+          token: {},
+        }
+      }
+
+      return {
+        collapsed: false,
+        notices: [],
+        token: token,
+      }
+    },
+    changeLayoutCollapsed(state = { notices: [], collapsed: true, token: {} }, { payload }): GlobalModelState {
       return {
         ...state,
         collapsed: payload,
@@ -112,9 +159,10 @@ const GlobalModel: GlobalModelType = {
         collapsed: false,
         ...state,
         notices: payload,
+        token: null
       };
     },
-    saveClearedNotices(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    saveClearedNotices(state = { notices: [], collapsed: true, token: {} }, { payload }): GlobalModelState {
       return {
         ...state,
         collapsed: false,

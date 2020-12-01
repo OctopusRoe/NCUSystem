@@ -41,3 +41,7 @@ export interface CurrentUser {
   address: string;
   phone: string;
 }
+
+export interface OrganizationState {
+  valueList: {one: string, id: number}[]
+}
