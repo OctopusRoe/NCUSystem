@@ -1,28 +1,40 @@
+//编辑用户组 modal框
 import { Button, Form, Input } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
+import { connect, Dispatch } from 'umi';
+
 interface AddModalProps {
   modalvisible: boolean;
   onCancel: () => void;
+  formValue: any;
+  afterClose: () => void;
+  dispatch: Dispatch;
 }
 
-
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
+};
+const InputArea = Input.TextArea;
 const EditModal: React.FC<AddModalProps> = (props) => {
-  const { modalvisible, onCancel } = props;
-  const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 17 },
-  };
+  const { modalvisible, onCancel, dispatch, formValue, afterClose } = props;
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
+    const data = {
+      id: formValue.id,
+      ...values,
+    };
+    dispatch({
+      type: 'settingUserGroup/addUserGroup',
+      payload: data,
+    });
+    onCancel();
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+    setTimeout(() => {
+      afterClose();
+    }, 0.5 * 1000);
   };
-
-  const InputArea = Input.TextArea;
 
   //modal框确定按钮
   const okChange = () => {
@@ -38,25 +50,25 @@ const EditModal: React.FC<AddModalProps> = (props) => {
         onOk={okChange}
         okText="确定"
         cancelText="取消"
+        destroyOnClose //关闭modal框清除数据
       >
         <Form
           {...layout}
           name="edit"
-          initialValues={{ remember: true }}
+          initialValues={formValue}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           hideRequiredMark //去除前面红色*号
           autoComplete={'off'}
         >
           <Form.Item
-            name={'name'}
+            name={'groupName'}
             label={'用户组名称'}
             rules={[{ required: true, message: '请输入用户组名称' }]}
           >
             <Input placeholder="请输入用户组名称" />
           </Form.Item>
           <Form.Item
-            name={'desc'}
+            name={'remark'}
             label={'描述'}
             rules={[{ required: true, message: '请输入用户组描述' }]}
           >
@@ -71,4 +83,4 @@ const EditModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default EditModal;
+export default connect()(EditModal);

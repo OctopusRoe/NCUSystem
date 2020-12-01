@@ -22,6 +22,7 @@ const MessageCom: React.FC<MessageProps> = (props) => {
   const actionRef = useRef<ActionType>();
 
   const { count, dataSorce, loading, dispatch } = props;
+
   //Search 搜索框
   const onSearch = (value: any) => {
     const data = {
@@ -57,6 +58,13 @@ const MessageCom: React.FC<MessageProps> = (props) => {
       dataIndex: 'sendTime',
       key: 'sendTime',
       hideInSearch: true,
+      render: (text, record) => {
+        return (
+          <span>
+            {record.sendTime.slice(0, 10)}&nbsp;&nbsp;{record.sendTime.slice(11, 16)}
+          </span>
+        );
+      },
     },
     {
       title: '短信内容',
@@ -122,7 +130,7 @@ const MessageCom: React.FC<MessageProps> = (props) => {
                 <Title style={{ textAlign: 'center' }} level={5}>
                   已发送
                 </Title>
-                <p style={{ textAlign: 'center' }}>{'10000'}条</p>
+                <p style={{ textAlign: 'center' }}>{count}条</p>
               </div>
             </Row>
           </Col>
@@ -151,7 +159,6 @@ const MessageCom: React.FC<MessageProps> = (props) => {
         toolBarRender={(action, {}) => [
           <Search enterButton placeholder={'请输入手机号'} onSearch={onSearch} />,
         ]}
-        // request={(params) => getTable(params)}
         dataSource={dataSorce}
         pagination={{ total: count }}
         onChange={onChange}

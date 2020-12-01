@@ -12,12 +12,22 @@ export async function getUserGroup(params: {
   return request.get(getPort('auth/getaccessgroups'), { params: params });
 }
 
-//系统设置  用户组管理  新增用户组
-export async function addUserGroup(params: { gid: number, groupName: string, remark: string}) {
+//系统设置  用户组管理  新增/编辑用户组
+export async function addUserGroup(params: { gid: number; groupName: string; remark: string }) {
   return request.put(getPort('auth/accessgroupcreateorupdate'), { params: params });
 }
 
 //系统设置  用户组管理 删除用户组
 export async function deleteUserGroup(params: { id: number }) {
   return request.delete(getPort('auth/accessgroupdelete'), { params: params });
+}
+
+//系统设置  用户组管理  导出
+export async function downLoadUserGroup() {
+  return request.get(getPort('auth/export'), {
+    headers: {
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    },
+    responseType: 'blob',
+  });
 }

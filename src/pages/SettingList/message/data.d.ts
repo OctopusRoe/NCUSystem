@@ -1,4 +1,5 @@
 export interface TableListItem {
+  [x: string]: any;
   key: number;
   disabled?: boolean;
   href: string;
@@ -45,5 +46,5 @@ export interface SttingsMessage {
     content: string;
   }[];
   count: number;
-  loading:boolean
+  loading: boolean;
 }

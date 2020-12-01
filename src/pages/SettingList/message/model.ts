@@ -70,7 +70,6 @@ const messageModel: MessageType = {
       };
 
       const back = yield call(queryMessage, params);
-      console.log(back);
       if (back.code != 0) {
         message.error(back.message);
         console.log(back.message);
@@ -86,8 +85,8 @@ const messageModel: MessageType = {
       });
       yield put({
         type: 'loading',
-        payload: false
-      })
+        payload: false,
+      });
     },
   },
 };

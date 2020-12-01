@@ -34,3 +34,20 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+//社团管理  成员管理
+export interface MemberState {
+  memberList?: {
+    id: string;
+    session: string;
+    name: string;
+    personId: string;
+    college: string;
+    gender: number;
+    class: string;
+    department: string;
+    position: string;
+  }[];
+  count: number;
+  loading: boolean;
+}

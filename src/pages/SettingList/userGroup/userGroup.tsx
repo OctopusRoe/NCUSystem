@@ -1,7 +1,7 @@
 // 用户组管理页面
 
 import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Popconfirm, Input } from 'antd';
+import { Button, Divider, Popconfirm, Input } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch } from 'umi';
@@ -160,6 +160,14 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
       payload: true,
     });
   };
+
+  //导出用户组列表
+  const downLoad = () => {
+    dispatch({
+      type: 'settingUserGroup/downLoad',
+    });
+  };
+
   return (
     <div>
       <ProTable<TableListItem>
@@ -173,7 +181,7 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新增
           </Button>,
-          <Button type="default">
+          <Button type="default" onClick={downLoad}>
             <DownloadOutlined /> 导出
           </Button>,
         ]}
@@ -184,7 +192,12 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
         columns={columns}
         loading={loading}
       />
-      <EditModal modalvisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} />
+      <EditModal
+        formValue={stepFormValues}
+        afterClose={reloadValue}
+        modalvisible={editmodalVisible}
+        onCancel={() => setEditmodalVisible(false)}
+      />
       <CreateForm
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}

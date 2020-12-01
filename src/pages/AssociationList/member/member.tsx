@@ -170,11 +170,11 @@ const MemberCom: React.FC<{}> = () => {
         headerTitle="成员列表"
         actionRef={actionRef}
         rowKey="key"
-        rowClassName={(record, index) => {
-          let className = 'light-row';
-          if (index % 2 === 1) className = 'dark-row';
-          return className;
-        }}
+        // rowClassName={(record, index) => {
+        //   let className = 'light-row';
+        //   if (index % 2 === 1) className = 'dark-row';
+        //   return className;
+        // }}
         toolBarRender={(_action, { selectedRows }) => [
           <Button type={'primary'} onClick={() => setAddVisible(true)}>
             <PlusOutlined /> 添加

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import ProTable, { ProColumns } from '@ant-design/pro-table';
 
 import { TableListItem, PunishState } from './data';
-import { Button, Input } from 'antd';
+import { Button, Input, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
 import { PaginationProps } from 'antd/lib/pagination';
@@ -20,14 +20,13 @@ interface PunishProps {
 }
 
 const Punish: React.FC<PunishProps> = (props) => {
-
   const { count, dataSorce, loading, dispatch } = props;
 
   const [downmodalVisible, setDownmodalVisible] = useState(false);
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '学号',
+      title: '学号',  
       dataIndex: 'personId',
       key: 'personId',
       fixed: 'left',
@@ -38,12 +37,22 @@ const Punish: React.FC<PunishProps> = (props) => {
       dataIndex: 'name',
       key: 'name',
       hideInSearch: true,
+      render: (text, record) => {
+        return text === '警告' ? (
+          <Tag color={'warning'}>{record.name}</Tag>
+        ) : (
+          <Tag color={'error'}>{record.name}</Tag>
+        );
+      },
     },
     {
       title: '处分日期',
       dataIndex: 'punishDate',
       key: 'punishDate',
       hideInSearch: true,
+      render: (text, record) => {
+        return <span>{record.punishDate.slice(0, 10)}</span>;
+      },
     },
     {
       title: '处分文号',
@@ -107,36 +116,35 @@ const Punish: React.FC<PunishProps> = (props) => {
   const reloadValue = () => {
     dispatch({
       type: 'settingPunish/searchPunish',
-      payload: {}
-    })
+      payload: {},
+    });
 
     dispatch({
       type: 'settingPunish/loading',
-      payload: true
-    })
-  }
+      payload: true,
+    });
+  };
 
   // 导入的方法
   const upLoadFunc = (e: any) => {
     dispatch({
       type: 'settingPunish/upLoad',
-      payload: e.file.file.originFileObj
-    })
+      payload: e.file.file.originFileObj,
+    });
 
-    setDownmodalVisible(false)
+    setDownmodalVisible(false);
 
     setTimeout(() => {
-      reloadValue()
+      reloadValue();
     }, 0.5 * 1000);
-  }
+  };
 
   // 下载模板的方法
   const downLoadFunc = () => {
     dispatch({
-      type: 'settingPunish/getTemplate'
-    })
-  }
-
+      type: 'settingPunish/getTemplate',
+    });
+  };
 
   return (
     <div>

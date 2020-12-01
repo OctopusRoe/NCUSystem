@@ -5,7 +5,7 @@ import { message } from 'antd';
 
 import { UserGroupState } from './data';
 
-import { getUserGroup, addUserGroup, deleteUserGroup } from './service';
+import { getUserGroup, addUserGroup, deleteUserGroup, downLoadUserGroup } from './service';
 
 export interface UserGroupType {
   namespace: string;
@@ -20,6 +20,7 @@ export interface UserGroupType {
     addUserGroup: Effect;
     searchUserGroup: Effect;
     deleteUserGroup: Effect;
+    downLoad: Effect;
   };
 }
 
@@ -92,7 +93,7 @@ const userGroupModel: UserGroupType = {
 
     *addUserGroup({ payload }, { call }) {
       const data = {
-        id: payload.id ? payload.id : 0,
+        gid: payload.id ? payload.id : 0,
         groupName: payload.groupName,
         remark: payload.remark,
       };
@@ -103,7 +104,8 @@ const userGroupModel: UserGroupType = {
         console.error(back.msg);
         return;
       }
-      message.success('创建成功');
+      if (data.gid === 0) message.success('创建成功');
+      else message.success('编辑成功');
     },
     *deleteUserGroup({ payload }, { call }) {
       const params = {
@@ -116,6 +118,23 @@ const userGroupModel: UserGroupType = {
         return;
       }
       message.success('删除成功');
+    },
+    *downLoad({}, { call }) {
+      const back = yield call(downLoadUserGroup);
+      if (back.code && back.code !== 0) {
+        message.error(back.msg);
+        console.error(back.msg);
+        return;
+      }
+      const a = document.createElement('a');
+      const reader = new FileReader();
+      reader.readAsDataURL(back);
+      reader.onload = (e) => {
+        a.download = '用户组列表';
+        a.href = e.target?.result as string;
+        a.click();
+        a.remove();
+      };
     },
   },
 };

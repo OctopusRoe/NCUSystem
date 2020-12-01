@@ -1,4 +1,5 @@
 export interface TableListItem {
+  id: string;
   key: number;
   disabled?: boolean;
   href: string;
@@ -33,4 +34,22 @@ export interface TableListParams {
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
+}
+
+//用户管理中的  state
+export interface PersonState {
+  personList?: {
+    id: string;
+    category: number;
+    name: string;
+    personId: string;
+    gender: number;
+    idcard: string;
+    college: string;
+    class: string;
+    phone: string;
+    status: number;
+  }[];
+  count: number;
+  loading: boolean;
 }
