@@ -71,7 +71,6 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
 
     dispatch({
       type: 'associationOrganization/getOrganization',
-      payload: '1'
     })
   }
 

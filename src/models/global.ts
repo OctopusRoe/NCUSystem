@@ -41,7 +41,8 @@ const GlobalModel: GlobalModelType = {
   state: {
     collapsed: false,
     notices: [],
-    token: {}
+    token: {},
+    
   },
 
   effects: {

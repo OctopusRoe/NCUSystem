@@ -42,6 +42,13 @@ export interface CurrentUser {
   phone: string;
 }
 
+export interface BaseInfoState {
+  canTeacherUse: boolean
+  teacherCount: number
+  canDepartmentUse: boolean
+  departmentCount: number
+}
+
 export interface OrganizationState {
   valueList: {one: string, id: number}[]
 }

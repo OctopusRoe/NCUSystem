@@ -7,6 +7,8 @@ import { connect, FormattedMessage, useIntl, Dispatch} from 'umi';
 
 import CropImgView from '@/components/CropImgview'
 import styles from './BaseView.less';
+import { BaseInfoState } from '../../data'
+
 
 interface FormInfo {
   teacherValue: {name: string, phone: string}[]
@@ -79,7 +81,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
       return
     }
     dispatch({
-      type: 'association-base-info/setTeacherCount',
+      type: 'associationBaseInfo/setTeacherCount',
       payload: [60, false]
     })
   }
@@ -90,7 +92,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
       return
     }
     dispatch({
-      type: 'association-base-info/setDepartmentCount',
+      type: 'associationBaseInfo/setDepartmentCount',
       payload: [60, false]
     })
   }
@@ -100,13 +102,13 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     if (teacherCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'association-base-info/setTeacherCount',
+          type: 'associationBaseInfo/setTeacherCount',
           payload: [teacherCount - 1, false]
         })
       }, 1000)
     } else {
       dispatch({
-        type: 'association-base-info/setTeacherCount',
+        type: 'associationBaseInfo/setTeacherCount',
         payload: [1, true]
       })
     }
@@ -117,13 +119,13 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     if (departmentCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'association-base-info/setDepartmentCount',
+          type: 'associationBaseInfo/setDepartmentCount',
           payload: [departmentCount - 1, false]
         })
       }, 1000)
     } else {
       dispatch({
-        type: 'association-base-info/setDepartmentCount',
+        type: 'associationBaseInfo/setDepartmentCount',
         payload: [1, true]
       })
     }
@@ -366,12 +368,14 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 }
 
 export default connect(
-  (state: any)=>{
+  ({ associationBaseInfo }: {
+    associationBaseInfo: BaseInfoState
+  })=>{
     return {
-      canTeacherUse: state['association-base-info'].canTeacherUse,
-      teacherCount: state['association-base-info'].teacherCount,
-      canDepartmentUse: state['association-base-info'].canDepartmentUse,
-      departmentCount: state['association-base-info'].departmentCount
+      canTeacherUse: associationBaseInfo.canTeacherUse,
+      teacherCount: associationBaseInfo.teacherCount,
+      canDepartmentUse: associationBaseInfo.canDepartmentUse,
+      departmentCount: associationBaseInfo.departmentCount
     }
   }
 )(BaseInfo)

@@ -95,7 +95,7 @@ export default connect(
   ({associationOrganization, associationControl}: 
     {
       associationOrganization: OrganizationState,
-      associationControl: AssociationState
+      associationControl: AssociationState,
       
     }) => {
     return {

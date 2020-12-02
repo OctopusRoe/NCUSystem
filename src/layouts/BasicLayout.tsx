@@ -81,7 +81,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   request.interceptors.request.use((url, option) => {
 
     option.headers = {
-      Authorization: token.token as any
+      Authorization: token.token,
+      PersonId: token.personId
     }
 
     return {

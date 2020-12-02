@@ -8,8 +8,8 @@ export async function getAssociationBaseInfo () {
 }
 
 // 社团管理 信息变更 部门设置 查询部门
-export async function getOrganization (data: FormData) {
-  return request.post(getPort('community/querydepartment'), {data: data})
+export async function getOrganization () {
+  return request.post(getPort('community/querydepartment'))
 }
 
 // 社团管理 信息变更 部门设置 修改部门

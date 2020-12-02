@@ -59,6 +59,11 @@ const AssociationList: React.FC<AssociationListProps> = (props) => {
     dispatch({
       type: 'dashboardAndworkplace/init',
     });
+
+    dispatch({
+      type: 'associationBaseInfo/getInfo'
+    })
+
     return function cleanUp() {
       dispatch({
         type: 'dashboardAndworkplace/clear',
