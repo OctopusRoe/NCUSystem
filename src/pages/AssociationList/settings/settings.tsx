@@ -120,7 +120,7 @@ class InfoBase extends Component<SettingsProps, SettingsState> {
     const { selectKey } = this.state;
     switch (selectKey) {
       case 'baseInfo':
-        return <BaseInfo formInfo={formInfo} />;
+        return <BaseInfo />;
       case 'organization':
         return <Organization />;
       case 'position':

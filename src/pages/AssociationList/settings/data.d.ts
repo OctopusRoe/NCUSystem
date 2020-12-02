@@ -47,8 +47,26 @@ export interface BaseInfoState {
   teacherCount: number
   canDepartmentUse: boolean
   departmentCount: number
+  tGUID: string
+  dGUID: string
 }
 
 export interface OrganizationState {
   valueList: {one: string, id: number}[]
+}
+
+export interface AssociationPositionState {
+  positionList?: {
+
+  }[]
+  count: number
+  loading: boolean
+}
+
+export interface NewMediaState {
+  newMediaList?: {
+
+  }[]
+  count: number
+  loading: boolean
 }

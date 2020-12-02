@@ -136,6 +136,19 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       })
     }
 
+    setTimeout(() => {
+      dispatch({
+        type: 'global/baseInfo',
+      })
+  
+      dispatch({
+        type: 'global/associationInfo',
+        payload: {
+          personId: token.personId
+        }
+      })
+    }, 0.5 * 1000)
+
     const time = setInterval(() => {
       dispatch({
         type: 'global/renewalToken',
@@ -217,7 +230,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 };
 
 export default connect(({ global, settings }: ConnectState) => ({
-  collapsed: global.collapsed,
   token: global.token,
   settings,
 }))(BasicLayout);

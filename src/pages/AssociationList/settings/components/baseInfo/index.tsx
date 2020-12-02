@@ -9,20 +9,19 @@ import CropImgView from '@/components/CropImgview'
 import styles from './BaseView.less';
 import { BaseInfoState } from '../../data'
 
+import { GlobalModelState } from '@/models/global'
 
-interface FormInfo {
-  teacherValue: {name: string, phone: string}[]
-  associationType: string[]
-  associationGrade: string[]
-  department: string[]
-}
+import moment from 'moment'
 
 interface BaseInfoProps {
-  formInfo: FormInfo
   canTeacherUse: boolean
   teacherCount: number
   canDepartmentUse: boolean
   departmentCount: number
+  baseInfo: any
+  selectValue: any
+  tGUID: string
+  dGUID: string
   dispatch: Dispatch
 }
 
@@ -51,35 +50,45 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
   const intl = useIntl()
 
-  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, formInfo, dispatch } = props
-  const { teacherValue, associationType, associationGrade, department } = formInfo
+  const { 
+    canTeacherUse,
+    teacherCount,
+    canDepartmentUse,
+    departmentCount,
+    baseInfo,
+    selectValue,
+    tGUID,
+    dGUID,
+    dispatch 
+  } = props
   
   // 保存指导老师电话
-  const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
+  const [ getTeacher, setGetTeacher ] = useState<string>('')
 
   // 保存指导部门电话
-  const [ getDepartmentPhone, setGetDepartmentPhone ] = useState<string>('')
+  const [ getDepartment, setGetDepartment ] = useState<string>('')
 
   // 选择指导老师电话
   const selectTeacher = (e: string) => {
-    setGetTeacherPhone(e)
+    setGetTeacher(e)
   }
 
   // 选择指导部门电话
   const selectDepartment = (e: string) => {
-    setGetDepartmentPhone(e)
-  }
-
-  // 获取图片数据
-  const testOne = (e: any) => {
-    console.log(e)
+    setGetDepartment(e)
   }
 
   // 老师设置倒计时方法
   const teacherCountDown = () => {
-    if (getTeacherPhone === '') {
+    if (getTeacher === '') {
       return
     }
+
+    dispatch({
+      type: 'associationBaseInfo/getTeacherCode',
+      payload: getTeacher
+    })
+
     dispatch({
       type: 'associationBaseInfo/setTeacherCount',
       payload: [60, false]
@@ -88,9 +97,15 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
-    if (getDepartmentPhone === '') {
+    if (getDepartment === '') {
       return
     }
+
+    dispatch({
+      type: 'associationBaseInfo/getDepartmentCode',
+      payload: getDepartment
+    })
+
     dispatch({
       type: 'associationBaseInfo/setDepartmentCount',
       payload: [60, false]
@@ -133,8 +148,52 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
   // 表单数据获取
   const handleFinish = (e:any) => {
-    message.success(intl.formatMessage({ id: 'setting.basic.update.success' }));
+
     console.log(e)
+
+    const form = new FormData()
+    form.append('Id', baseInfo.id)
+    form.append('NameZh', e.nameZh)
+    form.append('NameEn', e.nameEn)
+    form.append('Category', e.category)
+    form.append('Level', e.level)
+    form.append('GuidanceUnit', e.guidanceUnit)
+    form.append('PersonNum', e.personNum)
+    form.append('SetUpDate', e.startTime.format('YYYY'))
+    form.append('TeacherGuid', tGUID)
+    form.append('TeacherCode', e.teacherCode)
+    form.append('DepartmentGuid', dGUID)
+    form.append('DepartmentCode', e.departmentCode)
+
+    if (typeof e.logo !== 'string') {
+      form.append('Logo', e.logo.originFileObj)
+    }
+
+    if (typeof e.constitution !== 'string') {
+      form.append('Constitution', e.constitution.file.originFileObj)
+    }
+
+    if (typeof e.thumbnail !== 'string') {
+      form.append('Thumbnail', e.thumbnail.originFileObj)
+    }
+    
+    const data = {
+      teacher: {
+        guid: tGUID,
+        code: e.teacherCode
+      },
+      department: {
+        guid: dGUID,
+        code: e.departmentCode
+      },
+      form: form
+    }
+
+    dispatch({
+      type: 'associationBaseInfo/validationCode',
+      payload: data
+    })
+
   }
 
   return (
@@ -142,7 +201,10 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
       <Form
         layout={"horizontal"}
         onFinish={handleFinish}
-        // initialValues={currentUser}
+        initialValues={{
+          ...baseInfo,
+          startTime: baseInfo ? moment(baseInfo.setUpDate) : ''
+        }}
         autoComplete={'off'}
         hideRequiredMark
       >
@@ -151,11 +213,11 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           name={"logo"}
           label={intl.formatMessage({ id: 'info.infoBase.logo'})}
         >
-          <CropImgView id="associationLogo" onChange={testOne.bind(this)} />
+          <CropImgView id="associationLogo" />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"fullname-cn"}
+          name={"nameZh"}
           label={intl.formatMessage({ id: 'info.infoBase.fullname-cn' })}
           rules={[
             {
@@ -168,7 +230,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"fullname-en"}
+          name={"nameEn"}
           label={intl.formatMessage({ id: 'info.infoBase.fullname-en' })}
           rules={[
             {
@@ -181,7 +243,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"typeof"}
+          name={"category"}
           label={intl.formatMessage({ id: 'info.infoBase.typeof' })}
           rules={[
             {
@@ -192,8 +254,8 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         >
           <Select placeholder={'请选择社团类别'}>
             {
-              associationType.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
+              selectValue.type && selectValue.type.map((item: any, index: number) => (
+                <Option value={item.id} key={index}>{item.name}</Option>
               ))
             }
           </Select>
@@ -211,15 +273,15 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         >
           <Select placeholder={'请选择社团级别'}>
             {
-              associationGrade.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
+              selectValue.level && selectValue.level.map((item: any, index: number) => (
+                <Option value={item.id} key={index}>{item.name}</Option>
               ))
             }
           </Select>
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"department"}
+          name={"guidanceUnit"}
           label={intl.formatMessage({ id: 'info.infoBase.department' })}
           rules={[
             {
@@ -230,15 +292,15 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         >
           <Select placeholder={'请选择指导部门'}>
             {
-              department.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
+              selectValue.department && selectValue.department.map((item: any, index: number) => (
+                <Option value={item.id} key={index}>{item.name}</Option>
               ))
             }
           </Select>
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"member"}
+          name={"personNum"}
           label={
             <span>
               社团成员数
@@ -255,7 +317,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"regulations"}
+          name={"constitution"}
           label={intl.formatMessage({ id: 'info.infoBase.regulations' })}
         >
           <Upload showUploadList={false} fileList={[]}>
@@ -277,22 +339,22 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name={"syssimpleimg"}
+          name={"thumbnail"}
           label={intl.formatMessage({ id: 'info.infoBase.syssimpleimg' })}
         >
-          <CropImgView id="syssimpleimg" />
+          <CropImgView id="thumbnail" />
         </Form.Item>
         <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
         <Input.Group compact>
           <Form.Item
-            name={'teacherPhone'}
+            name={'teacherId'}
             style={{display: 'inline-block', width: '25%'}}
             rules={[{required: true, message: '请选择指导老师!'}]}
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
               {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
+                baseInfo.instructorInfo && baseInfo.instructorInfo.map((item: any) => (
+                  <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
                 ))
@@ -319,14 +381,14 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
       <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
         <Input.Group compact>
           <Form.Item
-            name={'departmentPhone'}
+            name={'departmentId'}
             style={{display: 'inline-block', width: '25%'}}
             rules={[{required: true, message: '请选择指导部门!'}]}
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
               {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
+                baseInfo.instructorInfo && baseInfo.instructorInfo.map((item: any) => (
+                  <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
                 ))
@@ -368,14 +430,19 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 }
 
 export default connect(
-  ({ associationBaseInfo }: {
-    associationBaseInfo: BaseInfoState
+  ({ associationBaseInfo, global }: {
+    associationBaseInfo: BaseInfoState,
+    global: GlobalModelState
   })=>{
     return {
       canTeacherUse: associationBaseInfo.canTeacherUse,
       teacherCount: associationBaseInfo.teacherCount,
       canDepartmentUse: associationBaseInfo.canDepartmentUse,
-      departmentCount: associationBaseInfo.departmentCount
+      departmentCount: associationBaseInfo.departmentCount,
+      baseInfo: global.baseInfo,
+      selectValue: global.SelectValue,
+      tGUID: associationBaseInfo.tGUID,
+      dGUID: associationBaseInfo.dGUID
     }
   }
 )(BaseInfo)

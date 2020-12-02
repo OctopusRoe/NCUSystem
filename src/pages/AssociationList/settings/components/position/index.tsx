@@ -1,23 +1,35 @@
 // 职务设置 组件
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Divider, Popconfirm, message } from 'antd';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 import { TableListItem } from './data.d';
-import { queryRule } from './service';
 import DeatilsModal from '@/components/DetailsModal/DetailsModal';
+import { connect, Dispatch } from 'umi';
+
+import { AssociationPositionState } from '../../data'
+
+interface PositionProps {
+  dataSorce: any
+  count: number
+  loading: boolean
+  dispatch: Dispatch
+}
 
 const { Search } = Input;
 
-const Position: React.FC<{}> = () => {
+const Position: React.FC<PositionProps> = (props) => {
+
+  const { dataSorce, count, loading, dispatch } = props
+
   const [addMOdalVisible, setAddModalViaible] = useState(false);
   const [editMOdalVisible, setEditModalViaible] = useState(false);
   const [deatilsModal, setDeatilsModal] = useState(false);
   const [stepFormValues, setStepFormValues] = useState<any>({});
-  const actionRef = useRef<ActionType>();
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '职务名称',
@@ -70,21 +82,24 @@ const Position: React.FC<{}> = () => {
             编辑
           </a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+          <Popconfirm title="是否要删除？" onConfirm={confirm}>
             <a>删除</a>
           </Popconfirm>
         </>
       ),
     },
   ];
+
+  useEffect(() => {
+    dispatch({
+      type: 'associationPosition/searchPosition',
+      payload: {}
+    })
+  }, [])
+
   //删除成功
   const confirm = () => {
     message.success('删除成功');
-  };
-
-  //取消删除
-  const cancel = () => {
-    message.error('取消删除');
   };
 
   //搜索框 Search事件
@@ -92,21 +107,27 @@ const Position: React.FC<{}> = () => {
     console.log(value);
   };
 
+  const onChange = () => {
+
+  }
+
   return (
     <div>
       <ProTable<TableListItem>
         rowKey="key"
         search={false}
-        actionRef={actionRef}
         headerTitle={'职务设置'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton onSearch={onSearch} />,
+          <Search enterButton onSearch={onSearch} placeholder={'请输入职务名称'} />,
           <Button type="primary" onClick={() => setAddModalViaible(true)}>
             <PlusOutlined /> 新增
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={dataSorce}
+        pagination={{total: count}}
+        onChange={onChange}
         columns={columns}
+        loading={loading}
       />
       <AddModal modalVisible={addMOdalVisible} onCancel={() => setAddModalViaible(false)} />
       <DeatilsModal modalVisible={deatilsModal} onCancel={() => setDeatilsModal(false)} />
@@ -119,4 +140,12 @@ const Position: React.FC<{}> = () => {
   );
 };
 
-export default Position;
+export default connect(
+  ({associationPosition}: {associationPosition: AssociationPositionState}) => (
+    {
+      dataSorce: associationPosition.positionList,
+      loading: associationPosition.loading,
+      count: associationPosition.count,
+    }
+  )
+)(Position);

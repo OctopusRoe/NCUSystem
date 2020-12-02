@@ -1,36 +1,33 @@
 import { Subscription, Reducer, Effect, history } from 'umi';
 
-import { NoticeIconData } from '@/components/NoticeIcon';
-import { queryNotices, renewalToken } from '@/services/user';
-import { ConnectState } from './connect.d';
+import { message } from 'antd'
 
-
-export interface NoticeItem extends NoticeIconData {
-  id: string;
-  type: string;
-  status: string;
-}
+import { 
+  renewalToken,
+  getAssociationBaseInfo,
+  getAssociationLevel,
+  getAssociationType,
+  getDepartment
+} from '@/services/user';
 
 export interface GlobalModelState {
-  collapsed: boolean;
-  notices: NoticeItem[];
   token: any
+  baseInfo: any
+  SelectValue: any
 }
 
 export interface GlobalModelType {
   namespace: 'global';
   state: GlobalModelState;
   effects: {
-    fetchNotices: Effect;
-    clearNotices: Effect;
-    changeNoticeReadState: Effect;
     renewalToken: Effect;
+    baseInfo: Effect;
+    associationInfo: Effect;
   };
   reducers: {
     handleToken: Reducer<GlobalModelState>
-    changeLayoutCollapsed: Reducer<GlobalModelState>;
-    saveNotices: Reducer<GlobalModelState>;
-    saveClearedNotices: Reducer<GlobalModelState>;
+    saveBaseInfo: Reducer<GlobalModelState>
+    saveAssociationInfo: Reducer<GlobalModelState>
   };
   subscriptions: { setup: Subscription };
 }
@@ -39,10 +36,9 @@ const GlobalModel: GlobalModelType = {
   namespace: 'global',
 
   state: {
-    collapsed: false,
-    notices: [],
     token: {},
-    
+    baseInfo: {},
+    SelectValue: {}
   },
 
   effects: {
@@ -59,75 +55,64 @@ const GlobalModel: GlobalModelType = {
         return
       }
     },
-    *fetchNotices(_, { call, put, select }) {
-      const data = yield call(queryNotices);
+
+    *baseInfo (_, { call, put }) {
+      const back = yield call(getAssociationBaseInfo)
+      if (back.code !== 0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
       yield put({
-        type: 'saveNotices',
-        payload: data,
-      });
-      const unreadCount: number = yield select(
-        (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: data.length,
-          unreadCount,
-        },
-      });
+        type: 'saveBaseInfo',
+        payload: back.data
+      })
     },
-    *clearNotices({ payload }, { put, select }) {
-      yield put({
-        type: 'saveClearedNotices',
-        payload,
-      });
-      const count: number = yield select((state: ConnectState) => state.global.notices.length);
-      const unreadCount: number = yield select(
-        (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: count,
-          unreadCount,
-        },
-      });
-    },
-    *changeNoticeReadState({ payload }, { put, select }) {
-      const notices: NoticeItem[] = yield select((state: ConnectState) =>
-        state.global.notices.map((item) => {
-          const notice = { ...item };
-          if (notice.id === payload) {
-            notice.read = true;
-          }
-          return notice;
-        }),
-      );
+
+    *associationInfo ({ payload }, { call, put }) {
+
+      const level = yield call(getAssociationLevel)
+      const type = yield call(getAssociationType)
+      const department = yield call(getDepartment)
+
+      switch (true) {
+        case level.code !== 0:
+          message.error(level.msg)
+          console.error(level.msg)
+          return
+        case type.code !== 0:
+          message.error(type.msg)
+          console.error(type.msg)
+          return
+        case department.code !== 0:
+          message.error(department.msg)
+          console.error(department.msg)
+          return
+        default:
+
+      }
+
+      const data = {
+        level: level.data,
+        type: type.data,
+        department: department.data,
+      }
 
       yield put({
-        type: 'saveNotices',
-        payload: notices,
-      });
-
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: notices.length,
-          unreadCount: notices.filter((item) => !item.read).length,
-        },
-      });
+        type: 'saveAssociationInfo',
+        payload: data
+      })
     },
   },
 
   reducers: {
     handleToken(state, { payload }) {
       const tokenValue = document.cookie.split(';').filter((item: string) => item.indexOf('NCUAssociation') > -1)
+      const newState = JSON.parse(JSON.stringify(state))
       if ( tokenValue.length === 0  ) {
         history.push('/user/login')
         return {
-          collapsed: false,
-          notices: [],
-          token: {},
+          ...newState
         }
       }
       const token = JSON.parse(tokenValue[0].split('=')[1])
@@ -137,39 +122,31 @@ const GlobalModel: GlobalModelType = {
       if (time.getTime() < now.getTime()) {
         history.push('/user/login')
         return {
-          collapsed: false,
-          notices: [],
-          token: {},
+          ...newState
         }
       }
+      newState.token = token
 
       return {
-        collapsed: false,
-        notices: [],
-        token: token,
+        ...newState
       }
     },
-    changeLayoutCollapsed(state = { notices: [], collapsed: true, token: {} }, { payload }): GlobalModelState {
+
+    saveBaseInfo(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.baseInfo = payload
       return {
-        ...state,
-        collapsed: payload,
-      };
+        ...newState
+      }
     },
-    saveNotices(state, { payload }): GlobalModelState {
+
+    saveAssociationInfo (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.SelectValue = payload
       return {
-        collapsed: false,
-        ...state,
-        notices: payload,
-        token: null
-      };
-    },
-    saveClearedNotices(state = { notices: [], collapsed: true, token: {} }, { payload }): GlobalModelState {
-      return {
-        ...state,
-        collapsed: false,
-        notices: state.notices.filter((item): boolean => item.type !== payload),
-      };
-    },
+        ...newState
+      }
+    }
   },
 
   subscriptions: {

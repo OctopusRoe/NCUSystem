@@ -1,25 +1,33 @@
 // 网络平台 组件
 
-import React, { useState, useRef } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Input, Divider, Popconfirm, message,Image } from 'antd';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import React, { useState } from 'react';
+import { Input, Divider, Popconfirm, message,Image } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 import { TableListItem } from './data.d';
-import { queryRule } from './service';
+import { connect, Dispatch } from 'umi';
+
+import { NewMediaState } from '../../data'
+
+interface NewMediaProps {
+  count: number
+  loading: boolean
+  dataSorce: any
+  dispatch: Dispatch
+}
 
 const { Search } = Input;
 
-const showImage = () => {
-  document.getElementById('control-table-QRCode')?.click();
-};
+const NewMedia: React.FC<NewMediaProps> = (props) => {
 
-const NewMedia: React.FC<{}> = () => {
+  const { count, loading, dataSorce, dispatch } = props
+
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [stepFormValues, setStepFormValues] = useState<any>({});
-  const actionRef = useRef<ActionType>();
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '平台名称',
@@ -49,14 +57,14 @@ const NewMedia: React.FC<{}> = () => {
                 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1605588696780&di=b350f01e6ef6896f4dae07890d382d6c&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F01%2F42%2F51%2F90573d7eb6115f6.jpg'
               }
               style={{ width: '30px', height: '30px', borderRadius: '50%' }}
-              onClick={showImage}
+              onClick={() => document.getElementById(record.name)?.click()}
             />
             <Image
               src={
                 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1605588696780&di=b350f01e6ef6896f4dae07890d382d6c&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F01%2F42%2F51%2F90573d7eb6115f6.jpg'
               }
               style={{ display: 'none' }}
-              id={'control-table-QRCode'}
+              id={record.name}
             />
           </>
         );
@@ -92,7 +100,7 @@ const NewMedia: React.FC<{}> = () => {
             编辑
           </a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除？" onConfirm={confirm} onCancel={cancel}>
+          <Popconfirm title="是否要删除？" onConfirm={confirm}>
             <a>删除</a>
           </Popconfirm>
         </>
@@ -104,14 +112,27 @@ const NewMedia: React.FC<{}> = () => {
   const confirm = () => {
     message.success('删除成功');
   };
-  //取消删除
-  const cancel = () => {
-    message.error('取消删除');
-  };
 
   //搜索框 search 事件
   const onSearch = (value: any) => {
     console.log(value);
+  };
+
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current,
+    };
+    dispatch({
+      type: 'associationNewMedia/searchNewMedia',
+      payload: data,
+    });
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'associationNewMedia/loading',
+      payload: true,
+    });
   };
 
   return (
@@ -119,13 +140,15 @@ const NewMedia: React.FC<{}> = () => {
       <ProTable<TableListItem>
         rowKey="key"
         search={false}
-        actionRef={actionRef}
         headerTitle={'网络平台'}
         toolBarRender={(action, { selectedRows }) => [
-          <Search enterButton placeholder={'请输入'} />,
+          <Search enterButton placeholder={'请输入'} onSearch={onSearch} />,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={dataSorce}
+        pagination={{ total: count }}
+        onChange={onChange}
         columns={columns}
+        loading={loading}
       />
       <EditModal
         modalVisible={editModalVisible}
@@ -137,4 +160,12 @@ const NewMedia: React.FC<{}> = () => {
   );
 };
 
-export default NewMedia;
+export default connect(
+  ({associationNewMedia}: {associationNewMedia: NewMediaState}) => (
+    {
+      count: associationNewMedia.count,
+      loading: associationNewMedia.loading,
+      dataSorce: associationNewMedia.newMediaList
+    }
+  )
+)(NewMedia);

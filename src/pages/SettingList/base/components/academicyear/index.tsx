@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Popconfirm } from 'antd';
+import { Button, Divider, Popconfirm } from 'antd';
 import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 

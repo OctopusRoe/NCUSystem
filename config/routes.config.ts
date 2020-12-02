@@ -140,6 +140,10 @@ function CreateRouter( fileData: FileType ) {
   })
 
   childrenRoutes.routes.splice(childrenRoutes.routes.length, 0, {component: './404'})
+  console.log({
+    ...routes,
+    ...childrenRoutes
+  })
 
   return {...routes, ...childrenRoutes}
 
@@ -189,9 +193,6 @@ export default [{
       CreateRouter(bigdataData),
       // 系统设置 router
       CreateRouter(settingData),
-      {
-        component: './404'
-      }
     ]
   }]
 }]

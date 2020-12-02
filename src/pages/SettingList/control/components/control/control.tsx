@@ -1,9 +1,9 @@
 // 应用管理-应用管理 组件
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Divider, Input, Image, message, Popconfirm } from 'antd';
 import { PaginationProps } from 'antd/lib/pagination';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
 
 import { TableListItem } from './data.d';
