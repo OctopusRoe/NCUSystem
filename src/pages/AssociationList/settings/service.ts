@@ -18,16 +18,23 @@ export async function upOrganization (data: {params: {}, data: {}}) {
 }
 
 // 社团管理 信息变更 职务设置 搜索
-export async function searchPosition (data: FormData) {
+export async function searchPosition (data: {query?: string, PageSize: number, PageIndex: number}) {
   return request.post(getPort('community/queryposition'), {data: data})
 }
 
 // 社团管理 信息变更 职务设置 编辑
-export async function createPosition () {
-  return
+export async function createPosition (data: {Id?: string, Name: string, Responsible: boolean, Backbone: boolean, rank: number }) {
+  return  request.post(getPort('community/createorupdateposition'), {data: data})
 }
 
 // 社团管理 信息变更 职务设置 删除
-export async function deletePosition () {
-  return 
+export async function deletePosition (params: {Id: string}) {
+  return request.delete(getPort('community/deleteposition'), {params: params})
 }
+
+// 社团管理 信息变更 网络平台 搜索
+export async function searchNewMedia (data: {query?: string, PageSize: number, PageIndex: number}) {
+  return request.post(getPort('community/querynetworkplatform'), {data: data})
+}
+
+// 社团管理 信息变更 网络平台

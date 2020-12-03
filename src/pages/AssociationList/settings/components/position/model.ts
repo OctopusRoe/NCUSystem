@@ -1,4 +1,4 @@
-// 学年设置组件 model
+// 职位设置 model
 
 import { Effect, Reducer } from 'umi';
 
@@ -43,7 +43,7 @@ const academicYearModel: AcademicYearModel = {
 
     savePosition (state, { payload }) {
       const newState = JSON.parse(JSON.stringify(state))
-      newState.academicYearList = payload
+      newState.positionList = payload
       return {
         ...newState
       }
@@ -59,7 +59,7 @@ const academicYearModel: AcademicYearModel = {
 
     cleanState () {
       const state = {
-        academicYearList: [],
+        positionList: [],
         count: 0,
         loading: true
       }
@@ -72,12 +72,11 @@ const academicYearModel: AcademicYearModel = {
     *addPosition ({ payload }, { call }) {
 
       const data = {
-        id: payload.id ? payload.id : 0,
-        schoolYearName: payload.academicfull,
-        schoolYearShortName: payload.academicsyssimple,
-        startDate: payload.academictime[0].format('YYYY-MM-DDThh:mm:ss'),
-        endDate: payload.academictime[1].format('YYYY-MM-DDThh:mm:ss'),
-        currentYear: `${payload.defaulttime[0].format('YYYY')}-${payload.defaulttime[1].format('YYYY')}`
+        Id: payload.id ? payload.id : '0',
+        Name: payload.name,
+        Responsible: payload.responsible === '1' ? true : false,
+        Backbone: payload.backbone === '1' ? true : false,
+        rank: parseInt(payload.rank)
       }
 
       const back = yield call(createPosition, data)
@@ -86,15 +85,18 @@ const academicYearModel: AcademicYearModel = {
         console.error(back.msg)
         return
       }
+
       message.success('成功')
+
     },
 
     *searchPosition ({ payload }, { call, put }) {
 
-      const data = new FormData()
-      data.append('PageSize', payload.PageSize ? payload.PageSize : 20)
-      data.append('PageIndex', payload.PageIndex ? payload.PageIndex : 1)
-      // data.append('query', payload.query ? payload.query : '')
+      const data = {
+        query: payload.query ? payload.query : '',
+        PageSize: payload.PageSize ? payload.PageSize : 20,
+        PageIndex: payload.PageIndex ? payload.PageIndex : 1
+      }
 
       const back = yield call(searchPosition, data)
       if (back.code !== 0 ) {
@@ -102,9 +104,8 @@ const academicYearModel: AcademicYearModel = {
         console.error(back.msg)
         return
       }
-
       yield put({
-        type: 'saveAcademicYear',
+        type: 'savePosition',
         payload: back.data
       })
 

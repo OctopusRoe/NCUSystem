@@ -49,7 +49,7 @@ const Model: LoginModelType = {
       time.setTime(time.getTime() + 5 * 24 * 60 * 60 * 1000 )
 
       const value = {
-        token: back.data,
+        token: back.data.token,
         personId: payload.uname,
         pwd: payload.pwd,
         time: time.toString()
@@ -57,6 +57,11 @@ const Model: LoginModelType = {
 
       document.cookie = `NCUAssociation=${JSON.stringify(value)};expires=${time.toString()}`
       history.push('/index')
+
+      yield put({
+        type: 'global/saveUserBaseInfo',
+        payload: {userInfo: back.data.personInfo, associationList: back.data.communityList}
+      })
     },
 
     // 自动登录的方法

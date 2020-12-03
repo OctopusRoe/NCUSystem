@@ -140,10 +140,6 @@ function CreateRouter( fileData: FileType ) {
   })
 
   childrenRoutes.routes.splice(childrenRoutes.routes.length, 0, {component: './404'})
-  console.log({
-    ...routes,
-    ...childrenRoutes
-  })
 
   return {...routes, ...childrenRoutes}
 

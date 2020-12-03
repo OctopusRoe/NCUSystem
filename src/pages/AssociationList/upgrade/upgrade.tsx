@@ -7,6 +7,11 @@ import { UploadOutlined } from '@ant-design/icons';
 import Success from './components/success';
 import Fail from './components/fail';
 
+import { ConnectState } from '@/models/connect'
+
+import { UpgradeState } from './data'
+import { fromPairs } from 'lodash';
+
 const FormItem = Form.Item;
 
 const { Option } = Select;
@@ -279,12 +284,12 @@ const Upgrade: FC<UpgradeProps> = (props) => {
 };
 
 export default connect(
-  (state: any)=>{
+  ({associationUpgrade, global}: {associationUpgrade: UpgradeState, global: ConnectState})=>{
     return {
-      canTeacherUse: state['association-upgrade'].canTeacherUse,
-      teacherCount: state['association-upgrade'].teacherCount,
-      canDepartmentUse: state['association-upgrade'].canDepartmentUse,
-      departmentCount: state['association-upgrade'].departmentCount
+      canTeacherUse: associationUpgrade.canTeacherUse,
+      teacherCount: associationUpgrade.teacherCount,
+      canDepartmentUse: associationUpgrade.canDepartmentUse,
+      departmentCount: associationUpgrade.departmentCount
     }
   }
 )(Upgrade);

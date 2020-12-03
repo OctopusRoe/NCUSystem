@@ -1,13 +1,13 @@
 // 职务设置 组件
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Input, Divider, Popconfirm, message } from 'antd';
+import { Button, Input, Divider, Popconfirm, Tag } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns } from '@ant-design/pro-table';
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 import { TableListItem } from './data.d';
-import DeatilsModal from '@/components/DetailsModal/DetailsModal';
 import { connect, Dispatch } from 'umi';
 
 import { AssociationPositionState } from '../../data'
@@ -25,64 +25,65 @@ const Position: React.FC<PositionProps> = (props) => {
 
   const { dataSorce, count, loading, dispatch } = props
 
-  const [addMOdalVisible, setAddModalViaible] = useState(false);
-  const [editMOdalVisible, setEditModalViaible] = useState(false);
-  const [deatilsModal, setDeatilsModal] = useState(false);
-  const [stepFormValues, setStepFormValues] = useState<any>({});
+  const [addModalVisible, setAddModalViaible] = useState(false);
+  const [editModalVisible, setEditModalViaible] = useState(false);
+
+  const [rowValue, setRowValue] = useState<any>({});
 
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '职务名称',
-      dataIndex: 'positionName',
+      dataIndex: 'name',
       width: '30%',
-      key: 'positionName',
-      hideInSearch: true,
+      key: 'name',
     },
     {
       title: '社团负责人',
-      dataIndex: 'positionLeader',
+      dataIndex: 'responsible',
       width: '25%',
-      key: 'positionLeader',
-      hideInSearch: true,
-      render: (text) => {
-        return (
-          <Button type={'link'} size={'small'} onClick={() => setDeatilsModal(true)}>
-            {text}
-          </Button>
-        );
+      key: 'responsible',
+      render: (text, record) => {
+        return text ? <Tag color={'green'}>是</Tag> : <Tag color={'blue'}>否</Tag>
       },
     },
     {
       title: '社团骨干',
-      dataIndex: 'communityBackbone',
+      dataIndex: 'backbone',
       width: '20%',
-      key: 'communityBackbone',
-      hideInSearch: true,
+      key: 'backbone',
+      render: (text, record) => {
+        return text ? <Tag color={'green'}>是</Tag> : <Tag color={'blue'}>否</Tag>
+      }
     },
     {
       title: '排序号',
-      dataIndex: 'number',
+      dataIndex: 'rank',
       width: '15%',
-      key: 'number',
-      hideInSearch: true,
+      key: 'rank',
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       width: '10%',
-      render: (_, record) => (
+      render: (_, record: any) => (
         <>
           <a
             onClick={() => {
               setEditModalViaible(true);
-              setStepFormValues(record);
+              setRowValue({
+                id: record.id,
+                name: record.name,
+                responsible: record.responsible ? '1' : '0',
+                backbone: record.backbone ? '1' : '0',
+                rank: record.rank
+              });
             }}
           >
             编辑
           </a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除？" onConfirm={confirm}>
+          <Popconfirm title="是否要删除？" onConfirm={()=>confirm(record.id)}>
             <a>删除</a>
           </Popconfirm>
         </>
@@ -95,26 +96,82 @@ const Position: React.FC<PositionProps> = (props) => {
       type: 'associationPosition/searchPosition',
       payload: {}
     })
+
+    return () => {
+      dispatch({
+        type: 'associationPosition/cleanPosition'
+      })
+    }
   }, [])
 
   //删除成功
-  const confirm = () => {
-    message.success('删除成功');
+  const confirm = (id: number) => {
+    dispatch({
+      type: 'associationPosition/deletePosition',
+      payload: id
+    })
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000)
   };
 
   //搜索框 Search事件
   const onSearch = (value: any) => {
-    console.log(value);
+    
+    const data = {
+      query: value
+    }
+
+    dispatch({
+      type: 'associationPosition/searchPosition',
+      payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'associationPosition/loading',
+      payload: true,
+    });
+
   };
 
-  const onChange = () => {
+  // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current,
+    };
+    dispatch({
+      type: 'associationPosition/searchPosition',
+      payload: data,
+    });
 
-  }
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'associationPosition/loading',
+      payload: true,
+    });
+  };
+
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'associationPosition/searchPosition',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'associationPosition/loading',
+      payload: true,
+    });
+  };
 
   return (
     <div>
       <ProTable<TableListItem>
-        rowKey="key"
+        rowKey="id"
         search={false}
         headerTitle={'职务设置'}
         toolBarRender={(action, { selectedRows }) => [
@@ -129,12 +186,12 @@ const Position: React.FC<PositionProps> = (props) => {
         columns={columns}
         loading={loading}
       />
-      <AddModal modalVisible={addMOdalVisible} onCancel={() => setAddModalViaible(false)} />
-      <DeatilsModal modalVisible={deatilsModal} onCancel={() => setDeatilsModal(false)} />
+      <AddModal modalVisible={addModalVisible} onCancel={() => setAddModalViaible(false)} afterClose={reloadValue} />
       <EditModal
-        modalVisible={editMOdalVisible}
+        modalVisible={editModalVisible}
         onCancel={() => setEditModalViaible(false)}
-        formValue={stepFormValues}
+        formValue={rowValue}
+        afterClose={reloadValue}
       />
     </div>
   );
