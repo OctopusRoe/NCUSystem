@@ -1,7 +1,7 @@
 // 基本信息 组件
 import React, { useState, useEffect } from 'react';
 
-import { Button, Input, Form, message, Select, DatePicker, Tooltip, Upload } from 'antd';
+import { Button, Input, Form, Select, DatePicker, Tooltip, Upload } from 'antd';
 import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons'
 import { connect, FormattedMessage, useIntl, Dispatch} from 'umi';
 
@@ -22,6 +22,7 @@ interface BaseInfoProps {
   selectValue: any
   tGUID: string
   dGUID: string
+  reload: number
   dispatch: Dispatch
 }
 
@@ -59,7 +60,8 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     selectValue,
     tGUID,
     dGUID,
-    dispatch 
+    reload,
+    dispatch
   } = props
   
   // 保存指导老师电话
@@ -199,6 +201,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
   return (
     <div className={styles.baseView}>
       <Form
+        key={reload}
         layout={"horizontal"}
         onFinish={handleFinish}
         initialValues={{
@@ -440,6 +443,7 @@ export default connect(
       canDepartmentUse: associationBaseInfo.canDepartmentUse,
       departmentCount: associationBaseInfo.departmentCount,
       baseInfo: global.baseInfo,
+      reload: global.reload,
       selectValue: global.SelectValue,
       tGUID: associationBaseInfo.tGUID,
       dGUID: associationBaseInfo.dGUID

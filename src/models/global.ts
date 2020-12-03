@@ -14,6 +14,8 @@ export interface GlobalModelState {
   token: any
   baseInfo: any
   SelectValue: any
+  userBaseInfo: any
+  reload: number
 }
 
 export interface GlobalModelType {
@@ -25,9 +27,11 @@ export interface GlobalModelType {
     associationInfo: Effect;
   };
   reducers: {
+    reload: Reducer<GlobalModelState>
     handleToken: Reducer<GlobalModelState>
     saveBaseInfo: Reducer<GlobalModelState>
     saveAssociationInfo: Reducer<GlobalModelState>
+    saveUserBaseInfo: Reducer<GlobalModelState>
   };
   subscriptions: { setup: Subscription };
 }
@@ -38,7 +42,9 @@ const GlobalModel: GlobalModelType = {
   state: {
     token: {},
     baseInfo: {},
-    SelectValue: {}
+    SelectValue: {},
+    userBaseInfo: {},
+    reload: 0
   },
 
   effects: {
@@ -66,6 +72,11 @@ const GlobalModel: GlobalModelType = {
       yield put({
         type: 'saveBaseInfo',
         payload: back.data
+      })
+      
+      yield put({
+        type: 'reload',
+        payload: 1
       })
     },
 
@@ -106,7 +117,15 @@ const GlobalModel: GlobalModelType = {
   },
 
   reducers: {
-    handleToken(state, { payload }) {
+    reload (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.reload = payload
+      return {
+        ...newState
+      }
+    },
+    
+    handleToken (state, { payload }) {
       const tokenValue = document.cookie.split(';').filter((item: string) => item.indexOf('NCUAssociation') > -1)
       const newState = JSON.parse(JSON.stringify(state))
       if ( tokenValue.length === 0  ) {
@@ -143,6 +162,14 @@ const GlobalModel: GlobalModelType = {
     saveAssociationInfo (state, { payload }) {
       const newState = JSON.parse(JSON.stringify(state))
       newState.SelectValue = payload
+      return {
+        ...newState
+      }
+    },
+
+    saveUserBaseInfo (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.userBaseInfo = payload
       return {
         ...newState
       }

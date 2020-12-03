@@ -1,6 +1,6 @@
 // 网络平台 组件
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input, Divider, Popconfirm, message,Image } from 'antd';
 import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns } from '@ant-design/pro-table';
@@ -107,6 +107,19 @@ const NewMedia: React.FC<NewMediaProps> = (props) => {
       ),
     },
   ];
+
+  useEffect(() => {
+    dispatch({
+      type: 'associationNewMedia/searchNewMedia',
+      payload: {}
+    })
+
+    return () => {
+      dispatch({
+        type: 'associationNewMedia/cleanState'
+      })
+    }
+  }, [])
 
   //删除成功
   const confirm = () => {

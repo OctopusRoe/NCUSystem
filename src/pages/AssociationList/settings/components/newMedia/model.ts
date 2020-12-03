@@ -4,7 +4,7 @@ import { Reducer, Effect } from 'umi'
 
 import { message } from 'antd'
 
-import {  } from '../../service'
+import { searchNewMedia } from '../../service'
 
 import { NewMediaState } from '../../data'
 
@@ -66,7 +66,7 @@ const newMediaModel: NewMediaType = {
     cleanState () {
 
       const state = {
-        departmentList: [],
+        newMediaList: [],
         count: 0,
         loading: true
       }
@@ -79,6 +79,33 @@ const newMediaModel: NewMediaType = {
   effects: {
     *searchNewMedia ({ payload }, { call, put }) {
 
+      const data = {
+        query: payload.query ? payload.query : '',
+        PageSize: payload.PageSize ? payload.PageSize : 20,
+        PageIndex: payload.PageIndex ? payload.PageIndex : 1
+      }
+
+      const back = yield call(searchNewMedia, data)
+      if (back.code !== 0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      yield put({
+        type: 'saveNewMedia',
+        payload: back.data
+      })
+
+      yield put({
+        type: 'saveCount',
+        payload: back.count
+      })
+      
+      yield put({
+        type: 'loading',
+        payload: false
+      })
     },
 
     *fixNewMedia ({ payload }, { call, put }) {

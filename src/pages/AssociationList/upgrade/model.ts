@@ -1,5 +1,26 @@
-export default {
-  namespace: 'association-upgrade',
+// 升级申请 model
+
+import { Reducer, Effect } from 'umi'
+
+import { message } from 'antd'
+
+import {  } from './service'
+
+import { UpgradeState } from './data.d'
+
+interface UpgradeType {
+  namespace: string
+  state: UpgradeState
+  reducers: {
+
+  },
+  effects: {
+
+  }
+}
+
+const upgradeModel: UpgradeType = {
+  namespace: 'associationUpgrade',
   state: {
     canTeacherUse: true,
     teacherCount: 1,
@@ -23,5 +44,11 @@ export default {
         ...state
       }
     }
+  },
+
+  effects: {
+
   }
 }
+
+export default upgradeModel

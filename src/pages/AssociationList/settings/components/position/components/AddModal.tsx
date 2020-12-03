@@ -1,10 +1,13 @@
-import { Button, DatePicker, Form, Input } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
 import React, { useRef } from 'react';
+import { Button, Form, Input, Select, Modal } from 'antd';
+
+import { connect, Dispatch } from 'umi'
 
 interface AddModalProps {
   modalVisible: boolean;
   onCancel: () => void;
+  afterClose: () => void;
+  dispatch: Dispatch
 }
 
 const layout = {
@@ -12,19 +15,30 @@ const layout = {
   wrapperCol: { span: 17 },
 };
 
-const onFinish = (values: any) => {
-  console.log('Success:', values);
-};
+const { Option } = Select
+const selectValue = [ '1', '0' ]
+
 
 const AddModal: React.FC<AddModalProps> = (props) => {
-  const { modalVisible, onCancel } = props;
 
+  const { modalVisible, onCancel, afterClose, dispatch } = props;
+  
+  
   const button = useRef<HTMLButtonElement>(null);
+  
+  const onFinish = (values: any) => {
+    
+    dispatch({
+      type: 'associationPosition/addPosition',
+      payload: values
+    })
 
-  //modal框确定按钮
-  const okChange = () => {
-    // document.getElementById('add-submit')?.click();
-    button.current?.click();
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000)
+
   };
 
   return (
@@ -34,7 +48,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         title="新增职务"
         visible={modalVisible}
         onCancel={onCancel}
-        onOk={okChange}
+        onOk={() => button.current?.click()}
         okText="确定"
         cancelText="取消"
       >
@@ -46,28 +60,40 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           autoComplete={'off'} //输入框输入记录
         >
           <Form.Item
-            name="positionName"
+            name="name"
             label="职务名称"
             rules={[{ required: true, message: '请输入职务名称' }]}
           >
             <Input placeholder="请输入职务名称" />
           </Form.Item>
           <Form.Item
-            name="communityLeader"
+            name="responsible"
             label="社团负责人"
             rules={[{ required: true, message: '请输入社团负责人' }]}
           >
-            <Input placeholder="请输入社团负责人" />
+            <Select placeholder={'请选择'} >
+              {
+                selectValue.map((item: string, index: number) => (
+                  <Option value={item} key={index}>{item === '1' ? '是' : '否'}</Option>
+                ))
+              }
+            </Select>
           </Form.Item>
           <Form.Item
-            name="communityBackbone"
+            name="backbone"
             label="社团骨干"
             rules={[{ required: true, message: '请输入社团骨干' }]}
           >
-            <Input placeholder="请输入社团骨干" />
+            <Select placeholder={'请选择'} >
+              {
+                selectValue.map((item: string, index: number) => (
+                  <Option value={item} key={index}>{item === '1' ? '是' : '否'}</Option>
+                ))
+              }
+            </Select>
           </Form.Item>
           <Form.Item
-            name="number"
+            name="rank"
             label="排序号"
             rules={[{ required: true, message: '请输入排序号' }]}
           >
@@ -83,4 +109,4 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   );
 };
 
-export default AddModal;
+export default connect()(AddModal);
