@@ -46,6 +46,8 @@ const Step3: React.FC<Step2Props> = (props) => {
   if (!data) {
     return null;
   }
+
+  console.log('data3', data);
   const { validateFields, getFieldsValue } = form;
   const onPrev = () => {
     const values = getFieldsValue();
@@ -69,7 +71,7 @@ const Step3: React.FC<Step2Props> = (props) => {
       message.warning('社团成员信息未输入');
     } else {
       const values = await validateFields();
-      console.log(values);
+      console.log('val3', values);
       if (dispatch) {
         dispatch({
           type: 'formAndstepForm/saveStepFormData',
@@ -148,10 +150,7 @@ const Step3: React.FC<Step2Props> = (props) => {
         onFinish={onFinish}
         initialValues={{ teacherName: teacherValueList, memberName: memberValueList }}
       >
-        <Form.Item
-          label="指导老师"
-          name="teacher"
-        >
+        <Form.Item label="指导老师" name="Instructor">
           <FormListCom
             info={teacherInfo}
             formListName={'teacherName'}
@@ -161,7 +160,7 @@ const Step3: React.FC<Step2Props> = (props) => {
             removeFun={teacherRemove}
           />
         </Form.Item>
-        <Form.Item label="社团成员" name="membe">
+        <Form.Item label="社团成员" name="Members">
           <FormListCom
             info={teacherInfo}
             formListName={'memberName'}

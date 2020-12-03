@@ -8,7 +8,11 @@ import { connect, Dispatch } from 'umi';
 import styles from './index.less';
 import { StateType } from '../../model';
 
-import { StepstateType } from './model'
+import { StepstateType } from './model';
+
+export interface GlobalModelState {
+  baseInfo: any;
+}
 
 interface Step3Props {
   data?: StateType['step'];
@@ -18,6 +22,8 @@ interface Step3Props {
   teacherCount: number;
   canDepartmentUse: boolean;
   departmentCount: number;
+  submitting?: boolean;
+  baseInfo: any;
 }
 
 const formItemLayout = {
@@ -47,11 +53,15 @@ const Step5: React.FC<Step3Props> = (props) => {
     teacherCount,
     canDepartmentUse,
     departmentCount,
+    submitting,
+    baseInfo,
   } = props;
   const [form] = Form.useForm();
   if (!data) {
     return null;
   }
+
+  console.log(baseInfo);
 
   const { getFieldsValue } = form;
 
@@ -146,8 +156,19 @@ const Step5: React.FC<Step3Props> = (props) => {
     }
   }, [departmentCount]);
 
-  const onFinish = (value: any) => {
-    console.log(value);
+  const onFinish = (value: any) => {};
+  const { validateFields } = form;
+  const onValidateForm = async () => {
+    const values = await validateFields();
+    if (dispatch) {
+      dispatch({
+        type: 'formAndstepForm/submitStepForm',
+        payload: {
+          ...data,
+          ...values,
+        },
+      });
+    }
   };
 
   return (
@@ -159,6 +180,7 @@ const Step5: React.FC<Step3Props> = (props) => {
         onFinish={onFinish}
         className={styles.stepForm}
         hideRequiredMark
+        initialValues={data}
       >
         <Form.Item label="材料清单">
           <Button>
@@ -168,10 +190,10 @@ const Step5: React.FC<Step3Props> = (props) => {
         </Form.Item>
         <Form.Item
           label="拍照上传"
-          name="positive"
+          name="Front"
           rules={[{ required: true, message: '请上传申请材料正面' }]}
         >
-          <ApplyUploadView id="positive" imgTip="正面" />
+          <ApplyUploadView id="Front" imgTip="正面" />
         </Form.Item>
         <Form.Item
           wrapperCol={{
@@ -181,28 +203,28 @@ const Step5: React.FC<Step3Props> = (props) => {
               offset: formItemLayout.labelCol.span,
             },
           }}
-          name="reverse"
+          name="Opposite"
           rules={[{ required: true, message: '请上传申请材料反面' }]}
         >
-          <ApplyUploadView id="reverse" imgTip="反面" />
+          <ApplyUploadView id="Opposite" imgTip="反面" />
         </Form.Item>
         <Form.Item {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px' }}>
           <Input.Group compact>
             <Form.Item
-              name={'teacherPhone'}
+              name={'TeacherGuid'}
               style={{ display: 'inline-block', width: '25%' }}
               rules={[{ required: true, message: '请选择指导老师!' }]}
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
-                {teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
+                {baseInfo.instructorInfo.map((item: any) => (
+                  <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
             <Form.Item
-              name={'teacherCode'}
+              name={'TeacherCode'}
               style={{ display: 'inline-block', width: '50%' }}
               rules={[{ required: true, message: '请输入手机验证码!' }]}
             >
@@ -221,20 +243,20 @@ const Step5: React.FC<Step3Props> = (props) => {
         <Form.Item {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px' }}>
           <Input.Group compact>
             <Form.Item
-              name={'departmentPhone'}
+              name={'DepartmentGuid'}
               style={{ display: 'inline-block', width: '25%' }}
               rules={[{ required: true, message: '请选择指导部门!' }]}
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-                {teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
+                {baseInfo.instructorInfo.map((item: any) => (
+                  <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
             <Form.Item
-              name={'departmentCode'}
+              name={'DepartmentCode'}
               style={{ display: 'inline-block', width: '50%' }}
               rules={[{ required: true, message: '请输入手机验证码!' }]}
             >
@@ -259,7 +281,7 @@ const Step5: React.FC<Step3Props> = (props) => {
             },
           }}
         >
-          <Button type="primary" htmlType={'submit'}>
+          <Button type="primary" htmlType={'submit'} onClick={onValidateForm} loading={submitting}>
             提 交
           </Button>
           <Button onClick={onPrev} style={{ marginLeft: 8 }}>
@@ -271,10 +293,21 @@ const Step5: React.FC<Step3Props> = (props) => {
   );
 };
 
-export default connect(({ formAndstepForm, applyStep5 }: { formAndstepForm: StateType, applyStep5: StepstateType }) => ({
-  data: formAndstepForm.step,
-  canTeacherUse: applyStep5.canTeacherUse,
-  teacherCount: applyStep5.teacherCount,
-  canDepartmentUse: applyStep5.canDepartmentUse,
-  departmentCount: applyStep5.departmentCount,
-}))(Step5);
+export default connect(
+  ({
+    formAndstepForm,
+    applyStep5,
+    global,
+  }: {
+    formAndstepForm: StateType;
+    applyStep5: StepstateType;
+    global: GlobalModelState;
+  }) => ({
+    data: formAndstepForm.step,
+    canTeacherUse: applyStep5.canTeacherUse,
+    teacherCount: applyStep5.teacherCount,
+    canDepartmentUse: applyStep5.canDepartmentUse,
+    departmentCount: applyStep5.departmentCount,
+    baseInfo: global.baseInfo,
+  }),
+)(Step5);

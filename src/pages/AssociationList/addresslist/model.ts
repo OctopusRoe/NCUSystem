@@ -1,34 +1,32 @@
-// 成员管理组件 model
+// 社团通讯录 model
 
 import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd';
 
-import { searchMember, downLoadMember, memberUpdata, deleteMember } from './service';
+import { searchAddreList, downLoadAddressList } from './service';
 
-import { MemberState } from './data';
+import { AddressListState } from './data';
 
-export interface MemberModelProps {
+export interface DepartmentType {
   namespace: string;
-  state: MemberState;
+  state: AddressListState;
   reducers: {
-    saveCount: Reducer<MemberState>;
-    saveMember: Reducer<MemberState>;
-    loading: Reducer<MemberState>;
-    cleanState: Reducer<MemberState>;
+    saveCount: Reducer<AddressListState>;
+    saveAddressList: Reducer<AddressListState>;
+    loading: Reducer<AddressListState>;
+    cleanState: Reducer<AddressListState>;
   };
   effects: {
-    searchMember: Effect;
+    searchAddressList: Effect;
     downLoad: Effect;
-    memberUpdata: Effect;
-    deleteMember: Effect;
   };
 }
 
-const memberModel: MemberModelProps = {
-  namespace: 'associationMember',
+const addressListModel: DepartmentType = {
+  namespace: 'communityAddressList',
   state: {
-    memberList: [],
+    addressList: [],
     count: 0,
     loading: true,
   },
@@ -42,9 +40,9 @@ const memberModel: MemberModelProps = {
       };
     },
 
-    saveMember(state, { payload }) {
+    saveAddressList(state, { payload }) {
       const newState = JSON.parse(JSON.stringify(state));
-      newState.memberList = payload;
+      newState.departmentList = payload;
 
       return {
         ...newState,
@@ -62,7 +60,7 @@ const memberModel: MemberModelProps = {
 
     cleanState() {
       const state = {
-        memberList: [],
+        departmentList: [],
         count: 0,
         loading: true,
       };
@@ -73,21 +71,24 @@ const memberModel: MemberModelProps = {
     },
   },
   effects: {
-    *searchMember({ payload }, { call, put }) {
+    *searchAddressList({ payload }, { call, put }) {
       const params = {
-        name: payload.name,
-        session: payload.session,
+        Phone: payload.Phone ? payload.Phone : '',
+        Name: payload.Name ? payload.Name : '',
+        PresonId: payload.PersonId ? payload.PersonId : '',
         PageSize: payload.PageSize ? payload.PageSize : 20,
         PageIndex: payload.PageIndex ? payload.PageIndex : 1,
       };
-      const back = yield call(searchMember, params);
+
+      const back = yield call(searchAddreList, params);
       if (back.code !== 0) {
         message.error(back.msg);
         console.error(back.msg);
         return;
       }
+
       yield put({
-        type: 'saveMember',
+        type: 'saveAddressList',
         payload: back.data,
       });
 
@@ -104,11 +105,11 @@ const memberModel: MemberModelProps = {
 
     *downLoad({ payload }, { call }) {
       const params = {
-        PresonId: payload.id,
+        PersonId: payload.id,
       };
       console.log(params);
 
-      const back = yield call(downLoadMember, params);
+      const back = yield call(downLoadAddressList, params);
       if (back.code && back.code !== 0) {
         message.error(back.msg);
         console.error(back.msg);
@@ -119,44 +120,13 @@ const memberModel: MemberModelProps = {
       const reader = new FileReader();
       reader.readAsDataURL(back);
       reader.onload = (e) => {
-        a.download = '社团成员列表';
+        a.download = '社团通讯录';
         a.href = e.target?.result as string;
         a.click();
         a.remove();
       };
     },
-
-    *memberUpdata({ payload }, { call }) {
-      const data = new FormData();
-      data.append('edPersonId', payload.personId);
-      data.append('Department', payload.department);
-      data.append('Positioin', payload.position);
-
-      const back = yield call(memberUpdata, data);
-      if (back.code !== 0) {
-        message.error(back.msg);
-        console.error(back.msg);
-        return;
-      }
-
-      message.success('修改成功');
-    },
-
-    *deleteMember({ payload }, { call }) {
-      const params = {
-        dPersonId: payload,
-      };
-
-      const back = yield call(deleteMember, params);
-      if (back.code !== 0) {
-        message.error(back.msg);
-        console.error(back.msg);
-        return;
-      }
-
-      message.success('删除成功');
-    },
   },
 };
 
-export default memberModel;
+export default addressListModel;

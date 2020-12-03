@@ -14,18 +14,30 @@ const formItemLayout = {
   },
 };
 
+export interface GlobalModelState {
+  token: any;
+}
+
 interface Step2Props {
   data?: StateType['step'];
   dispatch?: Dispatch;
   submitting?: boolean;
+  token: any;
 }
 
 const Step2: React.FC<Step2Props> = (props) => {
   const [form] = Form.useForm();
-  const { data, dispatch, submitting } = props;
+  const { data, dispatch, submitting, token } = props;
+  const info = {
+    ...data,
+    ApplicantPersonId: token.personId,
+  };
+
   if (!data) {
     return null;
   }
+
+  console.log('data2', data);
   const { getFieldsValue } = form;
   const onPrev = () => {
     if (dispatch) {
@@ -47,6 +59,8 @@ const Step2: React.FC<Step2Props> = (props) => {
   const { validateFields } = form;
   const onValidateForm = async () => {
     const values = await validateFields();
+
+    console.log('val2', values);
     if (dispatch) {
       dispatch({
         type: 'formAndstepForm/saveStepFormData',
@@ -68,16 +82,17 @@ const Step2: React.FC<Step2Props> = (props) => {
         className={styles.stepForm}
         hideRequiredMark
         autoComplete="off"
+        initialValues={info}
       >
         <Form.Item label="姓名" name="name">
           <Input style={{ width: '50%' }} disabled={true} />
         </Form.Item>
-        <Form.Item label="学号" name="stuid">
+        <Form.Item label="学号" name="ApplicantPersonId">
           <Input style={{ width: '50%' }} disabled={true} />
         </Form.Item>
         <Form.Item
           label="是否挂科"
-          name="test"
+          name="FailSubject"
           rules={[{ required: true, message: '请选择是否挂科' }]}
         >
           <Radio.Group>
@@ -87,14 +102,18 @@ const Step2: React.FC<Step2Props> = (props) => {
         </Form.Item>
         <Form.Item
           label="学习成绩班级排名"
-          name="ranking"
+          name="AchievementRank"
           rules={[{ required: true, message: '请输入学习成绩班级排名' }]}
         >
-          <Input style={{ width: '100px' }} suffix={<div style={{ color: '#bfbfbf' }}>%</div>} />
+          <Input
+            style={{ width: '100px' }}
+            type="number"
+            suffix={<div style={{ color: '#bfbfbf' }}>%</div>}
+          />
         </Form.Item>
         <Form.Item
           label="在校期间所获荣誉"
-          name="honor"
+          name="ApplicantHonor"
           rules={[{ required: true, message: '请输入校期间所获荣誉' }]}
         >
           <Input.TextArea rows={4} placeholder="请输入在校期间所获荣誉" />
@@ -124,13 +143,16 @@ export default connect(
   ({
     formAndstepForm,
     loading,
+    global,
   }: {
     formAndstepForm: StateType;
     loading: {
       effects: { [key: string]: boolean };
     };
+    global: GlobalModelState;
   }) => ({
     submitting: loading.effects['formAndstepForm/submitStepForm'],
     data: formAndstepForm.step,
+    token: global.token,
   }),
 )(Step2);

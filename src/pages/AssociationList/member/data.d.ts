@@ -1,4 +1,5 @@
 export interface TableListItem {
+  [x: string]: any;
   key: number;
   disabled?: boolean;
   href: string;

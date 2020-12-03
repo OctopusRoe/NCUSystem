@@ -34,3 +34,21 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+//社团通讯录的 State
+export interface AddressListState {
+  addressList?: {
+    id: string;
+    session: string;
+    name: string;
+    personId: string;
+    college: string;
+    qq: string;
+    phone: string;
+    position: string;
+    department: string;
+    class: string;
+  }[];
+  count: number;
+  loading: boolean;
+}

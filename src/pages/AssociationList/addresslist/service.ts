@@ -1,38 +1,29 @@
 import request from 'umi-request';
-import { TableListParams } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
-    params,
+// 获取全局公共URL的函数
+import getPort from '@/services/global';
+
+// 社团管理 社团通讯录 获取列表
+export async function searchAddreList(params: {
+  PresonId?: string;
+  Name?: string;
+  DepartmentId?: string;
+  Phone?: string;
+  PageSize: number;
+  PageIndex: number;
+}) {
+  return request.get(getPort('communityguidancemember/queryaddressbook'), {
+    params: params,
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
+// 社团管理 社团通讯录 导出
+export async function downLoadAddressList(params: { PersonId: string }) {
+  return request.get(getPort('communityguidancemember/exportaddressbook'), {
+    headers: {
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
-  });
-}
-
-export async function addRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
+    responseType: 'blob',
+    params: params,
   });
 }

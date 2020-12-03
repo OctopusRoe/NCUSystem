@@ -80,7 +80,7 @@ const messageModel: MessageType = {
         payload: back.data,
       });
       yield put({
-        type: 'savecount',
+        type: 'saveCount',
         payload: back.count,
       });
       yield put({

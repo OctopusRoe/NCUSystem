@@ -1,25 +1,34 @@
 // 社团通讯录 组件
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-
-import { TableListItem } from './data.d';
-import { queryRule } from './service';
-import { Button } from 'antd';
+import { TableListItem, AddressListState } from './data.d';
+import { Button, Input } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import { connect, Dispatch } from 'umi';
+import DetailsModal from '@/components/DetailsModal/DetailsModal';
+import { PaginationProps } from 'antd/lib/pagination';
 
-import DetailsModal from '@/components/DetailsModal/DetailsModal'
+export interface GlobalModelState {
+  token: any;
+}
+interface AddressListProps {
+  count: number;
+  dataSorce: any;
+  loading: boolean;
+  dispatch: Dispatch;
+  token: any;
+}
 
-const RecruitmentSquareCom: React.FC<{}> = () => {
-
-  const [visible, setVisible] = useState<boolean>(false)
-
+const RecruitmentSquareCom: React.FC<AddressListProps> = (props) => {
+  const [visible, setVisible] = useState<boolean>(false);
+  const { count, dataSorce, loading, dispatch, token } = props;
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '届数',
-      dataIndex: 'numberOf',
-      key: 'numberOf',
+      dataIndex: 'session',
+      key: 'session',
       hideInSearch: true,
     },
     {
@@ -27,14 +36,29 @@ const RecruitmentSquareCom: React.FC<{}> = () => {
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => {
-        return (<Button type={'link'} size={'small'} onClick={()=>{setVisible(true)}}>{text}</Button>)
-      }
+        return (
+          <Button
+            type={'link'}
+            size={'small'}
+            onClick={() => {
+              setVisible(true);
+            }}
+          >
+            {text}
+          </Button>
+        );
+      },
+      renderFormItem: () => {
+        return <Input autoComplete={'off'} placeholder={'请输入姓名'} />;
+      },
     },
     {
       title: '学号',
-      dataIndex: 'studentID',
-      key: 'studentID',
-      hideInSearch: true,
+      dataIndex: 'personId',
+      key: 'personId',
+      renderFormItem: () => {
+        return <Input autoComplete={'off'} placeholder={'请输入学号'} />;
+      },
     },
     {
       title: '学院',
@@ -52,14 +76,7 @@ const RecruitmentSquareCom: React.FC<{}> = () => {
       title: '部门',
       dataIndex: 'department',
       key: 'department',
-      valueEnum: {
-        0: {text: '部门1'},
-        1: {text: '部门2'},
-        2: {text: '部门3'},
-        3: {text: '部门4'},
-        4: {text: '部门5'},
-        5: {text: '部门6'}
-      }
+      hideInSearch: true,
     },
     {
       title: '职务',
@@ -71,32 +88,132 @@ const RecruitmentSquareCom: React.FC<{}> = () => {
       title: '手机号',
       dataIndex: 'phone',
       key: 'phone',
+      renderFormItem: () => {
+        return <Input autoComplete={'off'} placeholder={'请输入手机号'} />;
+      },
     },
     {
       title: 'QQ号',
-      dataIndex: 'QQ',
-      key: 'QQ',
-      hideInSearch: true
-    }
+      dataIndex: 'qq',
+      key: 'qq',
+      hideInSearch: true,
+    },
   ];
+
+  //导出
+  const downLoad = () => {
+    const data = {
+      id: token.personId,
+    };
+    dispatch({
+      type: 'communityAddressList/downLoad',
+      payload: data,
+    });
+  };
+
+  // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current,
+    };
+    dispatch({
+      type: 'communityAddressList/searchAddressList',
+      payload: data,
+    });
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'communityAddressList/loading',
+      payload: true,
+    });
+  };
+
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'communityAddressList/searchAddressList',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'communityAddressList/loading',
+      payload: true,
+    });
+  };
+
+  useEffect(() => {
+    dispatch({
+      type: 'communityAddressList/searchAddressList',
+      payload: {},
+    });
+    // 退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'communityAddressList/cleanState',
+      });
+    };
+  }, []);
 
   return (
     <div>
       <ProTable<TableListItem>
         headerTitle="团员列表"
         actionRef={actionRef}
-        rowKey="key"
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        rowKey="id"
+        dataSource={dataSorce}
+        pagination={{ total: count }}
+        onChange={onChange}
         columns={columns}
+        loading={loading}
         toolBarRender={(_action, { selectedRows }) => [
-          <Button type="default">
+          <Button type="default" onClick={downLoad}>
             <DownloadOutlined /> 导出
-          </Button>
-          ]}
+          </Button>,
+        ]}
+        onSubmit={(params: any) => {
+          const data = {
+            Name: params.name,
+            Phone: params.phone,
+            PersonId: params.personId,
+          };
+          dispatch({
+            type: 'communityAddressList/searchAddressList',
+            payload: data,
+          });
+
+          // 修改 table 的 loading 值
+          dispatch({
+            type: 'communityAddressList/loading',
+            payload: true,
+          });
+        }}
+        onReset={reloadValue}
       />
-      <DetailsModal modalVisible={visible} onCancel={()=>{setVisible(false)}} />
+      <DetailsModal
+        modalVisible={visible}
+        onCancel={() => {
+          setVisible(false);
+        }}
+      />
     </div>
   );
 };
 
-export default RecruitmentSquareCom;
+export default connect(
+  ({
+    communityAddressList,
+    global,
+  }: {
+    communityAddressList: AddressListState;
+    global: GlobalModelState;
+  }) => {
+    return {
+      count: communityAddressList.count,
+      dataSorce: communityAddressList.addressList,
+      loading: communityAddressList.loading,
+      token: global.token,
+    };
+  },
+)(RecruitmentSquareCom);

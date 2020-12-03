@@ -1,21 +1,34 @@
 // 成员管理 页面
-
-import { Button, Divider, Input, message, Popconfirm } from 'antd';
-
-import React, { useRef, useState } from 'react';
-import { TableListItem } from './data';
+import { Button, Divider, Input, message, Popconfirm, Select } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { TableListItem, MemberState } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
 import EditModal from './components/editModal';
 import AddForm from './components/addForm';
 import CopyMember from './components/copyMember';
-import { render } from 'bizcharts/lib/g-components';
+import { connect, Dispatch } from 'umi';
+import { PaginationProps } from 'antd/lib/pagination';
 
-const MemberCom: React.FC<{}> = () => {
+interface MemberProps {
+  count: number;
+  dataSorce: any;
+  loading: boolean;
+  dispatch: Dispatch;
+  token: any;
+}
+
+export interface GlobalModelState {
+  token: any;
+}
+const { Option } = Select;
+
+const MemberCom: React.FC<MemberProps> = (props) => {
   message.config({
     maxCount: 1,
   });
+  const { count, dataSorce, loading, dispatch, token } = props;
 
   const actionRef = useRef<ActionType>();
 
@@ -40,14 +53,20 @@ const MemberCom: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '届数',
-      dataIndex: 'period',
-      key: 'period',
+      dataIndex: 'session',
+      key: 'session',
       fixed: 'left',
-      valueEnum: {
-        0: { text: 'A', status: 'a' },
-        1: { text: 'B', status: 'b' },
-        2: { text: 'C', status: 'c' },
-        3: { text: 'D', status: 'd' },
+      renderFormItem: () => {
+        return (
+          <Select placeholder="请选择届数">
+            <Option value="2020">2020</Option>
+            <Option value="2019">2019</Option>
+            <Option value="2018">2018</Option>
+            <Option value="2017">2017</Option>
+            <Option value="2016">2016</Option>
+            <Option value="2015">2015</Option>
+          </Select>
+        );
       },
     },
     {
@@ -63,22 +82,20 @@ const MemberCom: React.FC<{}> = () => {
         );
       },
       renderFormItem: () => {
-        return (
-          <Input autoComplete={'off'} placeholder={'123'} />
-        )
-      }
+        return <Input autoComplete={'off'} placeholder={'请输入姓名'} />;
+      },
     },
     {
       title: '学号',
-      dataIndex: 'stuid',
-      key: 'stuid',
+      dataIndex: 'personId',
+      key: 'personId',
       fixed: 'left',
       hideInSearch: true,
     },
     {
       title: '性别',
-      dataIndex: 'sex',
-      key: 'sex',
+      dataIndex: 'gender',
+      key: 'gender',
       hideInSearch: true,
     },
     {
@@ -122,7 +139,7 @@ const MemberCom: React.FC<{}> = () => {
             编辑
           </a>
           <Divider type="vertical" />
-          <Popconfirm title={'是否要删除?'} onCancel={cancel} onConfirm={confirm}>
+          <Popconfirm title={'是否要删除?'} onConfirm={() => confirm(record.personId)}>
             <a>删除</a>
           </Popconfirm>
         </>
@@ -130,18 +147,28 @@ const MemberCom: React.FC<{}> = () => {
     },
   ];
 
-  //取消删除
-  const cancel = () => {
-    message.error('取消删除');
-  };
-
   //删除成功
-  const confirm = () => {
-    message.success('删除成功');
+  const confirm = (id: string) => {
+    dispatch({
+      type: 'associationMember/deleteMember',
+      payload: id,
+    });
+
+    setTimeout(() => {
+      reloadValue();
+    }, 0.5 * 1000);
   };
 
   // 导出方法
   const Download = (selectedRows: any) => {
+    const data = {
+      id: token.personId,
+    };
+    dispatch({
+      type: 'associationMember/downLoad',
+      payload: data,
+    });
+
     if (selectedRows && selectedRows.length > 0) {
       message.success({
         content: '已下载选中条目',
@@ -164,17 +191,58 @@ const MemberCom: React.FC<{}> = () => {
     });
   };
 
+  useEffect(() => {
+    dispatch({
+      type: 'associationMember/searchMember',
+      payload: {},
+    });
+
+    // 退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'associationMember/cleanState',
+      });
+    };
+  }, []);
+
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'associationMember/searchMember',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'associationMember/loading',
+      payload: true,
+    });
+  };
+
+  // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current,
+    };
+    dispatch({
+      type: 'associationMember/searchMember',
+      payload: data,
+    });
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'associationMember/loading',
+      payload: true,
+    });
+  };
+
   return (
     <>
       <ProTable<TableListItem>
         headerTitle="成员列表"
         actionRef={actionRef}
-        rowKey="key"
-        // rowClassName={(record, index) => {
-        //   let className = 'light-row';
-        //   if (index % 2 === 1) className = 'dark-row';
-        //   return className;
-        // }}
+        rowKey="id"
         toolBarRender={(_action, { selectedRows }) => [
           <Button type={'primary'} onClick={() => setAddVisible(true)}>
             <PlusOutlined /> 添加
@@ -198,11 +266,28 @@ const MemberCom: React.FC<{}> = () => {
             <DownloadOutlined /> {selectedRows && selectedRows.length > 0 ? '导出选中' : '导出全部'}
           </Button>,
         ]}
+        dataSource={dataSorce}
+        pagination={{ total: count }}
+        onChange={onChange}
         columns={columns}
-        onSubmit={(params) => {
-          console.log(params)
+        loading={loading}
+        onSubmit={(params: any) => {
+          const data = {
+            name: params.name,
+            session: params.session,
+          };
+          dispatch({
+            type: 'associationMember/searchMember',
+            payload: data,
+          });
+
+          // 修改 table 的 loading 值
+          dispatch({
+            type: 'associationMember/loading',
+            payload: true,
+          });
         }}
-        onReset={() => {console.log(1)}}
+        onReset={reloadValue}
       />
       <AddForm
         addVisible={addVisible}
@@ -224,9 +309,20 @@ const MemberCom: React.FC<{}> = () => {
         onCancel={() => setEditModalVisible(false)}
         modalVisible={editModalVisible}
         formValue={editValue}
+        afterClose={reloadValue}
+        personId={token.personId}
       />
     </>
   );
 };
 
-export default MemberCom;
+export default connect(
+  ({ associationMember, global }: { associationMember: MemberState; global: GlobalModelState }) => {
+    return {
+      dataSorce: associationMember.memberList,
+      count: associationMember.count,
+      loading: associationMember.loading,
+      token: global.token,
+    };
+  },
+)(MemberCom);

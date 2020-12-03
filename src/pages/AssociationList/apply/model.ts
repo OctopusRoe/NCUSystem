@@ -1,14 +1,30 @@
+import { message } from 'antd';
 import { Effect, Reducer } from 'umi';
 
-import { fakeSubmitForm } from './service'
+import { registerApply } from './service';
 
 export interface StateType {
   current?: string;
   step?: {
-    payAccount: string;
-    receiverAccount: string;
-    receiverName: string;
-    amount: string;
+    NameZh: string;
+    NameEn: string;
+    Category: any; //number
+    Level: any; //number
+    OrganizationId: any; //number
+    ApplicantPersonId: string;
+    PersonNum: string;
+    Constitution: string;
+    FailSubject: any; //boolean
+    AchievementRank: any; //number
+    ApplicantHonor: string;
+    Instructor: [];
+    Members: [];
+    Front: string;
+    Opposite: string;
+    TeacherGuid: string;
+    TeacherCode: string;
+    DepartmentGuid: string;
+    DepartmentCode: string;
   };
 }
 
@@ -30,23 +46,63 @@ const Model: ModelType = {
   state: {
     current: 'info',
     step: {
-      payAccount: 'ant-design@alipay.com',
-      receiverAccount: 'test@example.com',
-      receiverName: 'Alex',
-      amount: '500',
+      NameZh: '',
+      NameEn: '',
+      Category: '',
+      Level: '',
+      OrganizationId: '',
+      ApplicantPersonId: '',
+      PersonNum: '',
+      Constitution: '',
+      FailSubject: '',
+      AchievementRank: '',
+      ApplicantHonor: '',
+      Instructor: [],
+      Members: [],
+      Front: '',
+      Opposite: '',
+      TeacherGuid: '',
+      TeacherCode: '',
+      DepartmentGuid: '',
+      DepartmentCode: '',
     },
   },
-
+  //originFileObj
   effects: {
     *submitStepForm({ payload }, { call, put }) {
-      yield call(fakeSubmitForm, payload);
+      console.log(payload);
+      const formData = new FormData();
+      formData.append('NameZh', payload.NameZh);
+      formData.append('NameEn', payload.NameEn);
+      formData.append('Category', payload.Category);
+      formData.append('Level', payload.Level);
+      formData.append('OrganizationId', payload.OrganizationId);
+      formData.append('ApplicantPersonId', payload.ApplicantPersonId);
+      formData.append('PersonNum', payload.PersonNum);
+      formData.append('Constitution', payload.Constitution.file);
+      formData.append('FailSubject', payload.FailSubject);
+      formData.append('AchievementRank', payload.AchievementRank);
+      formData.append('ApplicantHonor', payload.ApplicantHonor);
+      formData.append('Instructor', payload.teacherName.one);
+      formData.append('Members', payload.memberName.one);
+      formData.append('Front', payload.Front.originFileObj);
+      formData.append('Opposite', payload.Opposite.originFileObj);
+      formData.append('TeacherGuid', payload.TeacherGuid);
+      formData.append('TeacherCode', payload.TeacherCode);
+      formData.append('DepartmentGuid', payload.DepartmentGuid);
+      formData.append('DepartmentCode', payload.DepartmentCode);
+
+
+      const back = yield call(registerApply, formData);
+      if (back.code !== 0) {
+        message.error(back.msg);
+        console.error(back.msg);
+        return;
+      }
+      message.success(back.msg);
       yield put({
         type: 'saveStepFormData',
         payload,
-      });
-      yield put({
-        type: 'saveCurrentStep',
-        payload: 'result',
       });
     },
   },

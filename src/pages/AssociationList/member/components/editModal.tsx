@@ -1,34 +1,67 @@
 //编辑成员  组件
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, Select } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
+import { connect, Dispatch } from 'umi';
+import React, { useEffect, useRef } from 'react';
 
-import React, { useRef } from 'react';
+export interface DepartmentPositionState {
+  department: any;
+  position: any;
+}
 
 interface EditModalProps {
   modalVisible: boolean;
   onCancel: () => void;
-  formValue: { position: string; department: string; name: string };
+  formValue: any;
+  afterClose: () => void;
+  dispatch: Dispatch;
+  personId: string;
 }
 
 const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 17 },
 };
-
-const onFinish = (values: any) => {
-  console.log('Success:', values);
-};
-
+const { Option } = Select;
 const EditModal: React.FC<EditModalProps> = (props) => {
-  const { modalVisible, onCancel, formValue } = props;
+  const { modalVisible, onCancel, formValue, dispatch, afterClose } = props;
 
   const button = useRef<HTMLButtonElement>(null);
 
   //modal框确定按钮
   const okChange = () => {
-    console.log(formValue);
     // document.getElementById('add-submit')?.click();
     button.current?.click();
+  };
+
+  useEffect(() => {
+    //获取部门列表
+    // dispatch({
+    //   type: 'communityAddressList/searchAddressList',
+    //   payload: {},
+    // });
+    //获取职务列表
+    // dispatch({
+    //   type: 'communityAddressList/searchAddressList',
+    //   payload: {},
+    // });
+  }, []);
+
+  const onFinish = (values: any) => {
+    const data = {
+      personId: formValue.personId,
+      ...values,
+    };
+    dispatch({
+      type: 'associationMember/memberUpdata',
+      payload: data,
+    });
+
+    onCancel();
+
+    setTimeout(() => {
+      afterClose();
+    }, 0.5 * 1000);
   };
 
   return (
@@ -58,7 +91,15 @@ const EditModal: React.FC<EditModalProps> = (props) => {
             label="部门"
             rules={[{ required: true, message: '请输入部门' }]}
           >
-            <Input placeholder="请输入部门" />
+            <Input placeholder="请输入部门名称" />
+            {/* <Select placeholder="请选择部门">
+              <Option value="2020">2020</Option>
+              <Option value="2019">2019</Option>
+              <Option value="2018">2018</Option>
+              <Option value="2017">2017</Option>
+              <Option value="2016">2016</Option>
+              <Option value="2015">2015</Option>
+            </Select> */}
           </Form.Item>
 
           <Form.Item
@@ -77,4 +118,4 @@ const EditModal: React.FC<EditModalProps> = (props) => {
   );
 };
 
-export default EditModal;
+export default connect()(EditModal);

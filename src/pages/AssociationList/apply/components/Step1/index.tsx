@@ -22,16 +22,23 @@ interface Step1Props {
   dispatch?: Dispatch;
 }
 
-const validateMessages = {
-  // required: '${label} is required!',
-  types: {
-    email: '${label} is not validate email!',
-    number: '${label}应为数字!',
-  },
-  number: {
-    range: '${label} 必须在 ${min} 到 ${max}之间',
-  },
-};
+const typeValue = [
+  { id: 1, value: '文化体育类' },
+  { id: 2, value: '学术科技类' },
+  { id: 3, value: '创新创业类' },
+];
+
+const levelValue = [
+  { id: 1, value: '文化体育类' },
+  { id: 2, value: '学术科技类' },
+  { id: 3, value: '创新创业类' },
+];
+
+const unitValue = [
+  { id: 1, value: '文化体育类' },
+  { id: 2, value: '学术科技类' },
+  { id: 3, value: '创新创业类' },
+];
 
 const Step1: React.FC<Step1Props> = (props) => {
   const { dispatch, data } = props;
@@ -41,9 +48,14 @@ const Step1: React.FC<Step1Props> = (props) => {
   if (!data) {
     return null;
   }
+
+  console.log('data1', data);
+
   const { validateFields } = form;
   const onValidateForm = async () => {
     const values = await validateFields();
+    console.log('val1', values);
+
     if (dispatch) {
       dispatch({
         type: 'formAndstepForm/saveStepFormData',
@@ -56,19 +68,6 @@ const Step1: React.FC<Step1Props> = (props) => {
     }
   };
 
-  const typeValue = [
-    '文化体育类',
-    '学术科技类',
-    '志愿公益类',
-    '创新创业类',
-    '思想政治类',
-    '自律互助类',
-    '其他类',
-  ];
-
-  const levelValue = ['一级社团', '二级社团', '三级社团'];
-
-  const unitValue = ['指导部门1', '指导部门2', '指导部门3', '指导部门'];
   return (
     <>
       <Form
@@ -78,60 +77,57 @@ const Step1: React.FC<Step1Props> = (props) => {
         className={styles.stepForm}
         hideRequiredMark
         autoComplete="off"
-        validateMessages={validateMessages}
+        initialValues={data}
       >
         <Form.Item
           label="社团中文全称"
-          name="chineseName"
+          name="NameZh"
           rules={[{ required: true, message: '请输入社团全称' }]}
         >
           <Input placeholder="请输入社团全称" />
         </Form.Item>
         <Form.Item
           label="社团英文全称"
-          name="englishName"
+          name="NameEn"
           rules={[{ required: true, message: '请输入社团英文全称' }]}
         >
           <Input placeholder="请输入社团英文全称" />
         </Form.Item>
         <Form.Item
           label="社团类别"
-          name="communityCategory"
+          name="Category"
           rules={[{ required: true, message: '请选择社团类别' }]}
         >
           <Select placeholder="请选择社团类别" style={{ width: '50%' }}>
-            {typeValue.map((item: any, index: any) => (
-              <Option value={item} key={`communityCategory${index}`}>
-                {item}
+            {typeValue.map((item: any) => (
+              <Option value={item.id} key={`communityCategory${item.id}`}>
+                {item.value}
               </Option>
             ))}
           </Select>
         </Form.Item>
         <Form.Item
           label="社团级别"
-          name="communityLevel"
+          name="Level"
           rules={[{ required: true, message: '请选择社团级别' }]}
         >
           <Select placeholder="请选择社团级别" style={{ width: '50%' }}>
-            {levelValue.map((item: any, index: any) => (
-              <Option value={item} key={`communityLevel${index}`}>
-                {item}
+            {levelValue.map((item: any) => (
+              <Option value={item.id} key={`communityLevel${item.id}`}>
+                {item.value}
               </Option>
             ))}
-            <Option value="1">一级社团</Option>
-            <Option value="2">二级社团</Option>
-            <Option value="3">三级社团</Option>
           </Select>
         </Form.Item>
         <Form.Item
           label="业务指导单位"
-          name="guideUnit"
+          name="OrganizationId"
           rules={[{ required: true, message: '请选择业务指导单位' }]}
         >
           <Select placeholder="请选择业务指导单位" style={{ width: '50%' }}>
-            {unitValue.map((item: any, index: any) => (
-              <Option value={item} key={`guideUnit${index}`}>
-                {item}
+            {unitValue.map((item: any) => (
+              <Option value={item.id} key={`guideUnit${item.id}`}>
+                {item.value}
               </Option>
             ))}
           </Select>
@@ -144,7 +140,7 @@ const Step1: React.FC<Step1Props> = (props) => {
               <span style={{ color: '#00000073' }}>（草案）</span>
             </span>
           }
-          name="communityAssociation"
+          name="Constitution"
           rules={[{ required: true, message: '请上传社团章程' }]}
         >
           <Upload showUploadList={false} fileList={uploadFileList}>
@@ -163,10 +159,14 @@ const Step1: React.FC<Step1Props> = (props) => {
               </span>
             </span>
           }
-          name="communityMembers"
+          name="PersonNum"
           rules={[{ required: true, message: '请输入成员数量' }]}
         >
-          <Input style={{ width: '100px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} />
+          <Input
+            type="number"
+            style={{ width: '100px' }}
+            suffix={<div style={{ color: '#bfbfbf' }}>人</div>}
+          />
         </Form.Item>
         <Form.Item
           wrapperCol={{
