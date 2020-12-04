@@ -1,5 +1,5 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Card, Result } from 'antd';
+import { Card, Result } from 'antd';
 import { FormattedMessage, useIntl } from 'umi';
 import React, { Fragment } from 'react';
 
@@ -37,11 +37,11 @@ const Fail: React.FC<SuccessProps> = () => {
           status='warning'
           title={intl.formatMessage({ id: 'resultandfail.error.title' })}
           subTitle={intl.formatMessage({ id: 'resultandfail.error.description' })}
-          extra={
-            <Button type="primary">
-              <FormattedMessage id="resultandfail.error.btn-text" defaultMessage="Return to modify" />
-            </Button>
-          }
+          // extra={
+          //   <Button type="primary">
+          //     <FormattedMessage id="resultandfail.error.btn-text" defaultMessage="Return to modify" />
+          //   </Button>
+          // }
           style={{ marginTop: 48, marginBottom: 16 }}
         >
           {/* {Content} */}

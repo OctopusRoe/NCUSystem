@@ -3,4 +3,6 @@ export interface UpgradeState {
   teacherCount: number;
   canDepartmentUse: boolean;
   departmentCount: number;
+  tGUID: string
+  dGUID: string
 }

@@ -10,8 +10,6 @@ import classNames from 'classnames';
 
 const { Step } = Steps;
 
-
-
 const desc1 = (
   <div className={classNames(styles.textSecondary, styles.stepDescription)}>
     <Fragment>

@@ -18,7 +18,7 @@ interface BaseInfoProps {
   teacherCount: number
   canDepartmentUse: boolean
   departmentCount: number
-  baseInfo: any
+  associationList: any
   selectValue: any
   tGUID: string
   dGUID: string
@@ -56,13 +56,15 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     teacherCount,
     canDepartmentUse,
     departmentCount,
-    baseInfo,
+    associationList,
     selectValue,
     tGUID,
     dGUID,
     reload,
     dispatch
   } = props
+
+  const [ info ] = associationList.filter((item: any) => item.isResponsible)
   
   // 保存指导老师电话
   const [ getTeacher, setGetTeacher ] = useState<string>('')
@@ -154,7 +156,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     console.log(e)
 
     const form = new FormData()
-    form.append('Id', baseInfo.id)
+    form.append('Id', info.id)
     form.append('NameZh', e.nameZh)
     form.append('NameEn', e.nameEn)
     form.append('Category', e.category)
@@ -205,8 +207,8 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         layout={"horizontal"}
         onFinish={handleFinish}
         initialValues={{
-          ...baseInfo,
-          startTime: baseInfo ? moment(baseInfo.setUpDate) : ''
+          ...info,
+          startTime: info ? moment(info.setUpDate) : ''
         }}
         autoComplete={'off'}
         hideRequiredMark
@@ -356,7 +358,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
               {
-                baseInfo.instructorInfo && baseInfo.instructorInfo.map((item: any) => (
+                info && info.instructorInfo.map((item: any) => (
                   <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
@@ -390,7 +392,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
               {
-                baseInfo.instructorInfo && baseInfo.instructorInfo.map((item: any) => (
+                info && info.instructorInfo.map((item: any) => (
                   <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
@@ -442,7 +444,7 @@ export default connect(
       teacherCount: associationBaseInfo.teacherCount,
       canDepartmentUse: associationBaseInfo.canDepartmentUse,
       departmentCount: associationBaseInfo.departmentCount,
-      baseInfo: global.baseInfo,
+      associationList: global.associationList,
       reload: global.reload,
       selectValue: global.SelectValue,
       tGUID: associationBaseInfo.tGUID,

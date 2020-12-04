@@ -14,7 +14,7 @@ export interface GlobalModelState {
   token: any
   baseInfo: any
   SelectValue: any
-  userBaseInfo: any
+  associationList: {}[]
   reload: number
 }
 
@@ -31,7 +31,7 @@ export interface GlobalModelType {
     handleToken: Reducer<GlobalModelState>
     saveBaseInfo: Reducer<GlobalModelState>
     saveAssociationInfo: Reducer<GlobalModelState>
-    saveUserBaseInfo: Reducer<GlobalModelState>
+    saveAssociationList: Reducer<GlobalModelState>
   };
   subscriptions: { setup: Subscription };
 }
@@ -43,11 +43,12 @@ const GlobalModel: GlobalModelType = {
     token: {},
     baseInfo: {},
     SelectValue: {},
-    userBaseInfo: {},
+    associationList: [],
     reload: 0
   },
 
   effects: {
+    // 续期Token
     *renewalToken ({ payload }, { call }) {
 
       const params = {
@@ -61,7 +62,7 @@ const GlobalModel: GlobalModelType = {
         return
       }
     },
-
+    // 获取基本信息
     *baseInfo (_, { call, put }) {
       const back = yield call(getAssociationBaseInfo)
       if (back.code !== 0) {
@@ -71,7 +72,12 @@ const GlobalModel: GlobalModelType = {
       }
       yield put({
         type: 'saveBaseInfo',
-        payload: back.data
+        payload: back.data.personInfo
+      })
+
+      yield put({
+        type: 'saveAssociationList',
+        payload: back.data.communityList
       })
       
       yield put({
@@ -80,6 +86,7 @@ const GlobalModel: GlobalModelType = {
       })
     },
 
+    // 部分下拉列表的信息
     *associationInfo ({ payload }, { call, put }) {
 
       const level = yield call(getAssociationLevel)
@@ -125,6 +132,7 @@ const GlobalModel: GlobalModelType = {
       }
     },
     
+    // 处理储层在本地的token
     handleToken (state, { payload }) {
       const tokenValue = document.cookie.split(';').filter((item: string) => item.indexOf('NCUAssociation') > -1)
       const newState = JSON.parse(JSON.stringify(state))
@@ -167,9 +175,9 @@ const GlobalModel: GlobalModelType = {
       }
     },
 
-    saveUserBaseInfo (state, { payload }) {
+    saveAssociationList (state, { payload }) {
       const newState = JSON.parse(JSON.stringify(state))
-      newState.userBaseInfo = payload
+      newState.associationList = payload
       return {
         ...newState
       }

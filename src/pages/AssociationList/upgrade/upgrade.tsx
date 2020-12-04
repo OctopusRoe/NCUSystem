@@ -7,10 +7,9 @@ import { UploadOutlined } from '@ant-design/icons';
 import Success from './components/success';
 import Fail from './components/fail';
 
-import { ConnectState } from '@/models/connect'
+import { GlobalModelState } from '@/models/global'
 
 import { UpgradeState } from './data'
-import { fromPairs } from 'lodash';
 
 const FormItem = Form.Item;
 
@@ -23,6 +22,11 @@ interface UpgradeProps {
   teacherCount: number
   canDepartmentUse: boolean
   departmentCount: number
+  baseInfo: any
+  associationList: any
+  reload: number
+  tGUID: string
+  dGUID: string
 }
 
 const formItemLayout = {
@@ -46,26 +50,47 @@ const submitFormLayout = {
 
 const Upgrade: FC<UpgradeProps> = (props) => {
 
-  const [form] = Form.useForm()
+  const {
+    canTeacherUse,
+    teacherCount,
+    canDepartmentUse,
+    departmentCount,
+    baseInfo,
+    associationList,
+    reload,
+    tGUID,
+    dGUID,
+    dispatch
+  } = props
 
-  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, dispatch } = props
+  const [ association ] = associationList && associationList.filter((item: any) => item.isResponsible)
+
+  const data = {
+    name: baseInfo.name ? baseInfo.name : '',
+    nameZh: association?.nameZh,
+    categoryName: association?.categoryName,
+    levelName: association?.levelName,
+    guidanceUnitName: association?.guidanceUnitName,
+    personNum: association?.personNum,
+    setUpdate: association?.setUpDate
+  }
 
   const [, setShowPublicUsers] = React.useState(false);
 
   // 保存指导老师电话
-  const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
+  const [ getTeacher, setGetTeacher ] = useState<string>('')
 
   // 保存指导部门电话
-  const [ getDepartmentPhone, setGetDepartmentPhone ] = useState<string>('')
+  const [ getDepartment, setGetDepartment ] = useState<string>('')
 
   // 选择指导老师电话
   const selectTeacher = (e: string) => {
-    setGetTeacherPhone(e)
+    setGetTeacher(e)
   }
 
   // 选择指导部门电话
   const selectDepartment = (e: string) => {
-    setGetDepartmentPhone(e)
+    setGetDepartment(e)
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -80,22 +105,34 @@ const Upgrade: FC<UpgradeProps> = (props) => {
 
   // 老师设置倒计时方法
   const teacherCountDown = () => {
-    if (getTeacherPhone === '') {
+    if (getTeacher === '') {
       return
     }
+
     dispatch({
-      type: 'association-upgrade/setTeacherCount',
+      type: 'associationUpgrade/getTeacherCode',
+      payload: getTeacher
+    })
+
+    dispatch({
+      type: 'associationUpgrade/setTeacherCount',
       payload: [60, false]
     })
   }
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
-    if (getDepartmentPhone === '') {
+    if (getDepartment === '') {
       return
     }
+
     dispatch({
-      type: 'association-upgrade/setDepartmentCount',
+      type: 'associationUpgrade/getDepartmentCode',
+      payload: getTeacher
+    })
+
+    dispatch({
+      type: 'associationUpgrade/setDepartmentCount',
       payload: [60, false]
     })
   }
@@ -105,13 +142,13 @@ const Upgrade: FC<UpgradeProps> = (props) => {
     if (teacherCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'association-upgrade/setTeacherCount',
+          type: 'associationUpgrade/setTeacherCount',
           payload: [teacherCount - 1, false]
         })
       }, 1000)
     } else {
       dispatch({
-        type: 'association-upgrade/setTeacherCount',
+        type: 'associationUpgrade/setTeacherCount',
         payload: [1, true]
       })
     }
@@ -122,17 +159,37 @@ const Upgrade: FC<UpgradeProps> = (props) => {
     if (departmentCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'association-upgrade/setDepartmentCount',
+          type: 'associationUpgrade/setDepartmentCount',
           payload: [departmentCount - 1, false]
         })
       }, 1000)
     } else {
       dispatch({
-        type: 'association-upgrade/setDepartmentCount',
+        type: 'associationUpgrade/setDepartmentCount',
         payload: [1, true]
       })
     }
   }, [departmentCount])
+
+  const onFinish = (e: any) => {
+    console.log(e)
+
+    const data = new FormData()
+    data.append('PersonId', baseInfo.personId)
+    data.append('CommunityId', association.id)
+    data.append('Project', e.file.file.originFileObj)
+    data.append('TeacherPersonId', e.teacher)
+    data.append('TeacherGuid', tGUID)
+    data.append('TeacherCode', e.teacherCode)
+    data.append('DepartmentId', e.department)
+    data.append('DepartmentGuid', dGUID)
+    data.append('DepartmentCode', e.departmentCode)
+
+    dispatch({
+      type: 'associationUpgrade/validationCode',
+      paylaod: data
+    })
+  }
 
   const columns = [
     {
@@ -147,149 +204,157 @@ const Upgrade: FC<UpgradeProps> = (props) => {
     },
   ];
 
-  const teacherValue= [
-    { name: '名字1', phone: '11011211911' },
-    { name: '名字2', phone: '11011211119' },
-  ];
+  if (association && association.isUpgrade) {
+    return <Success />
+  }
 
-  return (
-    <Card>
-      <Form
-        hideRequiredMark
-        style={{ paddingTop: '12px' }}
-        form={form}
-        name="apply"
-        initialValues={{ public: '1' }}
-        onFinishFailed={onFinishFailed}
-        onValuesChange={onValuesChange}
-      >
-        <FormItem {...formItemLayout} label={'申请人：'} name="name">
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'社团名称：'} name="name">
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'社团类别'} name="date">
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'社团级别'} name="goal">
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'指导单位：'} name="name">
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'社团成员数：'} name="name">
-          <Input disabled />
-          {/* <Input style={{ width: '144px' }} suffix={<div style={{ color: '#bfbfbf' }}>人</div>} /> */}
-        </FormItem>
-        <FormItem {...formItemLayout} label={'成立年份：'} name="name">
-          <Input disabled />
-        </FormItem>
-        <FormItem {...formItemLayout} label={'年审情况：'} name="name">
-          <Table columns={columns} bordered size="small" />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'材料上传（精品项目）：'}
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: '请上传材料',
-            },
-          ]}
+  if (association && association.isResponsible) {
+    return (
+      <Card>
+        <Form
+          key={`${reload}apply`}
+          hideRequiredMark
+          style={{ paddingTop: '12px' }}
+          name="apply"
+          initialValues={data}
+          onFinishFailed={onFinishFailed}
+          onValuesChange={onValuesChange}
+          onFinish={onFinish}
+          autoComplete={'off'}
         >
-          <Upload showUploadList={false} fileList={[]}>
-            <Button icon={<UploadOutlined />}>点击上传</Button>
-          </Upload>
-        </FormItem>
-        <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'teacherPhone'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导老师!'}]}
-          >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
+          <FormItem {...formItemLayout} label={'申请人'} name="name">
+            <Input disabled />
+          </FormItem>
+          <FormItem {...formItemLayout} label={'社团名称'} name="nameZh">
+            <Input disabled />
+          </FormItem>
+          <FormItem {...formItemLayout} label={'社团类别'} name="categoryName">
+            <Input disabled />
+          </FormItem>
+          <FormItem {...formItemLayout} label={'社团级别'} name="levelName">
+            <Input disabled />
+          </FormItem>
+          <FormItem {...formItemLayout} label={'指导单位'} name="guidanceUnitName">
+            <Input disabled />
+          </FormItem>
+          <FormItem {...formItemLayout} label={'社团成员数'} name="personNum">
+            <Input disabled />
+          </FormItem>
+          <FormItem {...formItemLayout} label={'成立年份'} name="setUpdate">
+            <Input disabled />
+          </FormItem>
+          <FormItem {...formItemLayout} label={'年审情况'} name="name">
+            <Table columns={columns} bordered size="small" />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'材料上传（精品项目）'}
+            name="file"
+            rules={[
               {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
-                    {item.name}
-                  </Option>
-                ))
-              }
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name={'teacherCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
+                required: true,
+                message: '请上传材料',
+              },
+            ]}
           >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={teacherCountDown}
-            disabled={canTeacherUse ? false : true}
-            type={canTeacherUse ? 'primary' : 'default'}
-          >
-            {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
-      <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'departmentPhone'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导部门!'}]}
-          >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-              {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
-                    {item.name}
-                  </Option>
-                ))
-              }
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name={'departmentCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
-          >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={departmentCountDown}
-            disabled={canDepartmentUse ? false : true}
-            type={canDepartmentUse ? 'primary' : 'default'}
-          >
-            {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
-        <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-          <Button type="primary" htmlType="submit" size={'large'}>
-            提交
-          </Button>
-        </FormItem>
-      </Form>
-      <Success />
-      <Fail />
-    </Card>
-  );
+            <Upload showUploadList={false} fileList={[]}>
+              <Button icon={<UploadOutlined />}>点击上传</Button>
+            </Upload>
+          </FormItem>
+          <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
+          <Input.Group compact>
+            <Form.Item
+              name={'teacher'}
+              style={{display: 'inline-block', width: '25%'}}
+              rules={[{required: true, message: '请选择指导老师!'}]}
+            >
+              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
+                {
+                  association !== null && association.instructorInfo.map((item: any, index: number) => (
+                    <Option value={item.personId} key={item.personId}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name={'teacherCode'}
+              style={{display: 'inline-block', width: '50%'}}
+              rules={[{required: true, message: '请输入手机验证码!'}]}
+            >
+              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
+            <Button
+              style={{width: '25%'}}
+              onClick={teacherCountDown}
+              disabled={canTeacherUse ? false : true}
+              type={canTeacherUse ? 'primary' : 'default'}
+            >
+              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
+            </Button>
+          </Input.Group>
+        </Form.Item>
+        <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
+          <Input.Group compact>
+            <Form.Item
+              name={'departmentCode'}
+              style={{display: 'inline-block', width: '25%'}}
+              rules={[{required: true, message: '请选择指导部门!'}]}
+            >
+              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
+                {
+                  association !== null && association.instructorInfo.map((item: any, index: number) => (
+                    <Option value={item.personId} key={item.personId}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name={'departmentCode'}
+              style={{display: 'inline-block', width: '50%'}}
+              rules={[{required: true, message: '请输入手机验证码!'}]}
+            >
+              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
+            <Button
+              style={{width: '25%'}}
+              onClick={departmentCountDown}
+              disabled={canDepartmentUse ? false : true}
+              type={canDepartmentUse ? 'primary' : 'default'}
+            >
+              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
+            </Button>
+          </Input.Group>
+        </Form.Item>
+          <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+            <Button type="primary" htmlType="submit" size={'large'}>
+              提交
+            </Button>
+          </FormItem>
+        </Form>
+      </Card>
+    );
+  }
+
+  return <Fail />
+
 };
 
 export default connect(
-  ({associationUpgrade, global}: {associationUpgrade: UpgradeState, global: ConnectState})=>{
+  ({associationUpgrade, global}: {associationUpgrade: UpgradeState, global: GlobalModelState})=>{
     return {
       canTeacherUse: associationUpgrade.canTeacherUse,
       teacherCount: associationUpgrade.teacherCount,
       canDepartmentUse: associationUpgrade.canDepartmentUse,
-      departmentCount: associationUpgrade.departmentCount
+      departmentCount: associationUpgrade.departmentCount,
+      baseInfo: global.baseInfo,
+      associationList: global.associationList,
+      reload: global.reload,
+      tGUID: associationUpgrade.tGUID,
+      dGUID: associationUpgrade.dGUID
     }
   }
 )(Upgrade);
