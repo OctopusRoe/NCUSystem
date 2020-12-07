@@ -1,6 +1,6 @@
 import { Button, Form, Input, Radio, Select } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect, Dispatch } from 'umi';
 import { SetClassState } from '../../../SettingList/base/data';
 
@@ -25,12 +25,22 @@ const layout = {
 const { Option } = Select;
 const EditModal: React.FC<AddModalProps> = (props) => {
   const { modalvisible, onCancel, afterClose, dispatch, formValue, classData } = props;
+
+  const classObj = classData.filter((item: any) => item.className === formValue.class)[0];
+
+  const data = {
+    ...formValue,
+    classObj: classObj && classObj.id,
+  };
+
   const onFinish = (values: any) => {
-    values.class = parseInt(values.class);
+    console.log('按钮获取到的1class', values.class);
+
     const data = {
-      id: formValue.id,
       ...values,
+      id: formValue.id,
     };
+
     dispatch({
       type: 'settingPerson/updateUser',
       payload: data,
@@ -47,6 +57,13 @@ const EditModal: React.FC<AddModalProps> = (props) => {
   const okChange = () => {
     document.getElementById('edit-btnok')?.click();
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'baseSetClass/searchClass',
+      payload: {},
+    });
+  }, []);
 
   function onChange(value: any) {
     console.log(`selected ${value}`);
@@ -103,7 +120,7 @@ const EditModal: React.FC<AddModalProps> = (props) => {
         <Form
           {...layout}
           name="edit"
-          initialValues={formValue}
+          initialValues={data}
           onFinish={onFinish}
           hideRequiredMark //去除前面红色*号
           autoComplete={'off'}
@@ -157,7 +174,11 @@ const EditModal: React.FC<AddModalProps> = (props) => {
           >
             <Input placeholder="请输入学院/单位" />
           </Form.Item>
-          <Form.Item name="class" label="班级" rules={[{ required: true, message: '请输入班级' }]}>
+          <Form.Item
+            name="classObj"
+            label="班级"
+            rules={[{ required: true, message: '请输入班级' }]}
+          >
             <Select
               showSearch
               placeholder="请输入班级"

@@ -51,11 +51,30 @@ const Step3: React.FC<Step2Props> = (props) => {
   const { validateFields, getFieldsValue } = form;
   const onPrev = () => {
     const values = getFieldsValue();
+
+    var rows = values.memberName;
+    var members = new Array();
+    for (var i = 0; i < rows.length; i++) {
+      members.push(rows[i].one);
+    }
+
+    var teacher = values.teacherName;
+    var instructor = new Array();
+    for (var i = 0; i < teacher.length; i++) {
+      instructor.push(teacher[i].one);
+    }
+
+    const value = {
+      ...values,
+      Members: members,
+      Instructor: instructor,
+    };
+    
     dispatch({
       type: 'formAndstepForm/saveStepFormData',
       payload: {
         ...data,
-        ...values,
+        ...value,
       },
     });
     dispatch({
@@ -71,11 +90,28 @@ const Step3: React.FC<Step2Props> = (props) => {
       message.warning('社团成员信息未输入');
     } else {
       const values = await validateFields();
-      console.log('val3', values);
+
+      var rows = values.memberName;
+      var members = new Array();
+      for (var i = 0; i < rows.length; i++) {
+        members.push(rows[i].one);
+      }
+
+      var teacher = values.teacherName;
+      var instructor = new Array();
+      for (var i = 0; i < teacher.length; i++) {
+        instructor.push(teacher[i].one);
+      }
+
+      const value = {
+        ...values,
+        Members: members,
+        Instructor: instructor,
+      };
       if (dispatch) {
         dispatch({
           type: 'formAndstepForm/saveStepFormData',
-          payload: values,
+          payload: value,
         });
         dispatch({
           type: 'formAndstepForm/saveCurrentStep',

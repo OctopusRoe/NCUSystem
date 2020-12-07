@@ -217,7 +217,7 @@ const personModel: PersonType = {
         gender: payload.gender,
         phone: payload.phone,
         college: payload.college,
-        class: payload.class,
+        class: payload.classObj,
       };
       const back = yield call(editPerson, data);
       if (back.code !== 0) {

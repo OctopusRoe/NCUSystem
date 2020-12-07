@@ -9,6 +9,14 @@ export interface DepartmentPositionState {
   position: any;
 }
 
+export interface OrganizationState {
+  valueList: any;
+}
+
+export interface AssociationPositionState {
+  positionList?: {}[];
+}
+
 interface EditModalProps {
   modalVisible: boolean;
   onCancel: () => void;
@@ -16,6 +24,8 @@ interface EditModalProps {
   afterClose: () => void;
   dispatch: Dispatch;
   personId: string;
+  valueList: any;
+  positionList: any;
 }
 
 const layout = {
@@ -24,7 +34,37 @@ const layout = {
 };
 const { Option } = Select;
 const EditModal: React.FC<EditModalProps> = (props) => {
-  const { modalVisible, onCancel, formValue, dispatch, afterClose } = props;
+  const {
+    modalVisible,
+    onCancel,
+    formValue,
+    dispatch,
+    afterClose,
+    valueList,
+    positionList,
+  } = props;
+
+  useEffect(() => {
+    //获取部门列表
+    dispatch({
+      type: 'associationOrganization/getOrganization',
+      payload: {},
+    });
+    //获取职务列表
+    dispatch({
+      type: 'associationPosition/searchPosition',
+      payload: {},
+    });
+  }, []);
+
+  const positionObj = positionList.filter((item: any) => item.name === formValue.position)[0];
+  const departmentObj = valueList.filter((item: any) => item.one === formValue.department)[0];
+
+  const data = {
+    ...formValue,
+    positionObj: positionObj && positionObj.id,
+    departmentObj: departmentObj && departmentObj.id,
+  };
 
   const button = useRef<HTMLButtonElement>(null);
 
@@ -34,22 +74,9 @@ const EditModal: React.FC<EditModalProps> = (props) => {
     button.current?.click();
   };
 
-  useEffect(() => {
-    //获取部门列表
-    // dispatch({
-    //   type: 'communityAddressList/searchAddressList',
-    //   payload: {},
-    // });
-    //获取职务列表
-    // dispatch({
-    //   type: 'communityAddressList/searchAddressList',
-    //   payload: {},
-    // });
-  }, []);
-
   const onFinish = (values: any) => {
     const data = {
-      personId: formValue.personId,
+      edPersonId: formValue.personId,
       ...values,
     };
     dispatch({
@@ -79,7 +106,7 @@ const EditModal: React.FC<EditModalProps> = (props) => {
           {...layout}
           name="edit"
           onFinish={onFinish}
-          initialValues={formValue}
+          initialValues={data}
           hideRequiredMark //去除前面红色*号
           autoComplete={'off'} //输入框输入记录
         >
@@ -87,27 +114,33 @@ const EditModal: React.FC<EditModalProps> = (props) => {
             <Input disabled />
           </Form.Item>
           <Form.Item
-            name="department"
+            name="departmentObj"
             label="部门"
             rules={[{ required: true, message: '请输入部门' }]}
           >
-            <Input placeholder="请输入部门名称" />
-            {/* <Select placeholder="请选择部门">
-              <Option value="2020">2020</Option>
-              <Option value="2019">2019</Option>
-              <Option value="2018">2018</Option>
-              <Option value="2017">2017</Option>
-              <Option value="2016">2016</Option>
-              <Option value="2015">2015</Option>
-            </Select> */}
+            <Select placeholder="请选择部门">
+              {valueList &&
+                valueList.map((item: any) => (
+                  <Option value={item.id} key={`department${item.id}`}>
+                    {item.one}
+                  </Option>
+                ))}
+            </Select>
           </Form.Item>
 
           <Form.Item
-            name="position"
+            name="positionObj"
             label="职务"
-            rules={[{ required: true, message: '请输入职务名称' }]}
+            // rules={[{ required: true, message: '请输入职务名称' }]}
           >
-            <Input placeholder="请输入职务名称" />
+            <Select placeholder="请选择职务">
+              {positionList &&
+                positionList.map((item: any) => (
+                  <Option value={item.id} key={`position${item.id}`}>
+                    {item.name}
+                  </Option>
+                ))}
+            </Select>
           </Form.Item>
           <Form.Item style={{ display: 'none' }}>
             <Button type="primary" htmlType="submit" ref={button} />
@@ -118,4 +151,17 @@ const EditModal: React.FC<EditModalProps> = (props) => {
   );
 };
 
-export default connect()(EditModal);
+export default connect(
+  ({
+    associationOrganization,
+    associationPosition,
+  }: {
+    associationOrganization: OrganizationState;
+    associationPosition: AssociationPositionState;
+  }) => {
+    return {
+      valueList: associationOrganization.valueList,
+      positionList: associationPosition.positionList,
+    };
+  },
+)(EditModal);

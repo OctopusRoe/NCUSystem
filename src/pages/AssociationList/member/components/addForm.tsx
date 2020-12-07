@@ -1,13 +1,19 @@
-import React, { useState, useRef, ButtonHTMLAttributes } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import React, { useRef } from 'react';
+import { Modal, Form, Button } from 'antd';
 
-import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom'
+import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
+import { connect, Dispatch } from 'umi';
+
+export interface GlobalModelState {
+  baseInfo: any;
+}
 
 interface AddFormProps {
   addVisible: boolean;
   onCancel: () => void;
-  onBlur: (e: string) => void
-  formValue: {name: string, sex: string, college: string, class: string}
+  baseInfo: any;
+  afterClose: () => void;
+  dispatch: Dispatch;
 }
 
 const formItemLayout = {
@@ -22,103 +28,69 @@ const formItemLayout = {
   },
 };
 
-const FormItem = Form.Item
+const FormItem = Form.Item;
 
 const AddForm: React.FC<AddFormProps> = (props) => {
-
   // input 输入框属性
-  const info: {one: InputInfo, two?: InputInfo, three?: InputInfo} = {
+  const info: { one: InputInfo; two?: InputInfo; three?: InputInfo } = {
     one: {
       message: '请输入新增成员学号!',
       placeHodel: '请输入成员学号',
-    }
-  }
-  
-  const { addVisible, formValue, onBlur, onCancel } = props;
+    },
+  };
 
-  const button = useRef<HTMLButtonElement>(null)
+  const { addVisible, onCancel, baseInfo, dispatch, afterClose } = props;
+
+  const button = useRef<HTMLButtonElement>(null);
 
   const onFinish = (e: any) => {
-    console.log(formValue)
-  }
+    var json = new Array();
+    for (var i = 0; i < e.memberList.length; i++) {
+      json.push(e.memberList[i].one);
+    }
+
+    const data = {
+      communityID: baseInfo.communityList[0].id,
+      memberList: json,
+    };
+
+    dispatch({
+      type: 'associationMember/addMember',
+      payload: data,
+    });
+
+    onCancel();
+
+    setTimeout(() => {
+      afterClose();
+    }, 0.5 * 1000);
+  };
 
   return (
-      <Modal
-        destroyOnClose
-        title="新增成员"
-        visible={addVisible}
-        onCancel={() => onCancel()}
-        onOk={() => button.current?.click()}
-      >
-        <Form
-          onFinish={onFinish}
-          autoComplete={'off'}
-          hideRequiredMark
-        >
-          <FormItem
-            {...formItemLayout}
-            name={'studentID'}
-            label={'学号'}
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: '请输入学号!'
-            //   }
-            // ]}
-          >
-            {/* <Input placeholder={'请输入学号'} onBlur={(e) => onBlur(e.target.value)} /> */}
-            <FormListCom formListName={'memberList'} info={info} showInput={{two: false, three: false}} />
-          </FormItem>
-          {/* <FormItem
-            {...formItemLayout}
-            name={'name'}
-            label={'姓名'}
-          >
-            <div style={{backgroundColor: '#f5f5f5', color: 'rgba(0,0,0,0.25)', width: '100%', marginRight: '8px', height: '32px', border: '1px solid #d9d9d9'}}>
-              <div style={{padding: '4px 11px'}}>
-                {formValue.name ? formValue.name : null}
-              </div>
-            </div>
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            name={'sex'}
-            label={'性别'}
-          >
-            <div style={{backgroundColor: '#f5f5f5', color: 'rgba(0,0,0,0.25)', width: '100%', marginRight: '8px', height: '32px', border: '1px solid #d9d9d9'}}>
-              <div style={{padding: '4px 11px'}}>
-                {formValue.sex ? formValue.sex : null}
-              </div>
-            </div>
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            name={'college'}
-            label={'学院'}
-          >
-            <div style={{backgroundColor: '#f5f5f5', color: 'rgba(0,0,0,0.25)', width: '100%', marginRight: '8px', height: '32px', border: '1px solid #d9d9d9'}}>
-              <div style={{padding: '4px 11px'}}>
-                {formValue.college ? formValue.college : null}
-              </div>
-            </div>
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            name={'class'}
-            label={'班级'}
-          >
-            <div style={{backgroundColor: '#f5f5f5', color: 'rgba(0,0,0,0.25)', width: '100%', marginRight: '8px', height: '32px', border: '1px solid #d9d9d9'}}>
-              <div style={{padding: '4px 11px'}}>
-                {formValue.class ? formValue.class : null}
-              </div>
-            </div>
-          </FormItem> */}
-          <FormItem style={{display: 'none'}}>
-            <Button htmlType={'submit'} ref={button} />
-          </FormItem>
-        </Form>
-      </Modal>
+    <Modal
+      destroyOnClose
+      title="新增成员"
+      visible={addVisible}
+      onCancel={() => onCancel()}
+      onOk={() => button.current?.click()}
+    >
+      <Form onFinish={onFinish} autoComplete={'off'} hideRequiredMark>
+        <FormItem {...formItemLayout} name={'studentID'} label={'学号'}>
+          <FormListCom
+            formListName={'memberList'}
+            info={info}
+            showInput={{ two: false, three: false }}
+          />
+        </FormItem>
+
+        <FormItem style={{ display: 'none' }}>
+          <Button htmlType={'submit'} ref={button} />
+        </FormItem>
+      </Form>
+    </Modal>
   );
 };
 
-export default AddForm;
+export default connect(({ global }: { global: GlobalModelState }) => {
+  return { baseInfo: global.baseInfo };
+})(AddForm);

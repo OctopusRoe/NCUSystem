@@ -25,6 +25,8 @@ const Position: React.FC<PositionProps> = (props) => {
 
   const { dataSorce, count, loading, dispatch } = props
 
+  console.log(dataSorce);
+  
   const [addModalVisible, setAddModalViaible] = useState(false);
   const [editModalVisible, setEditModalViaible] = useState(false);
 

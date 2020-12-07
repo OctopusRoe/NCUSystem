@@ -48,9 +48,9 @@ const Model: ModelType = {
     step: {
       NameZh: '',
       NameEn: '',
-      Category: '',
-      Level: '',
-      OrganizationId: '',
+      Category: undefined,
+      Level: undefined,
+      OrganizationId: undefined,
       ApplicantPersonId: '',
       PersonNum: '',
       Constitution: '',
@@ -67,7 +67,7 @@ const Model: ModelType = {
       DepartmentCode: '',
     },
   },
-  //originFileObj
+
   effects: {
     *submitStepForm({ payload }, { call, put }) {
       console.log(payload);
@@ -83,15 +83,14 @@ const Model: ModelType = {
       formData.append('FailSubject', payload.FailSubject);
       formData.append('AchievementRank', payload.AchievementRank);
       formData.append('ApplicantHonor', payload.ApplicantHonor);
-      formData.append('Instructor', payload.teacherName.one);
-      formData.append('Members', payload.memberName.one);
+      formData.append('Instructor', payload.Instructor);
+      formData.append('Members', payload.Members);
       formData.append('Front', payload.Front.originFileObj);
       formData.append('Opposite', payload.Opposite.originFileObj);
       formData.append('TeacherGuid', payload.TeacherGuid);
       formData.append('TeacherCode', payload.TeacherCode);
       formData.append('DepartmentGuid', payload.DepartmentGuid);
       formData.append('DepartmentCode', payload.DepartmentCode);
-
 
       const back = yield call(registerApply, formData);
       if (back.code !== 0) {

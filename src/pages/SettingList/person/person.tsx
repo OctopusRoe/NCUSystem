@@ -106,6 +106,8 @@ const Person: React.FC<PersonProps> = (props) => {
             onClick={() => {
               setEditmodalVisible(true);
               setRowValue(record);
+              console.log(record);
+              
             }}
           >
             编辑

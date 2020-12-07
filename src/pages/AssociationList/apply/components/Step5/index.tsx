@@ -14,6 +14,15 @@ export interface GlobalModelState {
   baseInfo: any;
 }
 
+export interface BaseInfoState {
+  canTeacherUse: boolean;
+  teacherCount: number;
+  canDepartmentUse: boolean;
+  departmentCount: number;
+  tGUID: string;
+  dGUID: string;
+}
+
 interface Step3Props {
   data?: StateType['step'];
   dispatch: Dispatch;
@@ -24,6 +33,8 @@ interface Step3Props {
   departmentCount: number;
   submitting?: boolean;
   baseInfo: any;
+  tGUID: string;
+  dGUID: string;
 }
 
 const formItemLayout = {
@@ -48,13 +59,14 @@ const Step5: React.FC<Step3Props> = (props) => {
   const {
     data,
     dispatch,
-    formInfo,
     canTeacherUse,
     teacherCount,
     canDepartmentUse,
     departmentCount,
     submitting,
     baseInfo,
+    tGUID,
+    dGUID,
   } = props;
   const [form] = Form.useForm();
   if (!data) {
@@ -82,42 +94,50 @@ const Step5: React.FC<Step3Props> = (props) => {
     }
   };
 
-  const { teacherValue } = formInfo;
-
   // 保存指导老师电话
-  const [getTeacherPhone, setGetTeacherPhone] = useState<string>('');
+  const [getTeacher, setGetTeacher] = useState<string>('');
 
   // 保存指导部门电话
-  const [getDepartmentPhone, setGetDepartmentPhone] = useState<string>('');
+  const [getDepartment, setGetDepartment] = useState<string>('');
 
   // 选择指导老师电话
   const selectTeacher = (e: string) => {
-    setGetTeacherPhone(e);
+    setGetTeacher(e);
   };
 
   // 选择指导部门电话
   const selectDepartment = (e: string) => {
-    setGetDepartmentPhone(e);
+    setGetDepartment(e);
   };
 
   // 老师设置倒计时方法
   const teacherCountDown = () => {
-    if (getTeacherPhone === '') {
+    if (getTeacher === '') {
       return;
     }
     dispatch({
-      type: 'applyStep5/setTeacherCount',
+      type: 'associationBaseInfo/getTeacherCode',
+      payload: getTeacher,
+    });
+
+    dispatch({
+      type: 'associationBaseInfo/setTeacherCount',
       payload: [60, false],
     });
   };
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
-    if (getDepartmentPhone === '') {
+    if (getDepartment === '') {
       return;
     }
     dispatch({
-      type: 'applyStep5/setDepartmentCount',
+      type: 'associationBaseInfo/getDepartmentCode',
+      payload: getDepartment,
+    });
+
+    dispatch({
+      type: 'associationBaseInfo/setDepartmentCount',
       payload: [60, false],
     });
   };
@@ -127,13 +147,13 @@ const Step5: React.FC<Step3Props> = (props) => {
     if (teacherCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'applyStep5/setTeacherCount',
+          type: 'associationBaseInfo/setTeacherCount',
           payload: [teacherCount - 1, false],
         });
       }, 1000);
     } else {
       dispatch({
-        type: 'applyStep5/setTeacherCount',
+        type: 'associationBaseInfo/setTeacherCount',
         payload: [1, true],
       });
     }
@@ -144,13 +164,13 @@ const Step5: React.FC<Step3Props> = (props) => {
     if (departmentCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'applyStep5/setDepartmentCount',
+          type: 'associationBaseInfo/setDepartmentCount',
           payload: [departmentCount - 1, false],
         });
       }, 1000);
     } else {
       dispatch({
-        type: 'applyStep5/setDepartmentCount',
+        type: 'associationBaseInfo/setDepartmentCount',
         payload: [1, true],
       });
     }
@@ -166,6 +186,8 @@ const Step5: React.FC<Step3Props> = (props) => {
         payload: {
           ...data,
           ...values,
+          TeacherGuid: tGUID,
+          DepartmentGuid: dGUID,
         },
       });
     }
@@ -211,12 +233,12 @@ const Step5: React.FC<Step3Props> = (props) => {
         <Form.Item {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px' }}>
           <Input.Group compact>
             <Form.Item
-              name={'TeacherGuid'}
+              name={'Teacher'}
               style={{ display: 'inline-block', width: '25%' }}
               rules={[{ required: true, message: '请选择指导老师!' }]}
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
-                {baseInfo.instructorInfo.map((item: any) => (
+                {baseInfo.communityList[0].instructorInfo.map((item: any) => (
                   <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
@@ -243,12 +265,12 @@ const Step5: React.FC<Step3Props> = (props) => {
         <Form.Item {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px' }}>
           <Input.Group compact>
             <Form.Item
-              name={'DepartmentGuid'}
+              name={'Department'}
               style={{ display: 'inline-block', width: '25%' }}
               rules={[{ required: true, message: '请选择指导部门!' }]}
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-                {baseInfo.instructorInfo.map((item: any) => (
+                {baseInfo.communityList[0].instructorInfo.map((item: any) => (
                   <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
@@ -296,18 +318,21 @@ const Step5: React.FC<Step3Props> = (props) => {
 export default connect(
   ({
     formAndstepForm,
-    applyStep5,
     global,
+    associationBaseInfo,
   }: {
     formAndstepForm: StateType;
     applyStep5: StepstateType;
     global: GlobalModelState;
+    associationBaseInfo: BaseInfoState;
   }) => ({
     data: formAndstepForm.step,
-    canTeacherUse: applyStep5.canTeacherUse,
-    teacherCount: applyStep5.teacherCount,
-    canDepartmentUse: applyStep5.canDepartmentUse,
-    departmentCount: applyStep5.departmentCount,
+    canTeacherUse: associationBaseInfo.canTeacherUse,
+    teacherCount: associationBaseInfo.teacherCount,
+    canDepartmentUse: associationBaseInfo.canDepartmentUse,
+    departmentCount: associationBaseInfo.departmentCount,
     baseInfo: global.baseInfo,
+    tGUID: associationBaseInfo.tGUID,
+    dGUID: associationBaseInfo.dGUID,
   }),
 )(Step5);

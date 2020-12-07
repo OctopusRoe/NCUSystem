@@ -5,6 +5,7 @@ import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
 import styles from './index.less';
 import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { GlobalModelState } from '@/models/global';
 
 const { Option } = Select;
 
@@ -20,28 +21,11 @@ const formItemLayout = {
 interface Step1Props {
   data?: StateType['step'];
   dispatch?: Dispatch;
+  selectValue: any;
 }
 
-const typeValue = [
-  { id: 1, value: '文化体育类' },
-  { id: 2, value: '学术科技类' },
-  { id: 3, value: '创新创业类' },
-];
-
-const levelValue = [
-  { id: 1, value: '文化体育类' },
-  { id: 2, value: '学术科技类' },
-  { id: 3, value: '创新创业类' },
-];
-
-const unitValue = [
-  { id: 1, value: '文化体育类' },
-  { id: 2, value: '学术科技类' },
-  { id: 3, value: '创新创业类' },
-];
-
 const Step1: React.FC<Step1Props> = (props) => {
-  const { dispatch, data } = props;
+  const { dispatch, data, selectValue } = props;
   const [form] = Form.useForm();
   const [uploadFileList] = useState([]);
 
@@ -99,11 +83,12 @@ const Step1: React.FC<Step1Props> = (props) => {
           rules={[{ required: true, message: '请选择社团类别' }]}
         >
           <Select placeholder="请选择社团类别" style={{ width: '50%' }}>
-            {typeValue.map((item: any) => (
-              <Option value={item.id} key={`communityCategory${item.id}`}>
-                {item.value}
-              </Option>
-            ))}
+            {selectValue.type &&
+              selectValue.type.map((item: any) => (
+                <Option value={item.id} key={`communityCategory${item.id}`}>
+                  {item.name}
+                </Option>
+              ))}
           </Select>
         </Form.Item>
         <Form.Item
@@ -111,12 +96,13 @@ const Step1: React.FC<Step1Props> = (props) => {
           name="Level"
           rules={[{ required: true, message: '请选择社团级别' }]}
         >
-          <Select placeholder="请选择社团级别" style={{ width: '50%' }}>
-            {levelValue.map((item: any) => (
-              <Option value={item.id} key={`communityLevel${item.id}`}>
-                {item.value}
-              </Option>
-            ))}
+          <Select style={{ width: '50%' }} placeholder="请选择社团级别">
+            {selectValue.type &&
+              selectValue.level.map((item: any) => (
+                <Option value={item.id} key={`communityLevel${item.id}`}>
+                  {item.name}
+                </Option>
+              ))}
           </Select>
         </Form.Item>
         <Form.Item
@@ -125,11 +111,12 @@ const Step1: React.FC<Step1Props> = (props) => {
           rules={[{ required: true, message: '请选择业务指导单位' }]}
         >
           <Select placeholder="请选择业务指导单位" style={{ width: '50%' }}>
-            {unitValue.map((item: any) => (
-              <Option value={item.id} key={`guideUnit${item.id}`}>
-                {item.value}
-              </Option>
-            ))}
+            {selectValue.type &&
+              selectValue.department.map((item: any) => (
+                <Option value={item.id} key={`guideUnit${item.id}`}>
+                  {item.name}
+                </Option>
+              ))}
           </Select>
         </Form.Item>
 
@@ -165,6 +152,7 @@ const Step1: React.FC<Step1Props> = (props) => {
           <Input
             type="number"
             style={{ width: '100px' }}
+            min={1}
             suffix={<div style={{ color: '#bfbfbf' }}>人</div>}
           />
         </Form.Item>
@@ -186,6 +174,9 @@ const Step1: React.FC<Step1Props> = (props) => {
   );
 };
 
-export default connect(({ formAndstepForm }: { formAndstepForm: StateType }) => ({
-  data: formAndstepForm.step,
-}))(Step1);
+export default connect(
+  ({ formAndstepForm, global }: { formAndstepForm: StateType; global: GlobalModelState }) => ({
+    data: formAndstepForm.step,
+    selectValue: global.SelectValue,
+  }),
+)(Step1);

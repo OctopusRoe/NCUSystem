@@ -44,9 +44,6 @@ const MemberCom: React.FC<MemberProps> = (props) => {
   // 控制复制模态框
   const [copyVisible, setCopyVisible] = useState<boolean>(false);
 
-  // 添加人员的服务器返回数据
-  const [formValue, setFormValue] = useState<any>({});
-
   //编辑人员的返回数据
   const [editValue, setEditValue] = useState<any>({});
 
@@ -97,6 +94,10 @@ const MemberCom: React.FC<MemberProps> = (props) => {
       dataIndex: 'gender',
       key: 'gender',
       hideInSearch: true,
+      render: (text) => {
+        if (text === 1) return <span>女</span>;
+        else return <span>男</span>;
+      },
     },
     {
       title: '学院',
@@ -132,6 +133,7 @@ const MemberCom: React.FC<MemberProps> = (props) => {
         <>
           <a
             onClick={() => {
+              console.log(record);
               setEditModalVisible(true);
               setEditValue(record);
             }}
@@ -179,15 +181,6 @@ const MemberCom: React.FC<MemberProps> = (props) => {
     message.success({
       content: '已下载全部条目',
       duration: 3,
-    });
-  };
-
-  const onBlur = (e: string) => {
-    setFormValue({
-      name: 'OctopusRoe',
-      sex: '男',
-      college: '信息工程学院',
-      class: '测试班级1',
     });
   };
 
@@ -292,8 +285,7 @@ const MemberCom: React.FC<MemberProps> = (props) => {
       <AddForm
         addVisible={addVisible}
         onCancel={() => setAddVisible(false)}
-        onBlur={onBlur}
-        formValue={formValue}
+        afterClose={reloadValue}
       />
       <CopyMember
         copyVisible={copyVisible}

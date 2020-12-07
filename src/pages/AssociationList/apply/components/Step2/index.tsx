@@ -108,6 +108,7 @@ const Step2: React.FC<Step2Props> = (props) => {
           <Input
             style={{ width: '100px' }}
             type="number"
+            min={0}
             suffix={<div style={{ color: '#bfbfbf' }}>%</div>}
           />
         </Form.Item>

@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 
 import { message } from 'antd';
 
-import { searchMember, downLoadMember, memberUpdata, deleteMember } from './service';
+import { searchMember, downLoadMember, memberUpdata, deleteMember, addMember } from './service';
 
 import { MemberState } from './data';
 
@@ -22,6 +22,7 @@ export interface MemberModelProps {
     downLoad: Effect;
     memberUpdata: Effect;
     deleteMember: Effect;
+    addMember: Effect;
   };
 }
 
@@ -128,9 +129,9 @@ const memberModel: MemberModelProps = {
 
     *memberUpdata({ payload }, { call }) {
       const data = new FormData();
-      data.append('edPersonId', payload.personId);
-      data.append('Department', payload.department);
-      data.append('Positioin', payload.position);
+      data.append('edPersonId', payload.edPersonId);
+      data.append('Department', payload.departmentObj);
+      data.append('Positioin', payload.positionObj);
 
       const back = yield call(memberUpdata, data);
       if (back.code !== 0) {
@@ -155,6 +156,21 @@ const memberModel: MemberModelProps = {
       }
 
       message.success('删除成功');
+    },
+    *addMember({ payload }, { call, put }) {
+      const data = {
+        params: payload.communityID,
+        data: payload.memberList,
+      };
+
+      const back = yield call(addMember, data);
+      if (back.code !== 0) {
+        message.error(back.msg);
+        console.error(back.msg);
+        return;
+      }
+
+      message.success(back.msg);
     },
   },
 };

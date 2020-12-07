@@ -34,3 +34,8 @@ export async function memberUpdata(data: FormData) {
 export async function deleteMember(params: { dPersonId: string }) {
   return request.delete(getPort('communityguidancemember/delete'), { params: params });
 }
+
+// 社团管理  成员管理  新增社团成员
+export async function addMember(data: { params: {}; data: {} }) {
+  return request.put(getPort('communityguidancemember/create'), { ...data });
+}
