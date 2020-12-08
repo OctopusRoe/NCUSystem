@@ -33,6 +33,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
   const [downmodalVisible, setDownmodalVisible] = useState(false);
 
   const [ rowValue, setRowValue ] = useState<any>({})
+  const [current, setCurrent] = useState<number>(0)
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -85,6 +86,11 @@ const SetClass: React.FC<SetClassProps> = (props) => {
 
   //搜索框 search方法
   const onSearch = (value: any) => {
+
+    if (value === '') {
+      setCurrent(1)
+    }
+
     const data = {
       query: value
     }
@@ -194,7 +200,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
           </Button>,
         ]}
         dataSource={dataSorce}
-        pagination={{total: count}}
+        pagination={{total: count, current: current}}
         onChange={onChange}
         columns={columns}
         loading={loading}

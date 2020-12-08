@@ -3,16 +3,30 @@
 import React,{ useState, useEffect } from 'react';
 
 import { Card, Form, Input, message, Button, Select } from 'antd'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { connect, Dispatch } from 'umi';
+
+import { GlobalModelState } from '@/models/global'
+import WaitView from '@/components/waitView'
+import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
+
+import { DeleteState } from './data'
+
+import Success from './components/success' 
+import Fail from './components/fail'
 
 interface DeleteProps {
   dispatch: Dispatch
-  formValue: any
+  baseInfo: any
+  associationList: any
+  valueList: any
   canTeacherUse: boolean
   teacherCount: number
   canDepartmentUse: boolean
   departmentCount: number
+  reload: number
+  count: string
+  tGUID: string
+  dGUID: string
 }
 
 const formItemLayout = {
@@ -36,53 +50,104 @@ const submitFormLayout = {
 
 const { Option } = Select;
 
-const teacherValue = [{name: '名字1', phone: '11011211911'},{name: '名字2', phone: '11011211119'}]
-
 const FormItem = Form.Item
 const { TextArea } = Input
 
+const memberInfo: { one: InputInfo; two?: InputInfo } = {
+  one: {
+    message: '请输入成员学号!',
+    placeHodel: '请输入成员学号',
+  },
+  two: {
+    message: '请输入成员学号来获取姓名!',
+    disabled: true,
+  }
+};
+
 const Delete: React.FC<DeleteProps> = (props) => {
 
-  const { formValue, canTeacherUse, teacherCount, canDepartmentUse, departmentCount, dispatch } = props
+  const {
+    canTeacherUse,
+    teacherCount,
+    canDepartmentUse,
+    departmentCount,
+    baseInfo,
+    associationList,
+    reload,
+    valueList,
+    tGUID,
+    dGUID,
+    dispatch
+  } = props
 
-  // 控制刷新
-  const [ count, setCount ] = useState<any>(0)
+  const [ association ] = associationList && associationList.filter((item: any) => item.isResponsible)
+
+  const form = {
+    'apply-name': baseInfo?.name,
+    'association-name': association?.nameZh,
+    'association-type': association?.categoryName,
+    'association-grade': association?.levelName,
+    'department': association?.guidanceUnitName,
+    'time': association?.setUpDate,
+  }
+
+  if (reload === 0) {
+    return <WaitView />
+  }
+
+  if (association && !association.isResponsible) {
+    return <Fail />
+  }
+
+  if (association && association.isLogout) {
+    return <Success />
+  }
 
   // 保存指导老师电话
-  const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
+  const [ getTeacher, setGetTeacher ] = useState<string>('')
 
   // 保存指导部门电话
-  const [ getDepartmentPhone, setGetDepartmentPhone ] = useState<string>('')
+  const [ getDepartment, setGetDepartment ] = useState<string>('')
 
   // 选择指导老师电话
   const selectTeacher = (e: string) => {
-    setGetTeacherPhone(e)
+    setGetTeacher(e)
   }
 
   // 选择指导部门电话
   const selectDepartment = (e: string) => {
-    setGetDepartmentPhone(e)
+    setGetDepartment(e)
   }
 
   // 老师设置倒计时方法
   const teacherCountDown = () => {
-    if (getTeacherPhone === '') {
+    if (getTeacher === '') {
       return
     }
     dispatch({
       type: 'deleteModel/setTeacherCount',
       payload: [60, false]
     })
+
+    dispatch({
+      type: 'deleteModel/getTeacherCode',
+      payload: getTeacher
+    })
   }
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
-    if (getDepartmentPhone === '') {
+    if (getDepartment === '') {
       return
     }
     dispatch({
       type: 'deleteModel/setDepartmentCount',
       payload: [60, false]
+    })
+
+    dispatch({
+      type: 'deleteModel/getDepartmentCode',
+      payload: getDepartment
     })
   }
 
@@ -120,27 +185,59 @@ const Delete: React.FC<DeleteProps> = (props) => {
     }
   }, [departmentCount])
 
-  // 设置成员列表
-  const setStudentId = async (e: string, i: number) => {
+  // 失去焦点后访问接口获取学生姓名
+  const onBlurFun = async (e: string, i: number) => {
 
     if (e === '') {
       return
     }
     await dispatch({
-      type: 'deleteModel/setNewFormValue',
+      type: 'deleteModel/getStudentName',
       payload: [i, e],
     })
-    setCount(e)
+    // setCount(e)
+  }
+
+  // 点击移除成员按钮
+  const onRemoveFun = (i: number) => {
+    dispatch({
+      type: 'deleteModel/rmFormValue',
+      payload: i
+    })
   }
 
   // 控制页面刷新
-  useEffect(() => {
-  },[count])
+  // useEffect(() => {
+  // },[count])
 
   // 表单数据获取
-  const handleFinish = (e:any) => {
-    message.success('ok');
-    console.log(e)
+  const onFinish = (e:any) => {
+
+    const form = new FormData()
+    form.append('CommunityId', association.id)
+    form.append('PersonId', baseInfo.personId)
+    form.append('Reason', e.cause)
+    form.append('Member', e['student-member-list'].map((item:any) => item.one))
+    form.append('TeacherPersonId', e.teacher)
+    form.append('TeacherGuid', tGUID)
+    form.append('TeacherCode', e.teacherCode)
+    form.append('DepartmentId', e.departmentPerson)
+    form.append('DepartmentGuid', dGUID)
+    form.append('DepartmentCode', e.departmentCode)
+
+    const data = {
+      form: form,
+      tGUID: tGUID,
+      teacherCode: e.teacherCode,
+      dGUID: dGUID,
+      departmentCode: e.departmentCode
+    }
+
+    dispatch({
+      type: 'deleteModel/validationCode',
+      payload: data
+    })
+
   };
 
   // 退出组件清除成员列表
@@ -153,211 +250,180 @@ const Delete: React.FC<DeleteProps> = (props) => {
     }
   },[])
 
-  return (
-    <Card>
-      <Form
-        onFinish={handleFinish}
-        style={{paddingTop: '12px'}}
-        layout={"horizontal"}
-        autoComplete={'off'}
-        hideRequiredMark
-        initialValues={formValue}
-      >
-        <FormItem
-          {...formItemLayout}
-          label={'申请人'}
-          name={'apply-name'}
+  if (association && association.isResponsible) {
+    return (
+      <Card>
+        <Form
+          onFinish={onFinish}
+          style={{paddingTop: '12px'}}
+          layout={"horizontal"}
+          autoComplete={'off'}
+          hideRequiredMark
+          initialValues={form}
         >
-          <Input disabled />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团名称'}
-          name={'association-name'}
-        >
-          <Input disabled />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团类别'}
-          name={'association-type'}
-        >
-          <Input disabled />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'社团级别'}
-          name={'association-grade'}
-        >
-          <Input disabled />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'指导单位'}
-          name={'department'}
-        >
-          <Input disabled />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'成立年份'}
-          name={'time'}
-        >
-          <Input disabled />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'注销原因'}
-          name={'cause'}
-          rules={[
-            {
-              required: true,
-              message: '请输入注销原因!'
-            }
-          ]}
-        >
-          <TextArea showCount maxLength={100} rows={6} placeholder={'请输入注销原因'} />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={'成员代表'}
-        >
-          <Form.List
-            name={'student-member-list'}
+          <FormItem
+            {...formItemLayout}
+            label={'申请人'}
+            name={'apply-name'}
           >
-            {
-              (fields, {add, remove}) => (
-                <>
-                  {
-                    fields.map((item: any, index: number) => (
-                      <div key={item.fieldKey} style={{ display: 'flex'}}>
-                        <FormItem
-                          name={[item.name, 'one']}
-                          fieldKey={[item.fieldKey, 'one']}
-                          rules={[{required: true, message: '请输入学号!'}]}
-                          style={{width: '100%', marginRight: '8px' }}
-                        >
-                          <Input placeholder={'请输入学号'} onBlur={(e)=> setStudentId(e.target.value, item.name)} />
-                        </FormItem>
-                        <div style={{backgroundColor: '#f5f5f5', color: 'rgba(0,0,0,0.25)', width: '100%', marginRight: '8px', height: '32px', border: '1px solid #d9d9d9'}}>
-                          <div style={{padding: '4px 11px'}}>
-                            {formValue['student-member-list'][item.name] && formValue['student-member-list'][item.name].two}
-                          </div>
-                        </div>
-                        <MinusCircleOutlined
-                          title={'移除'}
-                          onClick={() => {
-                            remove(item.name)
-                            dispatch({
-                              type: 'deleteModel/rmFormValue',
-                              payload: item.name
-                            })
-                          }}
-                        />
-                      </div>
-                    ))
-                  }
-                  <FormItem>
-                    <Button
-                      type={'dashed'}
-                      onClick={() => add()}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      添加
-                    </Button>
-                  </FormItem>
-                </>
-              )
-            }
-          </Form.List>
-        </FormItem>
-        <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'teacherPhone'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导老师!'}]}
+            <Input disabled />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'社团名称'}
+            name={'association-name'}
           >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
+            <Input disabled />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'社团类别'}
+            name={'association-type'}
+          >
+            <Input disabled />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'社团级别'}
+            name={'association-grade'}
+          >
+            <Input disabled />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'指导单位'}
+            name={'department'}
+          >
+            <Input disabled />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'成立年份'}
+            name={'time'}
+          >
+            <Input disabled />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'注销原因'}
+            name={'cause'}
+            rules={[
               {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
-                    {item.name}
-                  </Option>
-                ))
+                required: true,
+                message: '请输入注销原因!'
               }
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name={'teacherCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
+            ]}
           >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={teacherCountDown}
-            disabled={canTeacherUse ? false : true}
-            type={canTeacherUse ? 'primary' : 'default'}
+            <TextArea showCount maxLength={100} rows={6} placeholder={'请输入注销原因'} />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'成员代表'}
           >
-            {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
-      <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'departmentPhone'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导部门!'}]}
-          >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-              {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
-                    {item.name}
-                  </Option>
-                ))
-              }
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name={'departmentCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
-          >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={departmentCountDown}
-            disabled={canDepartmentUse ? false : true}
-            type={canDepartmentUse ? 'primary' : 'default'}
-          >
-            {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
-        <Form.Item
-          {...submitFormLayout}
-        >
-          <Button htmlType={'submit'} type={'primary'} size={'large'}>提交</Button>
+            <FormListCom
+              info={memberInfo}
+              formListName={'student-member-list'}
+              showInput={{two: true, three: false}}
+              valueList={valueList}
+              removeFun={onRemoveFun}
+              onBlurFun={onBlurFun}
+            />
+          </FormItem>
+          <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
+          <Input.Group compact>
+            <Form.Item
+              name={'teacher'}
+              style={{display: 'inline-block', width: '25%'}}
+              rules={[{required: true, message: '请选择指导老师!'}]}
+            >
+              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
+                {
+                  association !== null && association.instructorInfo.map((item: any, index: number) => (
+                    <Option value={item.personId} key={item.personId}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name={'teacherCode'}
+              style={{display: 'inline-block', width: '50%'}}
+              rules={[{required: true, message: '请输入手机验证码!'}]}
+            >
+              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
+            <Button
+              style={{width: '25%'}}
+              onClick={teacherCountDown}
+              disabled={canTeacherUse ? false : true}
+              type={canTeacherUse ? 'primary' : 'default'}
+            >
+              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
+            </Button>
+          </Input.Group>
         </Form.Item>
-      </Form>
-    </Card>
-  );
+        <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
+          <Input.Group compact>
+            <Form.Item
+              name={'departmentPerson'}
+              style={{display: 'inline-block', width: '25%'}}
+              rules={[{required: true, message: '请选择指导部门!'}]}
+            >
+              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
+                {
+                  association !== null && association.instructorInfo.map((item: any, index: number) => (
+                    <Option value={item.personId} key={item.personId}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name={'departmentCode'}
+              style={{display: 'inline-block', width: '50%'}}
+              rules={[{required: true, message: '请输入手机验证码!'}]}
+            >
+              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
+            </Form.Item>
+            <Button
+              style={{width: '25%'}}
+              onClick={departmentCountDown}
+              disabled={canDepartmentUse ? false : true}
+              type={canDepartmentUse ? 'primary' : 'default'}
+            >
+              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
+            </Button>
+          </Input.Group>
+        </Form.Item>
+          <Form.Item
+            {...submitFormLayout}
+          >
+            <Button htmlType={'submit'} type={'primary'} size={'large'}>提交</Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    );
+  }
+
+  return <></>
 };
 
 export default connect(
-  (state: any) => {
+  ({deleteModel, global}: {deleteModel: DeleteState, global: GlobalModelState}) => {
     return {
-      formValue: state.deleteModel.formValue,
-      canTeacherUse: state.deleteModel.canTeacherUse,
-      teacherCount: state.deleteModel.teacherCount,
-      canDepartmentUse: state.deleteModel.canDepartmentUse,
-      departmentCount: state.deleteModel.departmentCount
+      canTeacherUse: deleteModel.canTeacherUse,
+      teacherCount: deleteModel.teacherCount,
+      canDepartmentUse: deleteModel.canDepartmentUse,
+      departmentCount: deleteModel.departmentCount,
+      valueList: deleteModel.valueList,
+      count: deleteModel.count,
+      reload: global.reload,
+      baseInfo: global.baseInfo,
+      associationList: global.associationList,
+      tGUID: deleteModel.tGUID,
+      dGUID: deleteModel.dGUID,
     }
   }
 )(Delete);

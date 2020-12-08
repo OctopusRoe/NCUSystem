@@ -31,6 +31,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
   const actionRef = useRef<ActionType>();
 
   const [rowValue, setRowValue] = useState<any>({});
+  const [current, setCurrent] = useState<number>(0)
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -125,6 +126,11 @@ const Department: React.FC<DepartmentProps> = (props) => {
 
   //Search 搜索框事件
   const onSearch = (value: any) => {
+
+    if (value === '') {
+      setCurrent(1)
+    }
+
     const data = {
       query: value,
     };
@@ -143,6 +149,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
   // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    console.log(pagination)
     const data = {
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
@@ -200,7 +207,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
           </Button>,
         ]}
         dataSource={dataSorce}
-        pagination={{ total: count }}
+        pagination={{ total: count, current: current }}
         onChange={onChange}
         columns={columns}
         loading={loading}

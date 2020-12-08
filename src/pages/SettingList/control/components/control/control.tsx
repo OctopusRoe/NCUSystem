@@ -29,7 +29,11 @@ const Control: React.FC<ControlProps> = (props) => {
 
   const [addmodalVisible, handAddmodalVisible] = useState(false);
   const [editmodalVisible, setEditmodalVisible] = useState(false);
-  const [rowValue, setRowValue] = useState<any>({});
+
+
+  const [ rowValue, setRowValue ] = useState<any>({})
+  const [current, setCurrent] = useState<number>(0)
+
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -134,6 +138,11 @@ const Control: React.FC<ControlProps> = (props) => {
 
   //Search  搜索框事假
   const onSearch = (value: string) => {
+
+    if (value === '') {
+      setCurrent(1)
+    }
+
     const data = {
       query: value,
     };
@@ -172,7 +181,8 @@ const Control: React.FC<ControlProps> = (props) => {
           </Button>,
         ]}
         dataSource={dataSorce}
-        pagination={{ total: count }}
+
+        pagination={{total: count, current: current}}
         onChange={onChange}
         columns={columns}
         loading={loading}

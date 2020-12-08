@@ -1,38 +1,59 @@
 // 登记列表 组件
 
-import React, { useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
+import { GlobalModelState } from '@/models/global'
+
 import { TableListItem } from './data';
-import { queryRule } from './service';
 import { Popover, Tag, Divider } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
 
 import InfoDrawer from './components/infoDrawer';
+
+import { Dispatch, connect } from 'umi'
+
+import { OutregistrationListState } from '../../data'
+
+interface OutregistrationListProps {
+  dataSorce: any
+  count: number,
+  loading: boolean
+  associationList: any
+  dispatch: Dispatch
+}
 
 // 改变鼠标样式
 const changeMouseStyle = {
   cursor: 'pointer'
 }
 
-const Outregistrationlist: React.FC<{}> = () => {
+const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
+
+  const { count, dataSorce, loading, associationList, dispatch } = props
+
+  const [association] = associationList && associationList.filter((item: any) => item.isResponsible)
+
   const [drawervisible, setdrawervisible] = useState(false);
-  const actionRef = useRef<ActionType>();
+
+  const [current, setCurrent] = useState<number>(0)
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '离/返校时间',
-      dataIndex: 'infomation',
-      key: 'infomation',
+      dataIndex: 'date',
+      key: 'date',
       hideInSearch: true,
     },
     {
       title: '外出事由',
-      dataIndex: 'case',
-      key: 'case',
+      dataIndex: 'reason',
+      key: 'reason',
       render: (_, record) => {
         const text = (
           <div>
             <p style={{width: '200px'}}>
-              {record.case}
+              {record.reason}
             </p>
           </div>
         )
@@ -48,14 +69,14 @@ const Outregistrationlist: React.FC<{}> = () => {
     },
     {
       title: '外出地点',
-      dataIndex: 'desc',
+      dataIndex: 'place',
       hideInSearch: true,
-      key: 'desc',
+      key: 'place',
     },
     {
       title: '审批状态',
-      dataIndex: 'apply',
-      key: 'apply',
+      dataIndex: 'result',
+      key: 'result',
     },
     // {
     //   title: '外出负责人',
@@ -83,20 +104,54 @@ const Outregistrationlist: React.FC<{}> = () => {
     },
   ];
 
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    const data = {
+      PageSize: pagination.pageSize,
+      PageIndex: pagination.current
+    }
+    dispatch({
+      type: 'outregistrationList/searchList',
+      payload: data
+    })
+
+    // 修改 table 的 loading 值
+    dispatch({
+      type: 'outregistrationList/loading',
+      payload: true
+    })
+  }
+
+  useEffect(()=>{
+    dispatch({
+      type: 'outregistrationList/searchList',
+      payload: {}
+    })
+  }, [])
+
   return (
     <div>
       <ProTable<TableListItem>
-        // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
+
         headerTitle="登记列表"
         search={false}
-        actionRef={actionRef}
-        rowKey="key"
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        rowKey="id"
+        dataSource={dataSorce}
+        pagination={{total: count}}
+        onChange={onChange}
         columns={columns}
+        loading={loading}
       />
       <InfoDrawer drawervisible={drawervisible} onCancel={() => setdrawervisible(false)} />
     </div>
   );
 };
 
-export default Outregistrationlist;
+export default connect(
+  ({outregistrationList, global}: {outregistrationList: OutregistrationListState, global: GlobalModelState}) => ({
+    dataSorce: outregistrationList.list,
+    count: outregistrationList.count,
+    loading: outregistrationList.loading,
+    associationList: global.associationList
+  })
+)(Outregistrationlist);
