@@ -12,6 +12,7 @@ export interface TableListItem {
   createdAt: Date;
   progress: number;
   case: string
+  reason: string
 }
 
 export interface TableListPagination {

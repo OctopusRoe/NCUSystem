@@ -121,8 +121,6 @@ const baseInfoModel: BaseInfoModelType = {
         Code: payload.department.code
       }
 
-      console.log(tParams, dParams, payload)
-
       const tBack = yield call(validationTCode, tParams)
       const dBack = yield call(validationDCode, dParams)
       
@@ -134,8 +132,6 @@ const baseInfoModel: BaseInfoModelType = {
           message.error(dBack.msg)
           return
       }
-
-
 
       const back = yield call(upBaseInfo, payload.form)
       if (back.code !== 0) {

@@ -113,16 +113,14 @@ const upgradeModel: UpgradeType = {
     *validationCode ({ payload }, { call, put } ) {
       
       const tParams = {
-        GUID: payload.teacher.guid,
-        Code: payload.teacher.code
+        GUID: payload.tGUID,
+        Code: payload.teacherCode
       }
 
       const dParams = {
-        GUID: payload.department.guid,
-        Code: payload.department.code
+        GUID: payload.dGUID,
+        Code: payload.departmentCode
       }
-
-      console.log(tParams, dParams, payload)
 
       const tBack = yield call(validationTCode, tParams)
       const dBack = yield call(validationDCode, dParams)
@@ -135,8 +133,6 @@ const upgradeModel: UpgradeType = {
           message.error(dBack.msg)
           return
       }
-
-
 
       const back = yield call(upAssociationLevel, payload.form)
       if (back.code !== 0) {

@@ -8,6 +8,7 @@ import Success from './components/success';
 import Fail from './components/fail';
 
 import { GlobalModelState } from '@/models/global'
+import WaitView from '@/components/waitView'
 
 import { UpgradeState } from './data'
 
@@ -65,8 +66,20 @@ const Upgrade: FC<UpgradeProps> = (props) => {
 
   const [ association ] = associationList && associationList.filter((item: any) => item.isResponsible)
 
+  if ( reload === 0 ) {
+    return <WaitView />
+  }
+
+  if (association === undefined || association?.levelRank === 0) {
+    return <Fail />
+  }
+
+  if (association && association.isUpgrade) {
+    return <Success />
+  }
+
   const data = {
-    name: baseInfo.name ? baseInfo.name : '',
+    name: baseInfo?.name ? baseInfo.name : '',
     nameZh: association?.nameZh,
     categoryName: association?.categoryName,
     levelName: association?.levelName,
@@ -172,22 +185,29 @@ const Upgrade: FC<UpgradeProps> = (props) => {
   }, [departmentCount])
 
   const onFinish = (e: any) => {
-    console.log(e)
 
-    const data = new FormData()
-    data.append('PersonId', baseInfo.personId)
-    data.append('CommunityId', association.id)
-    data.append('Project', e.file.file.originFileObj)
-    data.append('TeacherPersonId', e.teacher)
-    data.append('TeacherGuid', tGUID)
-    data.append('TeacherCode', e.teacherCode)
-    data.append('DepartmentId', e.department)
-    data.append('DepartmentGuid', dGUID)
-    data.append('DepartmentCode', e.departmentCode)
+    const form = new FormData()
+    form.append('PersonId', baseInfo.personId)
+    form.append('CommunityId', association.id)
+    form.append('Project', e.file.file.originFileObj)
+    form.append('TeacherPersonId', e.teacher)
+    form.append('TeacherGuid', tGUID)
+    form.append('TeacherCode', e.teacherCode)
+    form.append('DepartmentId', e.department)
+    form.append('DepartmentGuid', dGUID)
+    form.append('DepartmentCode', e.departmentCode)
+
+    const data = {
+      form: form,
+      tGUID: tGUID,
+      teacherCode: e.teacherCode,
+      dGUID: dGUID,
+      departmentCode: e.departmentCode
+    }
 
     dispatch({
       type: 'associationUpgrade/validationCode',
-      paylaod: data
+      payload: data
     })
   }
 
@@ -203,10 +223,6 @@ const Upgrade: FC<UpgradeProps> = (props) => {
       key: 'result',
     },
   ];
-
-  if (association && association.isUpgrade) {
-    return <Success />
-  }
 
   if (association && association.isResponsible) {
     return (
@@ -298,7 +314,7 @@ const Upgrade: FC<UpgradeProps> = (props) => {
         <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
           <Input.Group compact>
             <Form.Item
-              name={'departmentCode'}
+              name={'department'}
               style={{display: 'inline-block', width: '25%'}}
               rules={[{required: true, message: '请选择指导部门!'}]}
             >
@@ -339,7 +355,9 @@ const Upgrade: FC<UpgradeProps> = (props) => {
     );
   }
 
-  return <Fail />
+  // return <Fail />
+
+  return <></>
 
 };
 

@@ -5,6 +5,11 @@ import { Form, Input, message, Button, DatePicker, Select } from 'antd';
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
 import { connect, Dispatch } from 'umi';
 
+import WaitView from '@/components/waitView'
+import { GlobalModelState } from '@/models/global'
+
+import { OutregistrationFormState } from '../data'
+
 import PlaceView from '@/components/placeView/placeView'
 
 interface OutregistrationformProps {
@@ -14,6 +19,12 @@ interface OutregistrationformProps {
   departmentCount: number
   leaderValueList: any
   memberValueList: any
+  baseInfo: any
+  associationList: any
+  reload: number
+  count: string
+  tGUID: string
+  dGUID: string
   dispatch: Dispatch
 }
 
@@ -66,52 +77,82 @@ const FormItem = Form.Item
 const { TextArea } = Input
 const { Option } = Select
 const { RangePicker } = DatePicker
-const teacherValue = [
-  { name: '名字1', phone: '11011211911' },
-  { name: '名字2', phone: '11011211119' },
-]
 
 const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
 
-  const { canTeacherUse, teacherCount, canDepartmentUse, departmentCount, leaderValueList, memberValueList, dispatch } = props
+  const {
+    canTeacherUse,
+    teacherCount,
+    canDepartmentUse,
+    departmentCount,
+    leaderValueList,
+    memberValueList,
+    baseInfo,
+    associationList,
+    reload,
+    tGUID,
+    dGUID,
+    dispatch
+  } = props
 
-  const [ count, setCount ] = useState<any>(0)
+  const [association] = associationList && associationList.filter((item: any) => item.isResponsible)
+
+  const form = {
+    'apply-name': baseInfo?.name,
+    'association-name': association?.nameZh,
+    'association-type': association?.categoryName,
+    guidanceUnitName: association?.guidanceUnitName
+  }
+
+  if (reload === 0) {
+    return <WaitView />
+  }
 
   // 保存指导老师电话
-  const [ getTeacherPhone, setGetTeacherPhone ] = useState<string>('')
+  const [ getTeacher, setGetTeacher ] = useState<string>('')
 
   // 保存指导部门电话
-  const [ getDepartmentPhone, setGetDepartmentPhone ] = useState<string>('')
+  const [ getDepartment, setGetDepartment ] = useState<string>('')
 
   // 选择指导老师电话
   const selectTeacher = (e: string) => {
-    setGetTeacherPhone(e)
+    setGetTeacher(e)
   }
 
   // 选择指导部门电话
   const selectDepartment = (e: string) => {
-    setGetDepartmentPhone(e)
+    setGetDepartment(e)
   }
 
   // 老师设置倒计时方法
   const teacherCountDown = () => {
-    if (getTeacherPhone === '') {
+    if (getTeacher === '') {
       return
     }
     dispatch({
-      type: 'association-outregistration/setTeacherCount',
+      type: 'outregistrationForm/setTeacherCount',
       payload: [60, false]
+    })
+
+    dispatch({
+      type: 'outregistrationForm/getTeacherCode',
+      payload: getTeacher
     })
   }
 
   // 部门设置倒计时方法
   const departmentCountDown = () => {
-    if (getDepartmentPhone === '') {
+    if (getDepartment === '') {
       return
     }
     dispatch({
-      type: 'association-outregistration/setDepartmentCount',
+      type: 'outregistrationForm/setDepartmentCount',
       payload: [60, false]
+    })
+
+    dispatch({
+      type: 'outregistrationForm/getDepartmentCode',
+      payload: getDepartment
     })
   }
 
@@ -120,13 +161,13 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
     if (teacherCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'association-outregistration/setTeacherCount',
+          type: 'outregistrationForm/setTeacherCount',
           payload: [teacherCount - 1, false]
         })
       }, 1000)
     } else {
       dispatch({
-        type: 'association-outregistration/setTeacherCount',
+        type: 'outregistrationForm/setTeacherCount',
         payload: [1, true]
       })
     }
@@ -137,49 +178,75 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
     if (departmentCount > 1) {
       setTimeout(() => {
         dispatch({
-          type: 'association-outregistration/setDepartmentCount',
+          type: 'outregistrationForm/setDepartmentCount',
           payload: [departmentCount - 1, false]
         })
       }, 1000)
     } else {
       dispatch({
-        type: 'association-outregistration/setDepartmentCount',
+        type: 'outregistrationForm/setDepartmentCount',
         payload: [1, true]
       })
     }
   }, [departmentCount])
 
   const memberOnBlur = (e: string, i: number) => {
+
+    if (e === '') {
+      return
+    }
     dispatch({
-      type: 'association-outregistration/setMemberValueList',
+      type: 'outregistrationForm/getStudentName',
       payload: [i, e]
     })
 
-    setCount(e)
   }
 
   // 移除成员
   const memberRemove = (i: number) => {
     dispatch({
-      type: 'association-outregistration/rmMemberValueList',
+      type: 'outregistrationForm/rmMemberValueList',
       payload: i
     })
   }
 
-  // 手动控制刷新
-  useEffect(()=>{}, [count])
-
   // 表单数据获取
   const onFinish = (e: any) => {
-    message.success('ok');
-    console.log(e);
+
+    const form = new FormData()
+    form.append('PersonId', baseInfo.personId)
+    form.append('StartDate', e.time[0].format('YYYY-MM-DD hh:mm:ss'))
+    form.append('EndDate', e.time[1].format('YYYY-MM-DD hh:mm:ss'))
+    form.append('Reason', e.cause)
+    form.append('Place', `${e.province},${e.city},${e.region},${e.stree}`)
+    form.append('Responsible', e.leaderName.map((item: any) => ({name: item.one, phone: item.two})))
+    form.append('Member', e.memberName.map((item: any) => item.one))
+    form.append('TeacherPersonId', e.teacher)
+    form.append('TeacherGuid', tGUID)
+    form.append('TeacherCode', e.teacherCode)
+    form.append('DepartmentId', e.department)
+    form.append('DepartmentGuid', dGUID)
+    form.append('DepartmentCode', e.departmentCode)
+
+    const data = {
+      form: form,
+      tGUID: tGUID,
+      teacherCode: e.teacherCode,
+      dGUID: dGUID,
+      departmentCode: e.departmentCode
+    }
+
+    dispatch({
+      type: 'outregistrationForm/validationCode',
+      payload: data
+    })
   }
 
   // 退出组件清除成员列表
   useEffect(()=>{
     return function () {
       dispatch({
-        type: 'association-outregistration/cleanAll',
+        type: 'outregistrationForm/cleanAll',
         payload: []
       })
     }
@@ -192,7 +259,7 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
       layout={'horizontal'}
       autoComplete={'off'}
       hideRequiredMark
-      initialValues={{}}
+      initialValues={form}
     >
       <FormItem {...formItemLayout} label={'申请人'} name={'apply-name'} >
         <Input disabled />
@@ -200,10 +267,10 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
       <FormItem {...formItemLayout} label={'社团名称'} name={'association-name'}>
         <Input disabled />
       </FormItem>
-      <FormItem {...formItemLayout} label={'社团类别'} name={'class'}>
+      <FormItem {...formItemLayout} label={'社团类别'} name={'association-type'}>
         <Input disabled />
       </FormItem>
-      <FormItem {...formItemLayout} label={'指导单位'} name={'department'}>
+      <FormItem {...formItemLayout} label={'指导单位'} name={'guidanceUnitName'}>
         <Input disabled />
       </FormItem>
       <FormItem {...formItemLayout} label={'离/返校时间'} name={'time'}>
@@ -250,14 +317,14 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
       <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
         <Input.Group compact>
           <Form.Item
-            name={'teacherPhone'}
+            name={'teacher'}
             style={{display: 'inline-block', width: '25%'}}
             rules={[{required: true, message: '请选择指导老师!'}]}
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
               {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
+                association !== null && association.instructorInfo.map((item: any, index: number) => (
+                  <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
                 ))
@@ -284,14 +351,14 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
       <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
         <Input.Group compact>
           <Form.Item
-            name={'departmentPhone'}
+            name={'department'}
             style={{display: 'inline-block', width: '25%'}}
             rules={[{required: true, message: '请选择指导部门!'}]}
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
               {
-                teacherValue.map((item: any, index: number) => (
-                  <Option value={item.phone} key={index}>
+                association !== null && association.instructorInfo.map((item: any, index: number) => (
+                  <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
                 ))
@@ -326,14 +393,20 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
 };
 
 export default connect(
-  (state: any)=>{
+  ({outregistrationForm, global}: {outregistrationForm: OutregistrationFormState, global: GlobalModelState})=>{
     return {
-      canTeacherUse: state['association-outregistration'].canTeacherUse,
-      teacherCount: state['association-outregistration'].teacherCount,
-      canDepartmentUse: state['association-outregistration'].canDepartmentUse,
-      departmentCount: state['association-outregistration'].departmentCount,
-      leaderValueList: state['association-outregistration'].leaderValueList,
-      memberValueList: state['association-outregistration'].memberValueList
+      canTeacherUse: outregistrationForm.canTeacherUse,
+      teacherCount: outregistrationForm.teacherCount,
+      canDepartmentUse: outregistrationForm.canDepartmentUse,
+      departmentCount: outregistrationForm.departmentCount,
+      leaderValueList: outregistrationForm.leaderValueList,
+      memberValueList: outregistrationForm.memberValueList,
+      count: outregistrationForm.count,
+      tGUID: outregistrationForm.tGUID,
+      dGUID: outregistrationForm.dGUID,
+      baseInfo: global.baseInfo,
+      associationList: global.associationList,
+      reload: global.reload
     }
   }
 )(Outregistrationform);
