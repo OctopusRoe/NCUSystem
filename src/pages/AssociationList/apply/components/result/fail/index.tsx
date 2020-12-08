@@ -1,47 +1,47 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Card, Result } from 'antd';
-import { FormattedMessage, useIntl } from 'umi';
+import { Card, Result } from 'antd';
+import { connect, FormattedMessage } from 'umi';
 import React, { Fragment } from 'react';
 
 import { GridContent } from '@ant-design/pro-layout';
 import styles from './index.less';
-import { SuccessProps } from 'antd/es/progress/progress';
 
-const Content = (
-  <Fragment>
-    <div className={styles.title}>
-      <FormattedMessage
-        id="resultandfail.error.hint-title"
-        defaultMessage="The content you submitted has the following error:"
-      />
-    </div>
-    <div style={{ marginBottom: 16 }}>
-      <ExclamationCircleOutlined style={{ marginRight: 8 }} className={styles.error_icon} />
-      <FormattedMessage
-        id="resultandfail.error.hint-text1"
-        defaultMessage="Your account has been frozen"
-      />
-    </div>
-  </Fragment>
-);
+interface failProps {
+  nameZH: string;
+  nameEN: string;
+}
 
-const Fail: React.FC<SuccessProps> = () => {
-  const intl = useIntl();
+const Fail: React.FC<failProps> = ({ nameZH, nameEN }) => {
+  const Content = (
+    <Fragment>
+      <div className={styles.title}>
+        <FormattedMessage
+          id="resultandfail.error.hint-title"
+          defaultMessage="The content you submitted has the following error:"
+        />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <ExclamationCircleOutlined style={{ marginRight: 8 }} className={styles.error_icon} />
+        <FormattedMessage id="communityName" defaultMessage={`${nameZH}(${nameEN})`} />
+      </div>
+    </Fragment>
+  );
+
   return (
     <GridContent>
       <Card bordered={false}>
         <Result
           status="error"
-          title={intl.formatMessage({ id: 'resultandfail.error.title' })}
-          subTitle={intl.formatMessage({ id: 'resultandfail.error.description' })}
-          extra={
-            <Button type="primary">
-              <FormattedMessage
-                id="resultandfail.error.btn-text"
-                defaultMessage="Return to modify"
-              />
-            </Button>
-          }
+          title={'没有权限'}
+          subTitle={'您已经注册了一个学生社团，无法再次注册'}
+          // extra={
+          //   <Button type="primary">
+          //     <FormattedMessage
+          //       id="resultandfail.error.btn-text"
+          //       defaultMessage="Return to modify"
+          //     />
+          //   </Button>
+          // }
           style={{ marginTop: 48, marginBottom: 16 }}
         >
           {Content}
@@ -51,4 +51,4 @@ const Fail: React.FC<SuccessProps> = () => {
   );
 };
 
-export default Fail;
+export default connect()(Fail);

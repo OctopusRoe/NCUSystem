@@ -13,17 +13,27 @@ import Success from './components/result/success';
 import Fail from './components/result/fail';
 
 const { Step } = Steps;
-
+export interface GlobalModelState {
+  associationList: any;
+  global: any;
+  reload: any;
+}
 interface StepFormProps {
   current: StateType['current'];
+  associationList: any;
+  global: any;
+  reload: any;
 }
 
 const formInfo = {
-  teacherValue: [{name: '名字1', phone: '11011211911'},{name: '名字2', phone: '11011211119'}],
+  teacherValue: [
+    { name: '名字1', phone: '11011211911' },
+    { name: '名字2', phone: '11011211119' },
+  ],
   associationType: ['类别1', '类别2', '类别3', '类别4'],
   associationGrade: ['级别1', '级别2', '级别3', '级别4'],
-  department: ['部门1', '部门2', '部门3', '部门4']
-}
+  department: ['部门1', '部门2', '部门3', '部门4'],
+};
 const getCurrentStepAndComponent = (current?: string) => {
   switch (current) {
     case 'second':
@@ -31,14 +41,14 @@ const getCurrentStepAndComponent = (current?: string) => {
     case 'third':
       return { step: 2, component: <Step3 /> };
     case 'fifth':
-      return { step: 4, component: <Step5 formInfo={formInfo}/> };
+      return { step: 4, component: <Step5 formInfo={formInfo} /> };
     case 'info':
     default:
       return { step: 0, component: <Step1 /> };
   }
 };
 
-const StepForm: React.FC<StepFormProps> = ({ current }) => {
+const StepForm: React.FC<StepFormProps> = ({ current, associationList, reload }) => {
   const [stepComponent, setStepComponent] = useState<React.ReactNode>(<Step1 />);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
@@ -48,10 +58,18 @@ const StepForm: React.FC<StepFormProps> = ({ current }) => {
     setStepComponent(component);
   }, [current]);
 
+  if (reload === 0) {
+    //加载中
+  } else if (associationList.length === 0) {
+    //未注册社团----注册页面
+  } else if (associationList.length !== 0) {
+    //已注册一个社团---无权限
+  }
+
   return (
     <>
       <Card bordered={false}>
-        <div>
+        <div style={{ display: associationList.length === 0 && reload !== 0 ? 'block' : 'none' }}>
           <Steps current={currentStep} className={styles.steps}>
             <Step title="社团基本信息填写" />
             <Step title="社团发起人信息填写" />
@@ -59,14 +77,24 @@ const StepForm: React.FC<StepFormProps> = ({ current }) => {
             <Step title="申请材料提交" />
           </Steps>
           {stepComponent}
+          <Success />
         </div>
-        <Success/>
-        <Fail/>
+
+        <div style={{ display: associationList.length !== 0 ? 'block' : 'none' }}>
+          <Fail
+            nameEN={associationList.length !== 0 ? associationList[0].nameEn : ''}
+            nameZH={associationList.length !== 0 ? associationList[0].nameZh : ''}
+          />
+        </div>
       </Card>
     </>
   );
 };
 
-export default connect(({ formAndstepForm }: { formAndstepForm: StateType }) => ({
-  current: formAndstepForm.current,
-}))(StepForm);
+export default connect(
+  ({ formAndstepForm, global }: { formAndstepForm: StateType; global: GlobalModelState }) => ({
+    current: formAndstepForm.current,
+    associationList: global.associationList,
+    reload: global.reload,
+  }),
+)(StepForm);

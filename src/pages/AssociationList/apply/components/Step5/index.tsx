@@ -11,7 +11,7 @@ import { StateType } from '../../model';
 import { StepstateType } from './model';
 
 export interface GlobalModelState {
-  baseInfo: any;
+  associationList: any;
 }
 
 export interface BaseInfoState {
@@ -32,7 +32,7 @@ interface Step3Props {
   canDepartmentUse: boolean;
   departmentCount: number;
   submitting?: boolean;
-  baseInfo: any;
+  associationList: any;
   tGUID: string;
   dGUID: string;
 }
@@ -64,7 +64,7 @@ const Step5: React.FC<Step3Props> = (props) => {
     canDepartmentUse,
     departmentCount,
     submitting,
-    baseInfo,
+    associationList,
     tGUID,
     dGUID,
   } = props;
@@ -73,7 +73,8 @@ const Step5: React.FC<Step3Props> = (props) => {
     return null;
   }
 
-  console.log(baseInfo);
+  //指导老师信息
+  const teacherInfo = associationList[0].instructorInfo;
 
   const { getFieldsValue } = form;
 
@@ -238,11 +239,12 @@ const Step5: React.FC<Step3Props> = (props) => {
               rules={[{ required: true, message: '请选择指导老师!' }]}
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
-                {baseInfo.communityList[0].instructorInfo.map((item: any) => (
-                  <Option value={item.personId} key={item.personId}>
-                    {item.name}
-                  </Option>
-                ))}
+                {teacherInfo &&
+                  teacherInfo.map((item: any) => (
+                    <Option value={item.personId} key={item.personId}>
+                      {item.name}
+                    </Option>
+                  ))}
               </Select>
             </Form.Item>
             <Form.Item
@@ -270,11 +272,12 @@ const Step5: React.FC<Step3Props> = (props) => {
               rules={[{ required: true, message: '请选择指导部门!' }]}
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-                {baseInfo.communityList[0].instructorInfo.map((item: any) => (
-                  <Option value={item.personId} key={item.personId}>
-                    {item.name}
-                  </Option>
-                ))}
+                {teacherInfo &&
+                  teacherInfo.map((item: any) => (
+                    <Option value={item.personId} key={item.personId}>
+                      {item.name}
+                    </Option>
+                  ))}
               </Select>
             </Form.Item>
             <Form.Item
@@ -331,7 +334,7 @@ export default connect(
     teacherCount: associationBaseInfo.teacherCount,
     canDepartmentUse: associationBaseInfo.canDepartmentUse,
     departmentCount: associationBaseInfo.departmentCount,
-    baseInfo: global.baseInfo,
+    associationList: global.associationList,
     tGUID: associationBaseInfo.tGUID,
     dGUID: associationBaseInfo.dGUID,
   }),

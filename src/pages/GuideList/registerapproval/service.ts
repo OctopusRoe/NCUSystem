@@ -1,38 +1,15 @@
 import request from 'umi-request';
-import { TableListParams } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
-    params,
-  });
-}
+// 获取全局公共URL的函数
+import getPort from '@/services/global';
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
-  });
-}
-
-export async function addRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
+//社团指导  注册审批  获取注册审批列表
+export async function queryRegisterapproval(
+  params: { Name: string; Status: boolean },
+  data: FormData,
+) {
+  return request.post(getPort('registapproval/queryregisterapproval'), {
+    params: params,
+    data: data,
   });
 }

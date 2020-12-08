@@ -79,7 +79,7 @@ const Model: ModelType = {
       formData.append('OrganizationId', payload.OrganizationId);
       formData.append('ApplicantPersonId', payload.ApplicantPersonId);
       formData.append('PersonNum', payload.PersonNum);
-      formData.append('Constitution', payload.Constitution.file);
+      formData.append('Constitution', payload.Constitution.file.originFileObj);
       formData.append('FailSubject', payload.FailSubject);
       formData.append('AchievementRank', payload.AchievementRank);
       formData.append('ApplicantHonor', payload.ApplicantHonor);

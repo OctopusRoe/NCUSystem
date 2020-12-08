@@ -1,16 +1,25 @@
 // 注册审批页面
 import { Button, Divider, message, Popconfirm } from 'antd';
-import React, { useRef, useState } from 'react';
-import { queryRule } from './service';
+import React, { useEffect, useRef, useState } from 'react';
+import {} from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import ApprovalDrawer from './components/ApprovalDrawer';
 import CardInfo from '@/components/CardInfo/index';
+import { connect, Dispatch } from 'umi';
 
-const RegisterApproval: React.FC<{}> = () => {
+interface RegisterApprovalProps {
+  count: number;
+  dataSource: any;
+  loading: boolean;
+  dispatch: Dispatch;
+}
+
+const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
   const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
   const [cardInfo, setCardInfo] = useState(false);
   const actionRef = useRef<ActionType>();
+  const { count, dataSource, loading, dispatch } = props;
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '注册编号',
@@ -99,7 +108,7 @@ const RegisterApproval: React.FC<{}> = () => {
             审核
           </a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除？" onCancel={cancel} onConfirm={confirm}>
+          <Popconfirm title="是否要删除？" onConfirm={confirm}>
             <a>删除</a>
           </Popconfirm>
         </>
@@ -111,18 +120,28 @@ const RegisterApproval: React.FC<{}> = () => {
   const confirm = () => {
     message.success('删除成功');
   };
-  //取消删除
-  const cancel = () => {
-    message.error('取消删除');
-  };
+
+  //页面初始化
+  useEffect(() => {
+    dispatch({
+      type: 'settingPerson/searchPerson',
+      payload: {},
+    });
+
+    // 退出组件后清除调用的数据
+    return () => {
+      dispatch({
+        type: 'settingPerson/cleanState',
+      });
+    };
+  }, []);
 
   return (
     <div>
       <ProTable<TableListItem>
         headerTitle="社团列表"
         actionRef={actionRef}
-        rowKey="key"
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        rowKey="id"
         columns={columns}
       />
       <ApprovalDrawer

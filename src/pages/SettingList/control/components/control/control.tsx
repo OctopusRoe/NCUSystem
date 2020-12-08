@@ -12,25 +12,24 @@ import { connect, Dispatch } from 'umi';
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 
-import { ControlListState, CategoryState } from '../../data'
+import { ControlListState, CategoryState } from '../../data';
 
 interface ControlProps {
-  dataSorce: any
-  count: number
-  loading: boolean
-  typeValue: {one: string, id: number}[]
-  dispatch: Dispatch
+  dataSorce: any;
+  count: number;
+  loading: boolean;
+  typeValue: { one: string; id: number }[];
+  dispatch: Dispatch;
 }
 
 const { Search } = Input;
 
 const Control: React.FC<ControlProps> = (props) => {
-
-  const { dataSorce, count, loading, typeValue, dispatch } = props
+  const { dataSorce, count, loading, typeValue, dispatch } = props;
 
   const [addmodalVisible, handAddmodalVisible] = useState(false);
   const [editmodalVisible, setEditmodalVisible] = useState(false);
-  const [ rowValue, setRowValue ] = useState<any>({})
+  const [rowValue, setRowValue] = useState<any>({});
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -45,11 +44,7 @@ const Control: React.FC<ControlProps> = (props) => {
               style={{ width: '30px', height: '30px', borderRadius: '50%' }}
               onClick={() => document.getElementById(record.appName)?.click()}
             />
-            <Image
-              src={record.src}
-              style={{ display: 'none' }}
-              id={record.appName}
-            />
+            <Image src={record.src} style={{ display: 'none' }} id={record.appName} />
           </>
         );
       },
@@ -77,10 +72,14 @@ const Control: React.FC<ControlProps> = (props) => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a onClick={() => {
-            setEditmodalVisible(true)
-            setRowValue(record)
-          }}>编辑</a>
+          <a
+            onClick={() => {
+              setEditmodalVisible(true);
+              setRowValue(record);
+            }}
+          >
+            编辑
+          </a>
           <Divider type="vertical" />
           <Popconfirm title="是否要删除？" onConfirm={() => confirm(record.id)}>
             <a>删除</a>
@@ -93,40 +92,40 @@ const Control: React.FC<ControlProps> = (props) => {
   useEffect(() => {
     dispatch({
       type: 'controlList/searchControl',
-      payload: {}
-    })
-  },[])
+      payload: {},
+    });
+  }, []);
 
   // 更新后的回调
   const reloadValue = () => {
     dispatch({
       type: 'controlList/searchControl',
-      payload: {}
-    })
+      payload: {},
+    });
 
     dispatch({
       type: 'controlList/loading',
-      payload: true
-    })
-  }
+      payload: true,
+    });
+  };
 
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
       PageSize: pagination.pageSize,
-      PageIndex: pagination.current
-    }
+      PageIndex: pagination.current,
+    };
     dispatch({
       type: 'controlList/searchControl',
-      payload: data
-    })
+      payload: data,
+    });
 
     // 修改 table 的 loading 值
     dispatch({
       type: 'controlList/loading',
-      payload: true
-    })
-  }
+      payload: true,
+    });
+  };
 
   //删除成功
   const confirm = (id: number) => {
@@ -136,26 +135,26 @@ const Control: React.FC<ControlProps> = (props) => {
   //Search  搜索框事假
   const onSearch = (value: string) => {
     const data = {
-      query: value
-    }
+      query: value,
+    };
 
     dispatch({
       type: 'controlList/searchControl',
-      payload: data
-    })
+      payload: data,
+    });
 
     // 修改 table 的 loading 值
     dispatch({
       type: 'controlList/loading',
-      payload: true
-    })
+      payload: true,
+    });
   };
 
   const downLoad = () => {
     dispatch({
-      type: 'controlList/downLoad'
-    })
-  }
+      type: 'controlList/downLoad',
+    });
+  };
 
   return (
     <div>
@@ -173,24 +172,41 @@ const Control: React.FC<ControlProps> = (props) => {
           </Button>,
         ]}
         dataSource={dataSorce}
-        pagination={{total: count}}
+        pagination={{ total: count }}
         onChange={onChange}
         columns={columns}
         loading={loading}
       />
-      <AddModal onCancel={() => handAddmodalVisible(false)} modalVisible={addmodalVisible} typeValue={typeValue} afterClose={reloadValue} />
-      <EditModal modalVisible={editmodalVisible} onCancel={() => setEditmodalVisible(false)} typeValue={typeValue} afterClose={reloadValue} formValue={rowValue} />
+      <AddModal
+        onCancel={() => handAddmodalVisible(false)}
+        modalVisible={addmodalVisible}
+        typeValue={typeValue}
+        afterClose={reloadValue}
+      />
+      <EditModal
+        modalVisible={editmodalVisible}
+        onCancel={() => setEditmodalVisible(false)}
+        typeValue={typeValue}
+        afterClose={reloadValue}
+        formValue={rowValue}
+      />
     </div>
   );
 };
 
 export default connect(
-  ({ controlList, controlCategory }: { controlList: ControlListState, controlCategory: CategoryState }) => {
+  ({
+    controlList,
+    controlCategory,
+  }: {
+    controlList: ControlListState;
+    controlCategory: CategoryState;
+  }) => {
     return {
       dataSorce: controlList.controlList,
       count: controlList.count,
       loading: controlList.loading,
-      typeValue: controlCategory.valueList
-    }
-  }
+      typeValue: controlCategory.valueList,
+    };
+  },
 )(Control);

@@ -1,6 +1,6 @@
 // 短信统计 组件
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, Row, Col, Divider, Typography, Input } from 'antd';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableListItem } from './data.d';
@@ -20,7 +20,7 @@ interface MessageProps {
 
 const MessageCom: React.FC<MessageProps> = (props) => {
   const actionRef = useRef<ActionType>();
-
+  // const [current, setCurrent] = useState(0);
   const { count, dataSorce, loading, dispatch } = props;
 
   //Search 搜索框

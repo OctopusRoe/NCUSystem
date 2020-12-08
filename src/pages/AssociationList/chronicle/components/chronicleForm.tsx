@@ -3,13 +3,15 @@
 import React, { useState } from 'react';
 
 import { Form, Input, Button, DatePicker, Drawer, Space, Upload, Image } from 'antd';
-
+import { connect, Dispatch } from 'umi';
 import ImgCrop from 'antd-img-crop';
 import { PlusOutlined } from '@ant-design/icons';
 
 interface ChronicleFormProps {
   visible: boolean;
   onClose: () => void;
+  dispatch: Dispatch;
+  afterClose: () => void;
 }
 
 const FormItem = Form.Item;
@@ -46,7 +48,7 @@ const getBase64 = (img: any) => {
 };
 
 const ChronicleForm: React.FC<ChronicleFormProps> = (props) => {
-  const { visible, onClose } = props;
+  const { visible, onClose, dispatch, afterClose } = props;
 
   const [imgUrl, setImgUrl] = useState('');
   const [fileList, setFileList] = useState<any>([]);
@@ -54,8 +56,28 @@ const ChronicleForm: React.FC<ChronicleFormProps> = (props) => {
 
   // form value call back
   const onFinish = (e: any) => {
-    console.log(e);
-    console.log(fileList);
+    const info = e.time.format('YYYY-MM-DDTHH:mm:ss');
+    var json = new Array();
+    for (var i = 0; i < fileList.length; i++) {
+      json.push(fileList[i].originFileObj);
+    }
+    console.log(json);
+
+    const data = {
+      ...e,
+      img: json,
+      time: info,
+    };
+    dispatch({
+      type: 'communityMemorabilia/addChronicle',
+      payload: data,
+    });
+
+    onClose();
+
+    setTimeout(() => {
+      afterClose();
+    }, 0.5 * 1000);
   };
 
   // upload 的 onChange 事件
@@ -82,6 +104,7 @@ const ChronicleForm: React.FC<ChronicleFormProps> = (props) => {
 
   return (
     <Drawer
+      destroyOnClose
       title={'发布大事记'}
       visible={visible}
       onClose={onClose}
@@ -170,4 +193,4 @@ const ChronicleForm: React.FC<ChronicleFormProps> = (props) => {
   );
 };
 
-export default ChronicleForm;
+export default connect()(ChronicleForm);

@@ -1,75 +1,13 @@
 // 社团管理 大事记组件
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Timeline, Card, Row, Col, Typography, Button, Image, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import ChronicleForm from './components/chronicleForm';
-
-const timeLindData = [
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [
-      'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1689053532,4230915864&fm=26&gp=0.jpg',
-      'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1689053532,4230915864&fm=26&gp=0.jpg',
-      'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1689053532,4230915864&fm=26&gp=0.jpg',
-    ],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [
-      'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1689053532,4230915864&fm=26&gp=0.jpg',
-      'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1689053532,4230915864&fm=26&gp=0.jpg',
-      'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1689053532,4230915864&fm=26&gp=0.jpg',
-    ],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [],
-  },
-  {
-    time: '2020-10-01',
-    title: '这是一条测试用数据title',
-    content: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-    src: [],
-  },
-];
+import { connect, Dispatch } from 'umi';
+import { ChronicleState } from './data';
+import getPort from '@/services/global';
 
 const { Text, Title } = Typography;
 
@@ -87,10 +25,46 @@ const getColor = (index: number) => {
   }
 };
 
+interface ChronicleProps {
+  dataSource: any;
+  loading: boolean;
+  dispatch: Dispatch;
+}
 
-
-const Chronicle: React.FC<{}> = (props) => {
+const Chronicle: React.FC<ChronicleProps> = (props) => {
   const [visible, setVisible] = useState<boolean>(false);
+  const { dataSource, dispatch } = props;
+
+  useEffect(() => {
+    dispatch({
+      type: 'communityMemorabilia/searchChronicle',
+      payload: {},
+    });
+  }, []);
+
+  const deleteChronicle = (id: any) => {
+    dispatch({
+      type: 'communityMemorabilia/deleteChronicle',
+      payload: id,
+    });
+
+    setTimeout(() => {
+      reloadValue();
+    }, 0.5 * 1000);
+  };
+
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'communityMemorabilia/searchChronicle',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'communityMemorabilia/loading',
+      payload: true,
+    });
+  };
 
   return (
     <>
@@ -98,7 +72,7 @@ const Chronicle: React.FC<{}> = (props) => {
         <Row style={{ paddingTop: '20px' }}>
           <Col span={2} />
           <Col span={20}>
-            <Timeline mode={'alternate'} pending>
+            <Timeline mode={'alternate'} pending={true}>
               <Timeline.Item
                 style={{ height: '100px' }}
                 dot={
@@ -111,13 +85,13 @@ const Chronicle: React.FC<{}> = (props) => {
                   </Button>
                 }
               />
-              {timeLindData.map((item: any, index: number) => {
+              {dataSource.map((item: any, index: number) => {
                 if (index % 2 !== 0) {
                   return (
                     <Timeline.Item
                       label={
                         <Title level={5} style={{ paddingRight: '40px' }}>
-                          {item.time}
+                          {item.time.slice(0, 10)}
                         </Title>
                       }
                       key={index}
@@ -130,12 +104,12 @@ const Chronicle: React.FC<{}> = (props) => {
                       <Row style={{ marginTop: '8px' }}>
                         <Text style={{ letterSpacing: '1px' }}>{item.content}</Text>
                       </Row>
-                      {item.src.length > 0 ? (
+                      {item.images[0] !== '' ? (
                         <Row gutter={8} style={{ marginTop: '16px' }}>
-                          {item.src.map((src: string, i: number) => (
+                          {item.images.map((src: string, i: number) => (
                             <Col key={i} span={4}>
                               <Image
-                                src={src}
+                                src={getPort('image/') + escape(src)}
                                 style={{ borderRadius: '5px', overflow: 'hidden' }}
                               />
                             </Col>
@@ -143,7 +117,10 @@ const Chronicle: React.FC<{}> = (props) => {
                         </Row>
                       ) : null}
                       <Row style={{ marginTop: '8px' }}>
-                        <Popconfirm title={'删除'}>
+                        <Popconfirm
+                          title={'确定要删除？'}
+                          onConfirm={() => deleteChronicle(item.id)}
+                        >
                           <Button
                             size={'small'}
                             icon={<DeleteOutlined />}
@@ -159,7 +136,7 @@ const Chronicle: React.FC<{}> = (props) => {
                   <Timeline.Item
                     label={
                       <Title level={5} style={{ paddingLeft: '20px' }}>
-                        {item.time}
+                        {item.time.slice(0, 10)}
                       </Title>
                     }
                     key={index}
@@ -172,17 +149,20 @@ const Chronicle: React.FC<{}> = (props) => {
                     <Row style={{ marginTop: '8px' }} justify={'end'}>
                       <Text style={{ letterSpacing: '1px' }}>{item.content}</Text>
                     </Row>
-                    {item.src.length > 0 ? (
+                    {item.images[0] !== '' ? (
                       <Row gutter={8} style={{ marginTop: '16px' }} justify={'end'}>
-                        {item.src.map((src: string, i: number) => (
+                        {item.images.map((src: string, i: number) => (
                           <Col key={i} span={4}>
-                            <Image src={src} style={{ borderRadius: '5px', overflow: 'hidden' }} />
+                            <Image
+                              src={getPort('image/') + escape(src)}
+                              style={{ borderRadius: '5px', overflow: 'hidden' }}
+                            />
                           </Col>
                         ))}
                       </Row>
                     ) : null}
                     <Row style={{ marginTop: '8px' }} justify={'end'}>
-                      <Popconfirm title={'删除'}>
+                      <Popconfirm title={'确定要删除？'} onConfirm={() => deleteChronicle(item.id)}>
                         <Button
                           size={'small'}
                           icon={<DeleteOutlined />}
@@ -199,9 +179,11 @@ const Chronicle: React.FC<{}> = (props) => {
           <Col span={2} />
         </Row>
       </Card>
-      <ChronicleForm visible={visible} onClose={() => setVisible(false)} />
+      <ChronicleForm visible={visible} onClose={() => setVisible(false)} afterClose={reloadValue} />
     </>
   );
 };
 
-export default Chronicle;
+export default connect(({ communityMemorabilia }: { communityMemorabilia: ChronicleState }) => {
+  return { dataSource: communityMemorabilia.chronicleList, loading: communityMemorabilia.loading };
+})(Chronicle);

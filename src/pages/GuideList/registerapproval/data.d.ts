@@ -34,3 +34,18 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+//社团指导  注册审批 state
+export interface RegisterApprovalState {
+  RegisterApprovalList: {
+    id: string;
+    number: string;
+    nameZh: string;
+    category: number;
+    level: number;
+    organizationId: number;
+    status: number;
+  }[];
+  count: number;
+  loading: boolean;
+}
