@@ -9,6 +9,21 @@ import { connect, Dispatch } from 'umi';
 import DetailsModal from '@/components/DetailsModal/DetailsModal';
 import { PaginationProps } from 'antd/lib/pagination';
 
+export interface PersonState {
+  personList?: {
+    id: string;
+    category: number;
+    name: string;
+    personId: string;
+    gender: number;
+    idcard: string;
+    college: string;
+    class: string;
+    phone: string;
+    status: number;
+  }[];
+}
+
 export interface GlobalModelState {
   token: any;
 }
@@ -18,11 +33,12 @@ interface AddressListProps {
   loading: boolean;
   dispatch: Dispatch;
   token: any;
+  infoData: any;
 }
 
 const RecruitmentSquareCom: React.FC<AddressListProps> = (props) => {
   const [visible, setVisible] = useState<boolean>(false);
-  const { count, dataSorce, loading, dispatch, token } = props;
+  const { count, dataSorce, loading, dispatch, token, infoData } = props;
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -42,6 +58,7 @@ const RecruitmentSquareCom: React.FC<AddressListProps> = (props) => {
             size={'small'}
             onClick={() => {
               setVisible(true);
+              getInfo(record);
             }}
           >
             {text}
@@ -99,6 +116,18 @@ const RecruitmentSquareCom: React.FC<AddressListProps> = (props) => {
       hideInSearch: true,
     },
   ];
+
+  //点击姓名 获取详情信息
+  const getInfo = (record: any) => {
+    console.log(record);
+    const data = {
+      PersonId: record.personId,
+    };
+    dispatch({
+      type: 'settingPerson/searchPerson',
+      payload: data,
+    });
+  };
 
   //导出
   const downLoad = () => {
@@ -196,6 +225,7 @@ const RecruitmentSquareCom: React.FC<AddressListProps> = (props) => {
         onCancel={() => {
           setVisible(false);
         }}
+        infoData={infoData[0]}
       />
     </div>
   );
@@ -205,15 +235,18 @@ export default connect(
   ({
     communityAddressList,
     global,
+    settingPerson,
   }: {
     communityAddressList: AddressListState;
     global: GlobalModelState;
+    settingPerson: PersonState;
   }) => {
     return {
       count: communityAddressList.count,
       dataSorce: communityAddressList.addressList,
       loading: communityAddressList.loading,
       token: global.token,
+      infoData: settingPerson.personList,
     };
   },
 )(RecruitmentSquareCom);

@@ -104,4 +104,4 @@ const registerapprovalModel: PersonType = {
   },
 };
 
-export default personModel;
+export default registerapprovalModel;

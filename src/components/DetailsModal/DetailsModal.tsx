@@ -1,4 +1,4 @@
-import { Col, Row, Table,Image, Tabs } from 'antd';
+import { Col, Row, Table, Image, Tabs } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
 import FormatGrid from './FormatGrid';
@@ -6,13 +6,15 @@ import FormatGrid from './FormatGrid';
 interface DetailsModalProps {
   modalVisible: boolean;
   onCancel: () => void;
+  infoData: any;
 }
 
-
 const DetailsModal: React.FC<DetailsModalProps> = (props) => {
-  const { modalVisible, onCancel } = props;
+  const { modalVisible, onCancel, infoData } = props;
   const { TabPane } = Tabs;
   const callback = () => {};
+
+  console.log(infoData);
 
   const columns1 = [
     {
@@ -41,7 +43,6 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
       key: 'result',
     },
   ];
-
 
   const data1 = [
     {
@@ -81,11 +82,29 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
   };
 
   const data = [
-    [{title: '姓名', value: '曲丽丽'},{title: '籍贯', value: '新疆维吾尔自治区'},{title: '专业', value:'信息技术'},{title:'手机号',value:'1366654888',copy: true}],
-    [{title: '学号', value: '4565545458',copy: true},{title: '民族', value: '维吾尔族'},{title: '学制', value:'四年制'},{title:'QQ号',value:'136665488',copy: true}],
-    [{title: '性别', value: '女'},{title: '学院', value: '信息工程学院'},{title: '入学时间', value: '2020-09-12'}],
-    [{title: '身份证号', value: '36565415255695845X',copy: true},{title: '班级', value: '20XXXXXXXXX'},{title: '政治面貌', value: '群众'}],
-  ]
+    [
+      { title: '姓名', value: infoData !== undefined ? infoData.name : '' },
+      { title: '籍贯', value: '' },
+      { title: '专业', value: '' },
+      { title: '手机号', value: infoData !== undefined ? infoData.phone : '', copy: true },
+    ],
+    [
+      { title: '学号', value: infoData !== undefined ? infoData.personId : '', copy: true },
+      { title: '民族', value: '' },
+      { title: '学制', value: '' },
+      { title: 'QQ号', value: '', copy: true },
+    ],
+    [
+      { title: '性别', value: infoData !== undefined ? (infoData.gender === 0 ? '男' : '女') : '' },
+      { title: '学院', value: infoData !== undefined ? infoData.college : '' },
+      { title: '入学时间', value: '' },
+    ],
+    [
+      { title: '身份证号', value: infoData !== undefined ? infoData.idcard : '', copy: true },
+      { title: '班级', value: infoData !== undefined ? infoData.class : '' },
+      { title: '政治面貌', value: '' },
+    ],
+  ];
 
   return (
     <Modal
@@ -97,13 +116,9 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
       destroyOnClose
     >
       <div>
-      <Row>
+        <Row>
           <Col span={4} style={{ textAlign: 'center' }}>
-            <Row
-              justify={'center'}
-              align={'middle'}
-              style={{ overflow: 'hidden' }}
-            >
+            <Row justify={'center'} align={'middle'} style={{ overflow: 'hidden' }}>
               <img
                 src={
                   'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4043543360,109021256&fm=26&gp=0.jpg'
@@ -121,19 +136,37 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
             </Row>
           </Col>
           <Col span={20}>
-          {
-            data.map((item: any, index: number) => (
+            {data.map((item: any, index: number) => (
               <FormatGrid data={item} key={index} />
-            ))
-          }
+            ))}
           </Col>
         </Row>
         <Tabs defaultActiveKey="1" onChange={callback} style={{ marginTop: '20px' }}>
           <TabPane tab="社团档案" key="1">
-            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: ()=>false}}/>
+            <Table
+              columns={columns1}
+              dataSource={data1}
+              size={'large'}
+              pagination={{
+                pageSize: 5,
+                showSizeChanger: false,
+                size: 'small',
+                showTotal: () => false,
+              }}
+            />
           </TabPane>
           <TabPane tab="活动档案" key="2">
-            <Table columns={columns1} dataSource={data1} size={"large"} pagination={{pageSize: 5, showSizeChanger: false, size: 'small', showTotal: ()=>false}}/>
+            <Table
+              columns={columns1}
+              dataSource={data1}
+              size={'large'}
+              pagination={{
+                pageSize: 5,
+                showSizeChanger: false,
+                size: 'small',
+                showTotal: () => false,
+              }}
+            />
           </TabPane>
         </Tabs>
       </div>

@@ -23,10 +23,11 @@ const Punish: React.FC<PunishProps> = (props) => {
   const { count, dataSorce, loading, dispatch } = props;
 
   const [downmodalVisible, setDownmodalVisible] = useState(false);
-
+  const [current, setCurrent] = useState<number>(0);
+  const [query, setQuery] = useState<string>('')
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '学号',  
+      title: '学号',
       dataIndex: 'personId',
       key: 'personId',
       fixed: 'left',
@@ -73,6 +74,7 @@ const Punish: React.FC<PunishProps> = (props) => {
       dispatch({
         type: 'settingPunish/cleanState',
       });
+      setQuery('')
     };
   }, []);
 
@@ -80,9 +82,11 @@ const Punish: React.FC<PunishProps> = (props) => {
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
+      PersonId: query !== '' ? query : '',
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
     };
+    console.log(data)
     dispatch({
       type: 'settingPunish/searchPunish',
       payload: data,
@@ -97,6 +101,8 @@ const Punish: React.FC<PunishProps> = (props) => {
 
   //Search 搜索框事件
   const onSearch = (value: any) => {
+    setQuery(value)
+    setCurrent(1)
     const data = {
       PersonId: value,
     };
@@ -159,7 +165,7 @@ const Punish: React.FC<PunishProps> = (props) => {
           </Button>,
         ]}
         dataSource={dataSorce}
-        pagination={{ total: count }}
+        pagination={{ total: count, current: current }}
         onChange={onChange}
         columns={columns}
         loading={loading}

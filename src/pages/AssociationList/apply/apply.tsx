@@ -11,16 +11,17 @@ import Step5 from './components/Step5';
 import styles from './style.less';
 import Success from './components/result/success';
 import Fail from './components/result/fail';
+import WaitView from '@/components/waitView/index';
 
 const { Step } = Steps;
 export interface GlobalModelState {
-  associationList: any;
+  association: any;
   global: any;
   reload: any;
 }
 interface StepFormProps {
   current: StateType['current'];
-  associationList: any;
+  association: any;
   global: any;
   reload: any;
 }
@@ -48,9 +49,11 @@ const getCurrentStepAndComponent = (current?: string) => {
   }
 };
 
-const StepForm: React.FC<StepFormProps> = ({ current, associationList, reload }) => {
+const StepForm: React.FC<StepFormProps> = ({ current, association, reload }) => {
   const [stepComponent, setStepComponent] = useState<React.ReactNode>(<Step1 />);
   const [currentStep, setCurrentStep] = useState<number>(0);
+
+  console.log(association);
 
   useEffect(() => {
     const { step, component } = getCurrentStepAndComponent(current);
@@ -60,16 +63,16 @@ const StepForm: React.FC<StepFormProps> = ({ current, associationList, reload })
 
   if (reload === 0) {
     //加载中
-  } else if (associationList.length === 0) {
+  } else if (association === undefined) {
     //未注册社团----注册页面
-  } else if (associationList.length !== 0) {
+  } else if (association !== undefined) {
     //已注册一个社团---无权限
   }
 
   return (
     <>
       <Card bordered={false}>
-        <div style={{ display: associationList.length === 0 && reload !== 0 ? 'block' : 'none' }}>
+        <div style={{ display: association === undefined  ? 'block' : 'none' }}>
           <Steps current={currentStep} className={styles.steps}>
             <Step title="社团基本信息填写" />
             <Step title="社团发起人信息填写" />
@@ -80,11 +83,14 @@ const StepForm: React.FC<StepFormProps> = ({ current, associationList, reload })
           <Success />
         </div>
 
-        <div style={{ display: associationList.length !== 0 ? 'block' : 'none' }}>
+        <div style={{ display: association === undefined || reload === 0 ? 'none' : 'block' }}>
           <Fail
-            nameEN={associationList.length !== 0 ? associationList[0].nameEn : ''}
-            nameZH={associationList.length !== 0 ? associationList[0].nameZh : ''}
+            nameEN={association !== undefined ? association.nameEn : ''}
+            nameZH={association !== undefined ? association.nameZh : ''}
           />
+        </div>
+        <div style={{ display: reload === 0? 'block' : 'none' }}>
+          <WaitView />
         </div>
       </Card>
     </>
@@ -94,7 +100,7 @@ const StepForm: React.FC<StepFormProps> = ({ current, associationList, reload })
 export default connect(
   ({ formAndstepForm, global }: { formAndstepForm: StateType; global: GlobalModelState }) => ({
     current: formAndstepForm.current,
-    associationList: global.associationList,
+    association: global.association,
     reload: global.reload,
   }),
 )(StepForm);

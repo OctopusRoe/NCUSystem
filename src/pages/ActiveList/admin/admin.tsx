@@ -143,7 +143,7 @@ const Admin: React.FC<{}> = () => {
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
       />
-      <DetailsModal onCancel={() => setDetailModal(false)} modalVisible={detailModal} />
+      {/* <DetailsModal onCancel={() => setDetailModal(false)} modalVisible={detailModal} infoData={} /> */}
     </div>
   );
 };

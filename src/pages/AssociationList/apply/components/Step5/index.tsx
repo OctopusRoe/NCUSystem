@@ -11,7 +11,7 @@ import { StateType } from '../../model';
 import { StepstateType } from './model';
 
 export interface GlobalModelState {
-  associationList: any;
+  association: any;
 }
 
 export interface BaseInfoState {
@@ -32,7 +32,7 @@ interface Step3Props {
   canDepartmentUse: boolean;
   departmentCount: number;
   submitting?: boolean;
-  associationList: any;
+  association: any;
   tGUID: string;
   dGUID: string;
 }
@@ -64,7 +64,7 @@ const Step5: React.FC<Step3Props> = (props) => {
     canDepartmentUse,
     departmentCount,
     submitting,
-    associationList,
+    association,
     tGUID,
     dGUID,
   } = props;
@@ -74,7 +74,7 @@ const Step5: React.FC<Step3Props> = (props) => {
   }
 
   //指导老师信息
-  const teacherInfo = associationList[0].instructorInfo;
+  const teacherInfo = association.instructorInfo;
 
   const { getFieldsValue } = form;
 
@@ -334,7 +334,7 @@ export default connect(
     teacherCount: associationBaseInfo.teacherCount,
     canDepartmentUse: associationBaseInfo.canDepartmentUse,
     departmentCount: associationBaseInfo.departmentCount,
-    associationList: global.associationList,
+    association: global.association,
     tGUID: associationBaseInfo.tGUID,
     dGUID: associationBaseInfo.dGUID,
   }),

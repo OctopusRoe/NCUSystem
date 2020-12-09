@@ -28,6 +28,8 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
   const [stepFormValues, setStepFormValues] = useState({});
   const [editmodalVisible, setEditmodalVisible] = useState(false);
   const actionRef = useRef<ActionType>();
+  const [current, setCurrent] = useState<number>(0);
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '用户组名称',
@@ -102,6 +104,7 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
 
   //Search 搜索框
   const onSearch = (value: any) => {
+    setCurrent(1);
     const data = { groupName: value };
     dispatch({
       type: 'settingUserGroup/searchUserGroup',
@@ -171,7 +174,6 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
   return (
     <div>
       <ProTable<TableListItem>
-        // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
         headerTitle="用户组列表"
         actionRef={actionRef}
         search={false}
@@ -185,9 +187,8 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
             <DownloadOutlined /> 导出
           </Button>,
         ]}
-        // request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         dataSource={dataSource}
-        pagination={{ total: count }}
+        pagination={{ total: count, current: current }}
         onChange={onChange}
         columns={columns}
         loading={loading}

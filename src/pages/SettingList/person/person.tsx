@@ -39,7 +39,14 @@ const Person: React.FC<PersonProps> = (props) => {
       key: 'name',
       render: (text, record) => {
         return (
-          <Button type={'link'} size={'small'} onClick={() => setDetailmodalVisible(true)}>
+          <Button
+            type={'link'}
+            size={'small'}
+            onClick={() => {
+              setDetailmodalVisible(true);
+              setRowValue(record);
+            }}
+          >
             {text}
           </Button>
         );
@@ -106,8 +113,6 @@ const Person: React.FC<PersonProps> = (props) => {
             onClick={() => {
               setEditmodalVisible(true);
               setRowValue(record);
-              console.log(record);
-              
             }}
           >
             编辑
@@ -280,6 +285,7 @@ const Person: React.FC<PersonProps> = (props) => {
       <DetailsModal
         modalVisible={detailsmodalVisible}
         onCancel={() => setDetailmodalVisible(false)}
+        infoData={rowValue}
       />
     </div>
   );

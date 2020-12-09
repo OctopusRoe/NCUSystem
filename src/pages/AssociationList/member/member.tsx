@@ -11,12 +11,28 @@ import CopyMember from './components/copyMember';
 import { connect, Dispatch } from 'umi';
 import { PaginationProps } from 'antd/lib/pagination';
 
+export interface PersonState {
+  personList?: {
+    id: string;
+    category: number;
+    name: string;
+    personId: string;
+    gender: number;
+    idcard: string;
+    college: string;
+    class: string;
+    phone: string;
+    status: number;
+  }[];
+}
+
 interface MemberProps {
   count: number;
   dataSorce: any;
   loading: boolean;
   dispatch: Dispatch;
   token: any;
+  infoData: any;
 }
 
 export interface GlobalModelState {
@@ -28,7 +44,9 @@ const MemberCom: React.FC<MemberProps> = (props) => {
   message.config({
     maxCount: 1,
   });
-  const { count, dataSorce, loading, dispatch, token } = props;
+  const { count, dataSorce, loading, dispatch, token, infoData } = props;
+
+  console.log(infoData);
 
   const actionRef = useRef<ActionType>();
 
@@ -73,7 +91,14 @@ const MemberCom: React.FC<MemberProps> = (props) => {
       fixed: 'left',
       render: (text, record) => {
         return (
-          <Button size={'small'} type={'link'} onClick={() => setDetailsModalVisible(true)}>
+          <Button
+            size={'small'}
+            type={'link'}
+            onClick={() => {
+              setDetailsModalVisible(true);
+              getInfo(record);
+            }}
+          >
             {text}
           </Button>
         );
@@ -148,6 +173,17 @@ const MemberCom: React.FC<MemberProps> = (props) => {
       ),
     },
   ];
+
+  //点击姓名 获取详情信息
+  const getInfo = (record: any) => {
+    const data = {
+      PersonId: record.personId,
+    };
+    dispatch({
+      type: 'settingPerson/searchPerson',
+      payload: data,
+    });
+  };
 
   //删除成功
   const confirm = (id: string) => {
@@ -296,6 +332,7 @@ const MemberCom: React.FC<MemberProps> = (props) => {
       <DetailsModal
         modalVisible={DetailsModalVisible}
         onCancel={() => setDetailsModalVisible(false)}
+        infoData={infoData[0]}
       />
       <EditModal
         onCancel={() => setEditModalVisible(false)}
@@ -309,12 +346,21 @@ const MemberCom: React.FC<MemberProps> = (props) => {
 };
 
 export default connect(
-  ({ associationMember, global }: { associationMember: MemberState; global: GlobalModelState }) => {
+  ({
+    associationMember,
+    global,
+    settingPerson,
+  }: {
+    settingPerson: PersonState;
+    associationMember: MemberState;
+    global: GlobalModelState;
+  }) => {
     return {
       dataSorce: associationMember.memberList,
       count: associationMember.count,
       loading: associationMember.loading,
       token: global.token,
+      infoData: settingPerson.personList,
     };
   },
 )(MemberCom);

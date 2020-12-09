@@ -19,7 +19,7 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
   const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
   const [cardInfo, setCardInfo] = useState(false);
   const actionRef = useRef<ActionType>();
-  const { count, dataSource, loading, dispatch } = props;
+  // const { count, dataSource, loading, dispatch } = props;
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '注册编号',
@@ -120,21 +120,6 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
   const confirm = () => {
     message.success('删除成功');
   };
-
-  //页面初始化
-  useEffect(() => {
-    dispatch({
-      type: 'settingPerson/searchPerson',
-      payload: {},
-    });
-
-    // 退出组件后清除调用的数据
-    return () => {
-      dispatch({
-        type: 'settingPerson/cleanState',
-      });
-    };
-  }, []);
 
   return (
     <div>
