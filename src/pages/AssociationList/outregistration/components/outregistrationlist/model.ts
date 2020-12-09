@@ -6,7 +6,7 @@ import { message } from 'antd'
 
 import { OutregistrationListState } from '../../data'
 
-import { searchList, deleteList } from '../../service'
+import { searchList, deleteList, searchInfo } from '../../service'
 
 interface OutregistrationListType {
   namespace: string
@@ -16,10 +16,14 @@ interface OutregistrationListType {
     saveList: Reducer<OutregistrationListState>
     loading: Reducer<OutregistrationListState>
     cleanState: Reducer<OutregistrationListState>
+    saveInfo: Reducer<OutregistrationListState>
+    cleanInfo: Reducer<OutregistrationListState>
+    isquery: Reducer<OutregistrationListState>
   }
   effects: {
     searchList: Effect
     deleteList: Effect
+    searchInfo: Effect
   }
 }
 
@@ -28,7 +32,9 @@ const OutregistrationListModel: OutregistrationListType = {
   state: {
     list: [],
     count: 0,
-    loading: true
+    loading: true,
+    info: {},
+    isquery: true
   },
   reducers: {
     saveCount (state, { payload }) {
@@ -56,10 +62,34 @@ const OutregistrationListModel: OutregistrationListType = {
       const state = {
         list: [],
         count: 0,
-        loading: true
+        loading: true,
+        info: {},
+        isquery: true
       }
       return {
         ...state
+      }
+    },
+    saveInfo (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.info = payload
+      return {
+        ...newState
+      }
+    },
+    cleanInfo (state) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.Info = {}
+      newState.isquery = true
+      return {
+        ...newState
+      }
+    },
+    isquery (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.isquery = payload
+      return {
+        ...newState
       }
     }
   },
@@ -71,11 +101,7 @@ const OutregistrationListModel: OutregistrationListType = {
         PageIndex: payload.PageIndex ? payload.PageIndex : 1
       }
 
-      const header = {
-        PersonId: payload.personId
-      }
-
-      const back = yield call(searchList, params, header)
+      const back = yield call(searchList, params)
       if (back.code !== 0) {
         message.error(back.msg)
         console.error(back.msg)
@@ -112,6 +138,29 @@ const OutregistrationListModel: OutregistrationListType = {
       }
 
       message.success('删除成功')
+    },
+
+    *searchInfo ({ payload }, { call, put }) {
+      const params = {
+        Id: payload
+      }
+
+      const back = yield call(searchInfo, params)
+      if (back.code !== 0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      yield put({
+        type: 'saveInfo',
+        payload: back.data
+      })
+
+      yield put({
+        type: 'isquery',
+        payload: false
+      })
     }
   }
 }

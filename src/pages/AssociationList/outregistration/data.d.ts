@@ -14,4 +14,6 @@ export interface OutregistrationListState {
   list: {}[]
   count: number
   loading: boolean
+  info: {}
+  isquery: boolean
 }

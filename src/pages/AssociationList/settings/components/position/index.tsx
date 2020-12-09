@@ -31,6 +31,8 @@ const Position: React.FC<PositionProps> = (props) => {
   const [editModalVisible, setEditModalViaible] = useState(false);
 
   const [rowValue, setRowValue] = useState<any>({});
+  const [current, setCurrent] = useState<number>(0)
+  const [query, setQuery] = useState<string>('')
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -103,6 +105,8 @@ const Position: React.FC<PositionProps> = (props) => {
       dispatch({
         type: 'associationPosition/cleanPosition'
       })
+
+      setQuery('')
     }
   }, [])
 
@@ -120,6 +124,9 @@ const Position: React.FC<PositionProps> = (props) => {
 
   //搜索框 Search事件
   const onSearch = (value: any) => {
+    
+    setQuery(value)
+    setCurrent(1)
     
     const data = {
       query: value
@@ -142,6 +149,7 @@ const Position: React.FC<PositionProps> = (props) => {
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
+      query: query,
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
     };
@@ -155,6 +163,8 @@ const Position: React.FC<PositionProps> = (props) => {
       type: 'associationPosition/loading',
       payload: true,
     });
+
+    setCurrent(pagination.current as number)
   };
 
   // 更新后的回调
@@ -183,7 +193,7 @@ const Position: React.FC<PositionProps> = (props) => {
           </Button>,
         ]}
         dataSource={dataSorce}
-        pagination={{total: count}}
+        pagination={{total: count, current: current}}
         onChange={onChange}
         columns={columns}
         loading={loading}

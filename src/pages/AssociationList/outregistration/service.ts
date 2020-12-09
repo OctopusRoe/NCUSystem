@@ -13,11 +13,16 @@ export function upFormValue (data: FormData) {
 }
 
 // 外出登记 登记列表 获取列表
-export function searchList (params: {PageSize: number, PageIndex: number}, hearder: {PersonId: string}) {
-  return request.get(getPort('outregistration/query'), {params: params, headers: hearder})
+export function searchList (params: {PageSize: number, PageIndex: number}) {
+  return request.get(getPort('outregistration/query'), {params: params})
 }
 
 // 外出登记 登记列表 删除
 export function deleteList (params: {Id: string}) {
-  return request.delete(getPort('/api/v1/outregistrationapproval/delete'), {params: params})
+  return request.delete(getPort('outregistrationapproval/delete'), {params: params})
+}
+
+// 外出登记 登记列表 查询列表详情
+export function searchInfo (params: {Id: string}) {
+  return request.get(getPort('outregistration/getdetails'), {params: params})
 }

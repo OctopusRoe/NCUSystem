@@ -31,6 +31,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
   const actionRef = useRef<ActionType>();
 
   const [rowValue, setRowValue] = useState<any>({});
+  const [query, setQuery] = useState<string>('')
   const [current, setCurrent] = useState<number>(0)
 
   const columns: ProColumns<TableListItem>[] = [
@@ -109,6 +110,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
       dispatch({
         type: 'baseDepartment/cleanState',
       });
+      setQuery('')
     };
   }, []);
 
@@ -126,7 +128,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
 
   //Search 搜索框事件
   const onSearch = (value: any) => {
-
+    setQuery(value)
     setCurrent(1)
     const data = {
       query: value,
@@ -146,8 +148,8 @@ const Department: React.FC<DepartmentProps> = (props) => {
   // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
-    console.log(pagination)
     const data = {
+      Query: query,
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
     };
@@ -161,6 +163,8 @@ const Department: React.FC<DepartmentProps> = (props) => {
       type: 'baseDepartment/loading',
       payload: true,
     });
+
+    setCurrent(pagination.current as number)
   };
 
   // 更新后的回调

@@ -13,6 +13,7 @@ export interface TableListItem {
   progress: number;
   case: string
   reason: string
+  id: string
 }
 
 export interface TableListPagination {

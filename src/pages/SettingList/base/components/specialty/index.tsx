@@ -34,6 +34,7 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
 
   const [ rowValue, setRowValue ] = useState<any>({})
   const [current, setCurrent] = useState<number>(0)
+  const [query, setQuery] = useState<string>('')
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -93,6 +94,7 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
   //搜索框 serach方法
   const onSearch = (value: any) => {
 
+    setQuery(value)
     setCurrent(1)
 
     const data = {
@@ -114,6 +116,7 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
+      Query: query,
       PageSize: pagination.pageSize,
       PageIndex: pagination.current
     }
@@ -127,6 +130,8 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
       type: 'baseSpecialty/loading',
       payload: true
     })
+
+    setCurrent(pagination.current as number)
   }
 
   useEffect(() => {
@@ -140,6 +145,8 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
       dispatch({
         type: 'baseSpecialty/cleanState'
       })
+
+      setQuery('')
     }
   }, [])
 

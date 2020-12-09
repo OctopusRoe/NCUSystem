@@ -32,6 +32,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
   const [editmodalVisible, setEditmodalVisible] = useState(false);
   const [downmodalVisible, setDownmodalVisible] = useState(false);
 
+  const [query, setQuery] = useState<string>('')
   const [ rowValue, setRowValue ] = useState<any>({})
   const [current, setCurrent] = useState<number>(0)
 
@@ -86,7 +87,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
 
   //搜索框 search方法
   const onSearch = (value: any) => {
-
+    setQuery(value)
     setCurrent(1)
 
     const data = {
@@ -107,6 +108,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
+      Query: query,
       PageSize: pagination.pageSize,
       PageIndex: pagination.current
     }
@@ -120,6 +122,8 @@ const SetClass: React.FC<SetClassProps> = (props) => {
       type: 'baseSetClass/loading',
       payload: true
     })
+
+    setCurrent(pagination.current as number)
   }
 
   useEffect(() => {
@@ -133,6 +137,8 @@ const SetClass: React.FC<SetClassProps> = (props) => {
       dispatch({
         type: 'baseSetClass/cleanState'
       })
+
+      setQuery('')
     }
   }, [])
 

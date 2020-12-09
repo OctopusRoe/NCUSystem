@@ -204,7 +204,7 @@ const outregistrationFormModel: OutregistrationFormType = {
         return
       }
       
-      message.success('更新成功')
+      message.success('申请成功')
 
     }
   }

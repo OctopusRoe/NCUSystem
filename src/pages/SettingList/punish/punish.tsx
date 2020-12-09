@@ -82,11 +82,10 @@ const Punish: React.FC<PunishProps> = (props) => {
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
-      PersonId: query !== '' ? query : '',
+      PersonId: query,
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
     };
-    console.log(data)
     dispatch({
       type: 'settingPunish/searchPunish',
       payload: data,
@@ -97,12 +96,15 @@ const Punish: React.FC<PunishProps> = (props) => {
       type: 'settingPunish/loading',
       payload: true,
     });
+
+    setCurrent(pagination.current as number)
+
   };
 
   //Search 搜索框事件
   const onSearch = (value: any) => {
-    setQuery(value)
     setCurrent(1)
+    setQuery(value)
     const data = {
       PersonId: value,
     };

@@ -1,12 +1,12 @@
 // 登记列表 组件
 
 import React, { useState, useEffect } from 'react';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 
 import { GlobalModelState } from '@/models/global'
 
 import { TableListItem } from './data';
-import { Popover, Tag, Divider } from 'antd';
+import { Popover, Tag, Divider, Popconfirm } from 'antd';
 import { PaginationProps } from 'antd/lib/pagination';
 
 import InfoDrawer from './components/infoDrawer';
@@ -17,9 +17,8 @@ import { OutregistrationListState } from '../../data'
 
 interface OutregistrationListProps {
   dataSorce: any
-  count: number,
+  count: number
   loading: boolean
-  association: any
   dispatch: Dispatch
 }
 
@@ -30,11 +29,13 @@ const changeMouseStyle = {
 
 const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
 
-  const { count, dataSorce, loading, association, dispatch } = props
+  const { count, dataSorce, loading, dispatch } = props
 
   const [drawervisible, setdrawervisible] = useState(false);
 
   const [current, setCurrent] = useState<number>(0)
+
+  const [cause, setCause] = useState<string>('')
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -48,6 +49,7 @@ const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
       dataIndex: 'reason',
       key: 'reason',
       render: (_, record) => {
+
         const text = (
           <div>
             <p style={{width: '200px'}}>
@@ -75,6 +77,11 @@ const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
       title: '审批状态',
       dataIndex: 'result',
       key: 'result',
+      valueEnum: {
+        0: { text: '未审批', status: 'Default' },
+        1: { text: '通过', status: 'Success' },
+        2: { text: '未通过', status: 'Error'}
+      }
     },
     // {
     //   title: '外出负责人',
@@ -88,14 +95,23 @@ const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
       hideInSearch: true,
       key: 'desc',
       width: '10%',
-      render: () => {
+      render: (_, record) => {
         return (
           <>
-            <a onClick={()=>setdrawervisible(true)}>详情</a>
+            <a onClick={()=>{
+              dispatch({
+                type: 'outregistrationList/searchInfo',
+                payload: record.id
+              })
+              setCause(record.reason)
+              setdrawervisible(true)
+            }}>详情</a>
+            {/* <Divider type="vertical" />
+            <a onClick={()=>setdrawervisible(true)}>编辑</a> */}
             <Divider type="vertical" />
-            <a onClick={()=>setdrawervisible(true)}>编辑</a>
-            <Divider type="vertical" />
-            <a >删除</a>
+            <Popconfirm title="是否要删除？" onConfirm={() => confirm(record.id)}>
+              <a>删除</a>
+            </Popconfirm>
           </>
         );
       },
@@ -120,6 +136,30 @@ const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
     })
   }
 
+  const reloadValue = () => {
+    dispatch({
+      type: 'outregistrationList/searchList',
+      payload: {}
+    })
+
+    dispatch({
+      type: 'outregistrationList/loading',
+      payload: false
+    })
+  }
+
+  //删除成功
+  const confirm = (id: string) => {
+    dispatch({
+      type: 'outregistrationList/deleteList',
+      payload: id
+    })
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000)
+  };
+
   useEffect(()=>{
     dispatch({
       type: 'outregistrationList/searchList',
@@ -130,7 +170,6 @@ const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
   return (
     <div>
       <ProTable<TableListItem>
-
         headerTitle="登记列表"
         search={false}
         rowKey="id"
@@ -140,7 +179,7 @@ const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
         columns={columns}
         loading={loading}
       />
-      <InfoDrawer drawervisible={drawervisible} onCancel={() => setdrawervisible(false)} />
+      <InfoDrawer drawervisible={drawervisible} onCancel={() => setdrawervisible(false)} cause={cause} />
     </div>
   );
 };
@@ -149,7 +188,6 @@ export default connect(
   ({outregistrationList, global}: {outregistrationList: OutregistrationListState, global: GlobalModelState}) => ({
     dataSorce: outregistrationList.list,
     count: outregistrationList.count,
-    loading: outregistrationList.loading,
-    association: global.association
+    loading: outregistrationList.loading
   })
 )(Outregistrationlist);

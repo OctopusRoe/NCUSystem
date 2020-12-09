@@ -1,15 +1,29 @@
 // 社团成员列表 组件
 
 import React, { useRef, useState } from 'react';
-import { Button, Divider } from 'antd';
-import { queryRule } from './service';
+import { Button } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
 import { TableListItem } from './data';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
 
-const Member: React.FC<{}> = () => {
-  const actionRef = useRef<ActionType>();
-  const [infomodalVisible, setinfomodalVisible] = useState(false);
+import { MemberListState } from './data'
+
+import { Dispatch, connect } from 'umi'
+
+interface MemberProps {
+  dataSource: any
+  loading: boolean
+  count: number
+  dispatch: Dispatch
+}
+
+const Member: React.FC<MemberProps> = (props) => {
+
+  const { dataSource, loading, count, dispatch } = props
+
+  const [current, setCurrent] = useState<number>(0)
+  
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '届数',
@@ -92,11 +106,16 @@ const Member: React.FC<{}> = () => {
     },
   ];
 
+   // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+
+  }
+
   return (
     <>
       <ProTable<TableListItem>
         headerTitle="成员列表"
-        actionRef={actionRef}
         rowKey="key"
         rowClassName={(record, index) => {
           let className = 'light-row';
@@ -113,12 +132,21 @@ const Member: React.FC<{}> = () => {
             </Button>
           ),
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
+        dataSource={dataSource}
+        loading={loading}
+        onChange={onChange}
+        pagination={{ total: count, current: current}}
         rowSelection={{}}
       />
     </>
   );
 };
 
-export default Member;
+export default connect(
+  ({memberListModel}: {memberListModel: MemberListState}) => ({
+    dataSource: memberListModel.list,
+    loading: memberListModel.loading,
+    count: memberListModel.count
+  })
+)(Member);

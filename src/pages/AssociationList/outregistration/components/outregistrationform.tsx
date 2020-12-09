@@ -1,7 +1,7 @@
 //外出登记 组件
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, message, Button, DatePicker, Select } from 'antd';
+import { Form, Input, Button, DatePicker, Select } from 'antd';
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
 import { connect, Dispatch } from 'umi';
 
@@ -20,7 +20,7 @@ interface OutregistrationformProps {
   leaderValueList: any
   memberValueList: any
   baseInfo: any
-  associationList: any
+  association: any
   reload: number
   count: string
   tGUID: string
@@ -88,14 +88,12 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
     leaderValueList,
     memberValueList,
     baseInfo,
-    associationList,
+    association,
     reload,
     tGUID,
     dGUID,
     dispatch
   } = props
-
-  const [association] = associationList && associationList.filter((item: any) => item.isResponsible)
 
   const form = {
     'apply-name': baseInfo?.name,
@@ -219,7 +217,7 @@ const Outregistrationform: React.FC<OutregistrationformProps> = (props) => {
     form.append('EndDate', e.time[1].format('YYYY-MM-DD hh:mm:ss'))
     form.append('Reason', e.cause)
     form.append('Place', `${e.province},${e.city},${e.region},${e.stree}`)
-    form.append('Responsible', e.leaderName.map((item: any) => ({name: item.one, phone: item.two})))
+    form.append('Responsible', e.leaderName.map((item: any) => `${item.one}-${item.two}`))
     form.append('Member', e.memberName.map((item: any) => item.one))
     form.append('TeacherPersonId', e.teacher)
     form.append('TeacherGuid', tGUID)
@@ -405,7 +403,7 @@ export default connect(
       tGUID: outregistrationForm.tGUID,
       dGUID: outregistrationForm.dGUID,
       baseInfo: global.baseInfo,
-      associationList: global.associationList,
+      association: global.association,
       reload: global.reload
     }
   }

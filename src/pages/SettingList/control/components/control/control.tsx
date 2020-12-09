@@ -133,7 +133,15 @@ const Control: React.FC<ControlProps> = (props) => {
 
   //删除成功
   const confirm = (id: number) => {
-    message.success('删除成功');
+
+    dispatch({
+      type: 'controlList/deleteControl',
+      payload: id
+    })
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000)
   };
 
   //Search  搜索框事假

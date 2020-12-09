@@ -34,3 +34,9 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+export interface MemberListState {
+  list: {}[],
+  loading: boolean,
+  count: number
+}
