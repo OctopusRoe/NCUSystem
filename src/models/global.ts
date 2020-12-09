@@ -14,7 +14,7 @@ export interface GlobalModelState {
   token: any
   baseInfo: any
   SelectValue: any
-  associationList: {}[]
+  association: any
   reload: number
 }
 
@@ -31,7 +31,7 @@ export interface GlobalModelType {
     handleToken: Reducer<GlobalModelState>
     saveBaseInfo: Reducer<GlobalModelState>
     saveAssociationInfo: Reducer<GlobalModelState>
-    saveAssociationList: Reducer<GlobalModelState>
+    saveAssociation: Reducer<GlobalModelState>
   };
   subscriptions: { setup: Subscription };
 }
@@ -43,7 +43,7 @@ const GlobalModel: GlobalModelType = {
     token: {},
     baseInfo: {},
     SelectValue: {},
-    associationList: [],
+    association: {},
     reload: 0
   },
 
@@ -76,8 +76,8 @@ const GlobalModel: GlobalModelType = {
       })
 
       yield put({
-        type: 'saveAssociationList',
-        payload: back.data.communityList
+        type: 'saveAssociation',
+        payload: back.data.communityList.filter((item: any) => item.isResponsible)[0]
       })
       
       yield put({
@@ -175,9 +175,9 @@ const GlobalModel: GlobalModelType = {
       }
     },
 
-    saveAssociationList (state, { payload }) {
+    saveAssociation (state, { payload }) {
       const newState = JSON.parse(JSON.stringify(state))
-      newState.associationList = payload
+      newState.association = payload
       return {
         ...newState
       }

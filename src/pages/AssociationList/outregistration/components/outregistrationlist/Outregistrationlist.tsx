@@ -19,7 +19,7 @@ interface OutregistrationListProps {
   dataSorce: any
   count: number,
   loading: boolean
-  associationList: any
+  association: any
   dispatch: Dispatch
 }
 
@@ -30,9 +30,7 @@ const changeMouseStyle = {
 
 const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
 
-  const { count, dataSorce, loading, associationList, dispatch } = props
-
-  const [association] = associationList && associationList.filter((item: any) => item.isResponsible)
+  const { count, dataSorce, loading, association, dispatch } = props
 
   const [drawervisible, setdrawervisible] = useState(false);
 
@@ -152,6 +150,6 @@ export default connect(
     dataSorce: outregistrationList.list,
     count: outregistrationList.count,
     loading: outregistrationList.loading,
-    associationList: global.associationList
+    association: global.association
   })
 )(Outregistrationlist);

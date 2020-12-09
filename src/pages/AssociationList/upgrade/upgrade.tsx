@@ -24,7 +24,7 @@ interface UpgradeProps {
   canDepartmentUse: boolean
   departmentCount: number
   baseInfo: any
-  associationList: any
+  association: any
   reload: number
   tGUID: string
   dGUID: string
@@ -57,14 +57,12 @@ const Upgrade: FC<UpgradeProps> = (props) => {
     canDepartmentUse,
     departmentCount,
     baseInfo,
-    associationList,
+    association,
     reload,
     tGUID,
     dGUID,
     dispatch
   } = props
-
-  const [ association ] = associationList && associationList.filter((item: any) => item.isResponsible)
 
   if ( reload === 0 ) {
     return <WaitView />
@@ -369,7 +367,7 @@ export default connect(
       canDepartmentUse: associationUpgrade.canDepartmentUse,
       departmentCount: associationUpgrade.departmentCount,
       baseInfo: global.baseInfo,
-      associationList: global.associationList,
+      association: global.association,
       reload: global.reload,
       tGUID: associationUpgrade.tGUID,
       dGUID: associationUpgrade.dGUID

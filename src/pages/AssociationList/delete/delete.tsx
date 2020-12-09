@@ -17,7 +17,7 @@ import Fail from './components/fail'
 interface DeleteProps {
   dispatch: Dispatch
   baseInfo: any
-  associationList: any
+  association: any
   valueList: any
   canTeacherUse: boolean
   teacherCount: number
@@ -72,15 +72,13 @@ const Delete: React.FC<DeleteProps> = (props) => {
     canDepartmentUse,
     departmentCount,
     baseInfo,
-    associationList,
+    association,
     reload,
     valueList,
     tGUID,
     dGUID,
     dispatch
   } = props
-
-  const [ association ] = associationList && associationList.filter((item: any) => item.isResponsible)
 
   const form = {
     'apply-name': baseInfo?.name,
@@ -421,7 +419,7 @@ export default connect(
       count: deleteModel.count,
       reload: global.reload,
       baseInfo: global.baseInfo,
-      associationList: global.associationList,
+      association: global.association,
       tGUID: deleteModel.tGUID,
       dGUID: deleteModel.dGUID,
     }

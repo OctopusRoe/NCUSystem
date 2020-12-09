@@ -127,10 +127,7 @@ const Department: React.FC<DepartmentProps> = (props) => {
   //Search 搜索框事件
   const onSearch = (value: any) => {
 
-    if (value === '') {
-      setCurrent(1)
-    }
-
+    setCurrent(1)
     const data = {
       query: value,
     };

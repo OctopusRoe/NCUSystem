@@ -93,9 +93,7 @@ const Specialty: React.FC<SpecialtyProps> = (props) => {
   //搜索框 serach方法
   const onSearch = (value: any) => {
 
-    if (value === '') {
-      setCurrent(1)
-    }
+    setCurrent(1)
 
     const data = {
       query: value

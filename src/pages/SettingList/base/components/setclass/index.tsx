@@ -87,9 +87,7 @@ const SetClass: React.FC<SetClassProps> = (props) => {
   //搜索框 search方法
   const onSearch = (value: any) => {
 
-    if (value === '') {
-      setCurrent(1)
-    }
+    setCurrent(1)
 
     const data = {
       query: value

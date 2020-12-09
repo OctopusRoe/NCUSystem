@@ -139,9 +139,7 @@ const Control: React.FC<ControlProps> = (props) => {
   //Search  搜索框事假
   const onSearch = (value: string) => {
 
-    if (value === '') {
-      setCurrent(1)
-    }
+    setCurrent(1)
 
     const data = {
       query: value,
