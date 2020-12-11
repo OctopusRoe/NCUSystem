@@ -358,7 +358,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
               {
-                association && association.instructorInfo.map((item: any) => (
+                association.instructorInfo && association.instructorInfo.map((item: any) => (
                   <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>
@@ -392,7 +392,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
           >
             <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
               {
-                association && association.instructorInfo.map((item: any) => (
+                association.instructorInfo && association.instructorInfo.map((item: any) => (
                   <Option value={item.personId} key={item.personId}>
                     {item.name}
                   </Option>

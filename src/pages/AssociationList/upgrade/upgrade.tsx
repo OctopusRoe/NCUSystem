@@ -284,7 +284,7 @@ const Upgrade: FC<UpgradeProps> = (props) => {
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
                 {
-                  association !== null && association.instructorInfo.map((item: any, index: number) => (
+                  association.instructorInfo && association.instructorInfo.map((item: any, index: number) => (
                     <Option value={item.personId} key={item.personId}>
                       {item.name}
                     </Option>
@@ -318,7 +318,7 @@ const Upgrade: FC<UpgradeProps> = (props) => {
             >
               <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
                 {
-                  association !== null && association.instructorInfo.map((item: any, index: number) => (
+                  association.instructorInfo && association.instructorInfo.map((item: any, index: number) => (
                     <Option value={item.personId} key={item.personId}>
                       {item.name}
                     </Option>

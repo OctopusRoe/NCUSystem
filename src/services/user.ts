@@ -33,6 +33,11 @@ export async function getAssociationType () {
   return request.get(getPort('sysbasiccommunitytype/getsysbasiccommunitytypelist'))
 }
 
+// 获取学年列表
+export async function getSchoolYear (params: {PageSize: number, PageIndex: number}) {
+  return request.get(getPort('sysbasicschoolyear/getsysbasicschoolyearlist'), {params: params})
+}
+
 // 获取指导部门列表
 export async function getDepartment () {
   return request.get(getPort('community/getorganization'))

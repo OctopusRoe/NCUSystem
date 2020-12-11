@@ -22,7 +22,7 @@ const associationData: FileType = {
   icon: 'windows',
   children: [
     'apply',
-    'active',
+    // 'active',
     'settings',
     'member',
     'addresslist',
@@ -30,7 +30,7 @@ const associationData: FileType = {
     'delete',
     'outlay',
     'outregistration',
-    'homepage',
+    // 'homepage',
     'chronicle'
   ]
 }
@@ -44,7 +44,7 @@ const recruitment: FileType = {
     'square', // 招新广场
     'setting', // 招新设置
     'admin', // 招新管理
-    'message'
+    // 'message'
   ]
 }
 
@@ -54,6 +54,7 @@ const active: FileType = {
   path: 'active',
   icon: 'contacts',
   children: [
+    'active',
     'square', // 活动广场
     'admin',
     'approval'

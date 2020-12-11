@@ -165,6 +165,8 @@ const departmentModel: DepartmentType = {
         a.remove()
       }
 
+      message.success(back.msg)
+
     }
   }
 }

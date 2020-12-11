@@ -7,7 +7,8 @@ import {
   getAssociationBaseInfo,
   getAssociationLevel,
   getAssociationType,
-  getDepartment
+  getDepartment,
+  getSchoolYear
 } from '@/services/user';
 
 export interface GlobalModelState {
@@ -92,6 +93,7 @@ const GlobalModel: GlobalModelType = {
       const level = yield call(getAssociationLevel)
       const type = yield call(getAssociationType)
       const department = yield call(getDepartment)
+      const schoolYear = yield call(getSchoolYear, {PageSize: 10, PageIndex: 1})
 
       switch (true) {
         case level.code !== 0:
@@ -106,6 +108,10 @@ const GlobalModel: GlobalModelType = {
           message.error(department.msg)
           console.error(department.msg)
           return
+        case schoolYear.code !== 0:
+          message.error(schoolYear.msg)
+          console.error(schoolYear.msg)
+          return
         default:
 
       }
@@ -114,6 +120,7 @@ const GlobalModel: GlobalModelType = {
         level: level.data,
         type: type.data,
         department: department.data,
+        schoolYear: schoolYear.data
       }
 
       yield put({

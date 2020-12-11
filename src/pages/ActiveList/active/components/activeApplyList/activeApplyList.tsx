@@ -46,7 +46,7 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
       key: 'typeOf',
     },
     {
-      title: '审批进度',
+      title: '当前审批人',
       dataIndex: 'status',
       key: 'status',
       valueEnum: {
@@ -56,7 +56,12 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
       },
     },
     {
-      title: '审批结果',
+      title: '审批时间',
+      dataIndex: 'time',
+      key: 'time',
+    },
+    {
+      title: '审批单位',
       dataIndex: 'results',
       key: 'results',
       render: (text, record) => {
@@ -64,7 +69,7 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
       }
     },
     {
-      title: '拒绝原因',
+      title: '审批结果',
       dataIndex: 'case',
       key: 'case',
       render: (text, record) => {
@@ -81,8 +86,8 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
 
         return (
           <div>
-            <Popover content={textDom} trigger={'click'}>
-              <Tag color={"blue"} style={changeMouseStyle}>查看</Tag>
+            <Popover content={textDom} trigger={'hover'}>
+              <Tag color={record.results ? 'green' : 'red'} style={changeMouseStyle}>{record.results ? '通过 (审批意见)' : '未通过 (未通过原因)'}</Tag>
             </Popover>
           </div>
         )
@@ -92,7 +97,7 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: '10%',
+      width: '15%',
       render: (_, record) => (
         <>
           <a
@@ -104,6 +109,8 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
           </a>
           <Divider type="vertical" />
           <a href="">删除</a>
+          <Divider type='vertical' />
+          <a href="">审批详情</a>
         </>
       ),
     },

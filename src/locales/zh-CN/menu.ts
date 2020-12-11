@@ -30,6 +30,7 @@ export default {
 
   // 活动管理
   'menu.active': '活动管理',
+  'menu.active.active': '活动申请',
   'menu.active.square': '活动广场',
   'menu.active.admin': '活动管理',
   'menu.active.approval': '活动审批',

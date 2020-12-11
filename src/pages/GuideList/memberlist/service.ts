@@ -7,3 +7,7 @@ export function searchList (params: {Session: string, Name: string, PersonId: st
   return request.get(getPort('member/getmemorylist'), {params: params})
 }
 
+// 社团指导 成员列表 下载
+export function downLoad (data: string[]) {
+  return request.post(getPort('member/export'), {data: data, headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }, responseType: 'blob'})
+}
