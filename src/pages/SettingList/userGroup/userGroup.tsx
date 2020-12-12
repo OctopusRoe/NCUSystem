@@ -29,6 +29,7 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
   const [editmodalVisible, setEditmodalVisible] = useState(false);
   const actionRef = useRef<ActionType>();
   const [current, setCurrent] = useState<number>(0);
+  const [query, setQuery] = useState<string>('');
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -105,6 +106,7 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
   //Search 搜索框
   const onSearch = (value: any) => {
     setCurrent(1);
+    setQuery(value);
     const data = { groupName: value };
     dispatch({
       type: 'settingUserGroup/searchUserGroup',
@@ -136,6 +138,7 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
+      groupName: query,
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
     };
@@ -149,6 +152,7 @@ const UserGroup: React.FC<UserGroupProps> = (props) => {
       type: 'settingUserGroup/loading',
       payload: true,
     });
+    setCurrent(pagination.current as number);
   };
 
   // 更新后的回调

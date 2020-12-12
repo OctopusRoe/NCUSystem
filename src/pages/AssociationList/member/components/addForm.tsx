@@ -5,13 +5,13 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
 import { connect, Dispatch } from 'umi';
 
 export interface GlobalModelState {
-  baseInfo: any;
+  association: any;
 }
 
 interface AddFormProps {
   addVisible: boolean;
   onCancel: () => void;
-  baseInfo: any;
+  communityID: any;
   afterClose: () => void;
   dispatch: Dispatch;
 }
@@ -39,7 +39,7 @@ const AddForm: React.FC<AddFormProps> = (props) => {
     },
   };
 
-  const { addVisible, onCancel, baseInfo, dispatch, afterClose } = props;
+  const { addVisible, onCancel, communityID, dispatch, afterClose } = props;
 
   const button = useRef<HTMLButtonElement>(null);
 
@@ -50,7 +50,7 @@ const AddForm: React.FC<AddFormProps> = (props) => {
     }
 
     const data = {
-      communityID: baseInfo.communityList[0].id,
+      communityID: communityID.id,
       memberList: json,
     };
 
@@ -92,5 +92,5 @@ const AddForm: React.FC<AddFormProps> = (props) => {
 };
 
 export default connect(({ global }: { global: GlobalModelState }) => {
-  return { baseInfo: global.baseInfo };
+  return { communityID: global.association };
 })(AddForm);

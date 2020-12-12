@@ -20,11 +20,14 @@ interface MessageProps {
 
 const MessageCom: React.FC<MessageProps> = (props) => {
   const actionRef = useRef<ActionType>();
-  // const [current, setCurrent] = useState(0);
   const { count, dataSorce, loading, dispatch } = props;
+  const [current, setCurrent] = useState<number>(0);
+  const [query, setQuery] = useState<string>('');
 
   //Search 搜索框
   const onSearch = (value: any) => {
+    setCurrent(1);
+    setQuery(value);
     const data = {
       Phone: value,
     };
@@ -91,6 +94,7 @@ const MessageCom: React.FC<MessageProps> = (props) => {
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
     const data = {
+      Phone: query,
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
     };
@@ -104,6 +108,7 @@ const MessageCom: React.FC<MessageProps> = (props) => {
       type: 'settingsMessage/loading',
       payload: true,
     });
+    setCurrent(pagination.current as number);
   };
 
   return (
@@ -160,7 +165,7 @@ const MessageCom: React.FC<MessageProps> = (props) => {
           <Search enterButton placeholder={'请输入手机号'} onSearch={onSearch} />,
         ]}
         dataSource={dataSorce}
-        pagination={{ total: count }}
+        pagination={{ total: count, current: current }}
         onChange={onChange}
         columns={columns}
         loading={loading}

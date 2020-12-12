@@ -16,6 +16,7 @@ export interface MemberModelProps {
     saveMember: Reducer<MemberState>;
     loading: Reducer<MemberState>;
     cleanState: Reducer<MemberState>;
+    saveSelectedRowKeys: Reducer<MemberState>;
   };
   effects: {
     searchMember: Effect;
@@ -32,6 +33,8 @@ const memberModel: MemberModelProps = {
     memberList: [],
     count: 0,
     loading: true,
+    selectedRowKeys: [],
+    selectedRows: [],
   },
   reducers: {
     saveCount(state, { payload }) {
@@ -72,6 +75,14 @@ const memberModel: MemberModelProps = {
         ...state,
       };
     },
+
+    saveSelectedRowKeys(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+      };
+    },
+
   },
   effects: {
     *searchMember({ payload }, { call, put }) {
@@ -170,7 +181,7 @@ const memberModel: MemberModelProps = {
         return;
       }
 
-      message.success(back.msg);
+      message.success('添加成功');
     },
   },
 };

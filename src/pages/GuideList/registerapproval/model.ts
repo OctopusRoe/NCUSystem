@@ -6,7 +6,7 @@ import { message } from 'antd';
 
 import { RegisterApprovalState } from './data';
 
-import { queryRegisterapproval } from './service';
+import { queryRegisterapproval, deleteRegisterapproval, getDetail, registerAudit } from './service';
 
 export interface PersonType {
   namespace: string;
@@ -16,9 +16,13 @@ export interface PersonType {
     saveRegisterApproval: Reducer<RegisterApprovalState>;
     loading: Reducer<RegisterApprovalState>;
     cleanState: Reducer<RegisterApprovalState>;
+    saveDetailInfoList: Reducer<RegisterApprovalState>;
   };
   effects: {
     queryRegisterapproval: Effect;
+    deleteRegisterapproval: Effect;
+    getDetail: Effect;
+    registerAudit: Effect;
   };
 }
 
@@ -28,11 +32,21 @@ const registerapprovalModel: PersonType = {
     RegisterApprovalList: [],
     count: 0,
     loading: true,
+    DetailInfoList: [],
   },
   reducers: {
     saveCount(state, { payload }) {
       const newState = JSON.parse(JSON.stringify(state));
       newState.count = payload;
+
+      return {
+        ...newState,
+      };
+    },
+
+    saveDetailInfoList(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state));
+      newState.DetailInfoList = payload;
 
       return {
         ...newState,
@@ -72,9 +86,10 @@ const registerapprovalModel: PersonType = {
   effects: {
     *queryRegisterapproval({ payload }, { call, put }) {
       const params = {
-        // Name: ,
-        // Status: ,
+        Name: payload.Name ? payload.Name : '',
+        Status: payload.Status ? payload.Status : '',
       };
+
       const data = new FormData();
       data.append('PageSize', payload.PageSize ? payload.PageSize : 20);
       data.append('PageIndex', payload.PageIndex ? payload.PageIndex : 1);
@@ -100,6 +115,49 @@ const registerapprovalModel: PersonType = {
         type: 'loading',
         payload: false,
       });
+    },
+
+    *deleteRegisterapproval({ payload }, { call }) {
+      const params = {
+        Id: payload,
+      };
+
+      const back = yield call(deleteRegisterapproval, params);
+      if (back.code !== 0) {
+        message.error(back.msg);
+        console.error(back.msg);
+        return;
+      }
+      message.success('删除成功');
+    },
+
+    *getDetail({ payload }, { call, put }) {
+      const params = {
+        Id: payload,
+      };
+      const back = yield call(getDetail, params);
+      if (back.code !== 0) {
+        message.error(back.msg);
+        console.error(back.msg);
+        return;
+      }
+      yield put({
+        type: 'saveDetailInfoList',
+        payload: back.data,
+      });
+    },
+
+    *registerAudit({ payload }, { call }) {
+      const params = {
+        Id: payload.Id,
+        Status: payload.Status,
+      };
+      const back = yield call(registerAudit, params);
+      if (back.code !== 0) {
+        message.error(back.msg);
+        console.error(back.msg);
+        return;
+      }
     },
   },
 };
