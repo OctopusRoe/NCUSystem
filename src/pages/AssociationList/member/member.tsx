@@ -61,9 +61,7 @@ const MemberCom: React.FC<MemberProps> = (props) => {
   message.config({
     maxCount: 1,
   });
-<<<<<<< HEAD
-  const { count, dataSorce, loading, dispatch, token, infoData } = props;
-=======
+
   const {
     count,
     periodList,
@@ -75,8 +73,6 @@ const MemberCom: React.FC<MemberProps> = (props) => {
     selectedRows,
     selectedRowKeys,
   } = props;
-  console.log(selectedRows);
->>>>>>> 779cd07408c631891edef0c4c759aaf5c850b94d
 
   const actionRef = useRef<ActionType>();
 

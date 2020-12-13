@@ -13,10 +13,7 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
   const { modalVisible, onCancel, infoData } = props;
   const { TabPane } = Tabs;
   const callback = () => {};
-<<<<<<< HEAD
 
-=======
->>>>>>> 779cd07408c631891edef0c4c759aaf5c850b94d
   const columns1 = [
     {
       title: '年份',
