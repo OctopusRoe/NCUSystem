@@ -16,8 +16,8 @@ const Fail: React.FC<failProps> = ({ nameZH, nameEN }) => {
     <Fragment>
       <div className={styles.title}>
         <FormattedMessage
-          id="resultandfail.error.hint-title"
-          defaultMessage="The content you submitted has the following error:"
+          id="resultandfail.error.hint-title3"
+          defaultMessage="已注册的学生社为："
         />
       </div>
       <div style={{ marginBottom: 16 }}>

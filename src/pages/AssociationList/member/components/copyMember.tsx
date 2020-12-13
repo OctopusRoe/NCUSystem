@@ -1,14 +1,14 @@
 // 复制成员 组件
 
-import React, { useState, useEffect, useRef} from 'react'
+import React, {  useRef } from 'react';
 
-import { Form, Select, Modal, Button } from 'antd'
+import { Form, Select, Modal, Button } from 'antd';
 
 interface CopyMemberProps {
-  copyVisible: boolean
-  selectList: any[]
-  onCancel: () => void
-  copyList: any[]
+  copyVisible: boolean;
+  selectList: any[];
+  onCancel: () => void;
+  copyList: any[];
 }
 
 const formItemLayout = {
@@ -23,17 +23,16 @@ const formItemLayout = {
   },
 };
 
-const { Option } = Select
+const { Option } = Select;
 
-const CopyMember:React.FC<CopyMemberProps> = (props) => {
+const CopyMember: React.FC<CopyMemberProps> = (props) => {
+  const { copyVisible, copyList, selectList, onCancel } = props;
 
-  const { copyVisible, copyList, selectList, onCancel } = props
-
-  const button = useRef<HTMLButtonElement>(null)
+  const button = useRef<HTMLButtonElement>(null);
 
   const onFinish = (e: any) => {
-    console.log(e)
-  }
+    console.log(e);
+  };
 
   return (
     <Modal
@@ -43,11 +42,7 @@ const CopyMember:React.FC<CopyMemberProps> = (props) => {
       onCancel={onCancel}
       onOk={() => button.current?.click()}
     >
-      <Form
-        onFinish={onFinish}
-        autoComplete={'off'}
-        hideRequiredMark
-      >
+      <Form onFinish={onFinish} autoComplete={'off'} hideRequiredMark>
         <Form.Item
           {...formItemLayout}
           name={'time'}
@@ -55,24 +50,24 @@ const CopyMember:React.FC<CopyMemberProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '请选择届数'
-            }
+              message: '请选择届数',
+            },
           ]}
         >
           <Select placeholder={'请选择届数'}>
-            {
-              selectList.map((item: string, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
-              ))
-            }
+            {selectList.length !== 0 && selectList.map((item: any) => (
+                <Option value={item.schoolYearShortName} key={`${item.id}`}>
+                  {item.schoolYearName}
+                </Option>
+            ))}
           </Select>
         </Form.Item>
-        <Form.Item noStyle style={{display: 'none'}}>
+        <Form.Item noStyle style={{ display: 'none' }}>
           <Button ref={button} htmlType={'submit'} />
         </Form.Item>
       </Form>
     </Modal>
-  )
-}
+  );
+};
 
-export default CopyMember
+export default CopyMember;

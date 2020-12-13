@@ -5,13 +5,13 @@ import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
 import { connect, Dispatch } from 'umi';
 
 export interface GlobalModelState {
-  baseInfo: any;
+  association: any;
 }
 
 interface AddFormProps {
   addVisible: boolean;
   onCancel: () => void;
-  baseInfo: any;
+  communityID: any;
   afterClose: () => void;
   dispatch: Dispatch;
 }
@@ -40,11 +40,12 @@ const AddForm: React.FC<AddFormProps> = (props) => {
     },
   };
 
-  const { addVisible, onCancel, baseInfo, dispatch, afterClose } = props;
+  const { addVisible, onCancel, communityID, dispatch, afterClose } = props;
 
   const button = useRef<HTMLButtonElement>(null);
 
   const onFinish = (e: any) => {
+<<<<<<< HEAD
 
     console.log(e)
     // var json = new Array();
@@ -67,6 +68,28 @@ const AddForm: React.FC<AddFormProps> = (props) => {
     // setTimeout(() => {
     //   afterClose();
     // }, 0.5 * 1000);
+=======
+    var json = new Array();
+    for (var i = 0; i < e.memberList.length; i++) {
+      json.push(e.memberList[i].one);
+    }
+
+    const data = {
+      communityID: communityID.id,
+      memberList: json,
+    };
+
+    dispatch({
+      type: 'associationMember/addMember',
+      payload: data,
+    });
+
+    onCancel();
+
+    setTimeout(() => {
+      afterClose();
+    }, 0.5 * 1000);
+>>>>>>> 779cd07408c631891edef0c4c759aaf5c850b94d
   };
 
   return (
@@ -97,5 +120,5 @@ const AddForm: React.FC<AddFormProps> = (props) => {
 };
 
 export default connect(({ global }: { global: GlobalModelState }) => {
-  return { baseInfo: global.baseInfo };
+  return { communityID: global.association };
 })(AddForm);

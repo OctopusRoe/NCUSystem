@@ -65,7 +65,8 @@ const Control: React.FC<ControlProps> = (props) => {
     },
     {
       title: '链接地址',
-      dataIndex: 'appURI',
+      dataIndex: 'appURI', 
+      
       key: 'appURI',
     },
 

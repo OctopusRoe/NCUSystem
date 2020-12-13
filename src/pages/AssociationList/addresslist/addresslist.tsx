@@ -205,7 +205,7 @@ const RecruitmentSquareCom: React.FC<AddressListProps> = (props) => {
           const data = {
             Name: params.name,
             Phone: params.phone,
-            PersonId: params.personId,
+            qPersonId: params.personId,
           };
           dispatch({
             type: 'communityAddressList/searchAddressList',

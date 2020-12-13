@@ -10,6 +10,8 @@ import AddForm from './components/addForm';
 import CopyMember from './components/copyMember';
 import { connect, Dispatch } from 'umi';
 import { PaginationProps } from 'antd/lib/pagination';
+import * as _ from 'lodash';
+import { removeRule } from '@/pages/TeacherList/store/service';
 
 export interface PersonState {
   personList?: {
@@ -26,6 +28,18 @@ export interface PersonState {
   }[];
 }
 
+export interface AcademicYearState {
+  academicYearList?: {
+    id: number;
+    schoolYearName: string;
+    schoolYearShortName: string;
+    startDate: string;
+    endDate: string;
+    currentYear: string;
+    date: string;
+  }[];
+}
+
 interface MemberProps {
   count: number;
   dataSorce: any;
@@ -33,6 +47,9 @@ interface MemberProps {
   dispatch: Dispatch;
   token: any;
   infoData: any;
+  periodList: any;
+  selectedRowKeys: any;
+  selectedRows: any;
 }
 
 export interface GlobalModelState {
@@ -44,7 +61,22 @@ const MemberCom: React.FC<MemberProps> = (props) => {
   message.config({
     maxCount: 1,
   });
+<<<<<<< HEAD
   const { count, dataSorce, loading, dispatch, token, infoData } = props;
+=======
+  const {
+    count,
+    periodList,
+    dataSorce,
+    loading,
+    dispatch,
+    token,
+    infoData,
+    selectedRows,
+    selectedRowKeys,
+  } = props;
+  console.log(selectedRows);
+>>>>>>> 779cd07408c631891edef0c4c759aaf5c850b94d
 
   const actionRef = useRef<ActionType>();
 
@@ -72,12 +104,12 @@ const MemberCom: React.FC<MemberProps> = (props) => {
       renderFormItem: () => {
         return (
           <Select placeholder="请选择届数">
-            <Option value="2020">2020</Option>
-            <Option value="2019">2019</Option>
-            <Option value="2018">2018</Option>
-            <Option value="2017">2017</Option>
-            <Option value="2016">2016</Option>
-            <Option value="2015">2015</Option>
+            {periodList.length !== 0 &&
+              periodList.map((item: any) => (
+                <Option value={item.schoolYearShortName} key={`${item.id}`}>
+                  {item.schoolYearName}
+                </Option>
+              ))}
           </Select>
         );
       },
@@ -223,6 +255,12 @@ const MemberCom: React.FC<MemberProps> = (props) => {
       payload: {},
     });
 
+    //请求届数下拉列表的数据
+    dispatch({
+      type: 'baseAcademicYear/searchAcademicYear',
+      payload: {},
+    });
+
     // 退出组件后清除调用的数据
     return () => {
       dispatch({
@@ -263,30 +301,82 @@ const MemberCom: React.FC<MemberProps> = (props) => {
     });
   };
 
+  const onSelect = (record: any, selected: any) => {
+    const mySelectedRows = selectedRows;
+    if (selected) {
+      mySelectedRows.push(record);
+    } else {
+      _.remove(mySelectedRows, (o: any) => o.id === record.id);
+    }
+    const selectedRowKeys = _.map(mySelectedRows, 'id');
+    dispatch({
+      type: 'associationMember/saveSelectedRowKeys',
+      payload: {
+        selectedRowKeys,
+        selectedRows: mySelectedRows,
+      },
+    });
+  };
+
+  const onSelectAll = (selected: any, changeRows: any) => {
+    let mySelectedRows = selectedRows;
+    if (selected) {
+      // 先连接再进行一次去重
+      const sa = _.uniqBy(mySelectedRows.concat(changeRows), 'id');
+      mySelectedRows = sa.filter((res: any) => {
+        return res !== undefined;
+      });
+    } else {
+      _.remove(mySelectedRows);
+    }
+    const selectedRowKeys = _.map(mySelectedRows, 'id');
+    console.log(selectedRowKeys);
+
+    dispatch({
+      type: 'associationMember/saveSelectedRowKeys',
+      payload: {
+        selectedRowKeys,
+        selectedRows: mySelectedRows,
+      },
+    });
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onSelect: onSelect,
+    onSelectAll: onSelectAll,
+  };
+
   return (
     <>
       <ProTable<TableListItem>
         headerTitle="成员列表"
         actionRef={actionRef}
         rowKey="id"
-        toolBarRender={(_action, { selectedRows }) => [
+        rowSelection={rowSelection}
+        toolBarRender={(_action, { selectedRows, selectedRowKeys }) => [
           <Button type={'primary'} onClick={() => setAddVisible(true)}>
             <PlusOutlined /> 添加
           </Button>,
           <Button
             type={'primary'}
             onClick={() => {
-              if (selectedRows && selectedRows.length > 0) {
-                setCopyVisible(true);
+              console.log(selectedRowKeys); //选中的ID
+
+              if (selectedRowKeys && selectedRowKeys.length > 0) {
+                console.log(selectedRowKeys);
+
+                message.success({
+                  content: '已复制选中条目',
+                  duration: 3,
+                });
                 return;
               }
-              message.warning({
-                content: '请选择成员',
-                duration: 3,
-              });
+              setCopyVisible(true);
+              return;
             }}
           >
-            <CopyOutlined /> 复制
+            <CopyOutlined /> {selectedRows && selectedRows.length > 0 ? '复制选中' : '复制'}
           </Button>,
           <Button type="default" onClick={() => Download(selectedRows)}>
             <DownloadOutlined /> {selectedRows && selectedRows.length > 0 ? '导出选中' : '导出全部'}
@@ -324,7 +414,7 @@ const MemberCom: React.FC<MemberProps> = (props) => {
         copyVisible={copyVisible}
         onCancel={() => setCopyVisible(false)}
         copyList={[]}
-        selectList={['2019届', '2020届', '2021届']}
+        selectList={periodList}
       />
       <DetailsModal
         modalVisible={DetailsModalVisible}
@@ -347,10 +437,12 @@ export default connect(
     associationMember,
     global,
     settingPerson,
+    baseAcademicYear,
   }: {
     settingPerson: PersonState;
     associationMember: MemberState;
     global: GlobalModelState;
+    baseAcademicYear: AcademicYearState;
   }) => {
     return {
       dataSorce: associationMember.memberList,
@@ -358,6 +450,9 @@ export default connect(
       loading: associationMember.loading,
       token: global.token,
       infoData: settingPerson.personList,
+      periodList: baseAcademicYear.academicYearList,
+      selectedRowKeys: associationMember.selectedRowKeys,
+      selectedRows: associationMember.selectedRows,
     };
   },
 )(MemberCom);

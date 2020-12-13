@@ -41,11 +41,51 @@ export interface RegisterApprovalState {
     id: string;
     number: string;
     nameZh: string;
-    category: number;
-    level: number;
-    organizationId: number;
+    category: string;
+    level: string;
+    organization: string;
     status: number;
   }[];
   count: number;
   loading: boolean;
+  DetailInfoList?: {
+    nameZh: string;
+    nameEn: string;
+    guidance: string;
+    memberCount: number;
+    category: string;
+    level: string;
+    constitution: string;
+    front: string;
+    opposite: string;
+    members: [
+      {
+        personId: string;
+        name: string;
+        college: string;
+      },
+    ];
+  }[];
+}
+
+//社团指导  注册审批  申请详情
+export interface DetailInfoState {
+  DetailInfoList: {
+    nameZh: string;
+    nameEn: string;
+    guidance: string;
+    memberCount: number;
+    category: string;
+    level: string;
+    constitution: string;
+    front: string;
+    opposite: string;
+    members: [
+      {
+        personId: string;
+        name: string;
+        college: string;
+      },
+    ];
+  }[];
 }

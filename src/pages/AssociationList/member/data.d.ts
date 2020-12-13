@@ -51,4 +51,6 @@ export interface MemberState {
   }[];
   count: number;
   loading: boolean;
+  selectedRowKeys?: any[];
+  selectedRows?: any[];
 }

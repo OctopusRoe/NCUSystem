@@ -75,7 +75,7 @@ const addressListModel: DepartmentType = {
       const params = {
         Phone: payload.Phone ? payload.Phone : '',
         Name: payload.Name ? payload.Name : '',
-        PresonId: payload.PersonId ? payload.PersonId : '',
+        qPresonId: payload.qPersonId ? payload.qPersonId : '',
         PageSize: payload.PageSize ? payload.PageSize : 20,
         PageIndex: payload.PageIndex ? payload.PageIndex : 1,
       };
