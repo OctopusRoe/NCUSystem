@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Input, Divider, Popconfirm, Tag } from 'antd';
+import { Button, Input, Divider, Popconfirm, Tag, DatePicker } from 'antd';
 import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns } from '@ant-design/pro-table';
 import AddModal from './components/AddModal';
 import EditModal from './components/EditModal';
 import { TableListItem } from './data.d';
 import { connect, Dispatch } from 'umi';
+import moment from 'moment'
 
 import { AssociationPositionState } from '../../data'
 
@@ -24,8 +25,6 @@ const { Search } = Input;
 const Position: React.FC<PositionProps> = (props) => {
 
   const { dataSorce, count, loading, dispatch } = props
-
-  console.log(dataSorce);
   
   const [addModalVisible, setAddModalViaible] = useState(false);
   const [editModalVisible, setEditModalViaible] = useState(false);
@@ -187,6 +186,7 @@ const Position: React.FC<PositionProps> = (props) => {
         search={false}
         headerTitle={'职务设置'}
         toolBarRender={(action, { selectedRows }) => [
+          <DatePicker picker="year" defaultValue={moment('2020', 'YYYY')} />,
           <Search enterButton onSearch={onSearch} placeholder={'请输入职务名称'} />,
           <Button type="primary" onClick={() => setAddModalViaible(true)}>
             <PlusOutlined /> 新增

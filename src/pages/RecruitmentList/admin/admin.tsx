@@ -112,6 +112,9 @@ const Admin: React.FC<{}> = () => {
       <Menu.Item key="2" onClick={() => message.warning('拒接录用')}>
         拒绝录用
       </Menu.Item>
+      <Menu.Item>
+        发送短信
+      </Menu.Item>
       <Menu.Item key="3" onClick={() => message.warn('删除')}>
         删除
       </Menu.Item>

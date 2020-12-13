@@ -53,8 +53,6 @@ const StepForm: React.FC<StepFormProps> = ({ current, association, reload }) => 
   const [stepComponent, setStepComponent] = useState<React.ReactNode>(<Step1 />);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
-  console.log(association);
-
   useEffect(() => {
     const { step, component } = getCurrentStepAndComponent(current);
     setCurrentStep(step);

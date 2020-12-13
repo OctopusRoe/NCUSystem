@@ -11,6 +11,8 @@ import { queryRule, updateRule } from './service';
 import moment from 'moment'
 import ModifyDrawer from './components/modifyDrawer'
 
+import ApplyView from '@/components/ApplyView'
+
 interface ActivApplyListProps {
   
 }
@@ -22,9 +24,15 @@ const changeMouseStyle = {
 
 const { Search } = Input
 
+const valueList = {
+  teacher: [1,2,3,4,5,6,7,8,9,0]
+}
+
 const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
 
   const [ visible, setVisible ] = useState<boolean>(false)
+
+  const [applyVisible, setApplyVisible] = useState<boolean>(false)
 
   const value = {
     name: '测试活动名',
@@ -110,7 +118,13 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
           <Divider type="vertical" />
           <a href="">删除</a>
           <Divider type='vertical' />
-          <a href="">审批详情</a>
+          <a
+            onClick={() => {
+              setApplyVisible(true)
+            }}
+          >
+            审批详情
+          </a>
         </>
       ),
     },
@@ -130,6 +144,15 @@ const ActiveApplyList: React.FC<ActivApplyListProps> = (props) => {
         columns={columns}
       />
       <ModifyDrawer visible={visible} value={value} onClose={()=> setVisible(false)} typeList={typeList} />
+      <ApplyView
+        visible={applyVisible}
+        onClose={() => setApplyVisible(false)}
+        valueList={valueList}
+        loading={true}
+        columns={columns}
+        // dataSource={dataSource}
+
+      />
     </div>
   );
 };

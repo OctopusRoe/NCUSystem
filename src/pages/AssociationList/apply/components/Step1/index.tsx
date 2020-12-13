@@ -33,8 +33,6 @@ const Step1: React.FC<Step1Props> = (props) => {
     return null;
   }
 
-  console.log('data1', data);
-
   const { validateFields } = form;
   const onValidateForm = async () => {
     const values = await validateFields();

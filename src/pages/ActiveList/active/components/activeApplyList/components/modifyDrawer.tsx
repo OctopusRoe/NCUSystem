@@ -2,7 +2,10 @@
 
 import React, { useRef } from 'react'
 
-import { Drawer, Form, Input, Select, DatePicker, Button, Space } from 'antd'
+import { Drawer, Form, Input, Select, DatePicker, Button, Space, Tooltip } from 'antd'
+
+import { QuestionCircleOutlined } from '@ant-design/icons'
+
 import { values } from 'lodash'
 
 interface modifyDrawerProps {
@@ -36,6 +39,18 @@ const formItemLayout = {
     md: { span: 12 },
   },
 };
+
+// Option render function
+const getOption = (list: any[]) => {
+  if (!list || list.length === 0) {
+    return <Option value={0}>未查询到数据</Option>
+  }
+
+  return list.map((item: string, index: number) => (
+    <Option value={item} key={item}>{item}</Option>
+  ))
+
+}
 
 const modifyDrawer: React.FC<modifyDrawerProps> = (props) => {
   
@@ -95,11 +110,7 @@ const modifyDrawer: React.FC<modifyDrawerProps> = (props) => {
           ]}
         >
           <Select placeholder={'请选择'}>
-            {
-              typeList.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
-              ))
-            }
+            {getOption(typeList)}
           </Select>
         </FormItem>
         <FormItem
@@ -113,7 +124,9 @@ const modifyDrawer: React.FC<modifyDrawerProps> = (props) => {
             }
           ]}
         >
-          <Input placeholder={'请输入主办单位名称'} />
+          <Select placeholder={'请选择'}>
+            {getOption(typeList)}
+          </Select>
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -126,7 +139,9 @@ const modifyDrawer: React.FC<modifyDrawerProps> = (props) => {
             }
           ]}
         >
-          <Input placeholder={'请输入承办单位名称'} />
+          <Select placeholder={'请选择'}>
+            {getOption(typeList)}
+          </Select>
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -157,15 +172,19 @@ const modifyDrawer: React.FC<modifyDrawerProps> = (props) => {
         <FormItem
           {...formItemLayout}
           name={'scale'}
-          label={'活动规模'}
-          rules={[
-            {
-              required: true,
-              message: '请输入活动规模!'
-            }
-          ]}
+          label={
+            <span>
+              社团成员数
+            <span style={{ color: '#00000073' }}>（最高）
+              <Tooltip title='超过最高数后无法加入新成员'>
+                <QuestionCircleOutlined style={{ marginRight: 4 }} />
+              </Tooltip>
+              &nbsp;</span>
+            </span>
+          }
+          rules={[{ required: true, message: '请输入成员数量' }]}
         >
-          <Input placeholder={'请输入活动规模'} />
+          <Input style={{ width: '100px' }} suffix={<div style={{color: '#bfbfbf'}}>人</div>} />
         </FormItem>
         <FormItem
           {...formItemLayout}

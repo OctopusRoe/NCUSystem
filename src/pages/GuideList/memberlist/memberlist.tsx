@@ -7,6 +7,7 @@ import { TableListItem } from './data';
 import ProTable, { ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
 import { GlobalModelState } from '@/models/global'
+import _ from 'lodash'
 
 import { MemberListState } from './data'
 
@@ -18,6 +19,8 @@ interface MemberProps {
   schoolYear: any
   loading: boolean
   count: number
+  selectedRowKeys: any
+  selectedRows: any
   dispatch: Dispatch
 }
 
@@ -36,7 +39,7 @@ const {Option} = Select
 
 const Member: React.FC<MemberProps> = (props) => {
 
-  const { dataSource, schoolYear, loading, count, dispatch } = props
+  const { dataSource, schoolYear, loading, count, selectedRowKeys, selectedRows, dispatch } = props
 
   const [current, setCurrent] = useState<number>(0)
 
@@ -137,7 +140,7 @@ const Member: React.FC<MemberProps> = (props) => {
     },
   ];
 
-   // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
+  // ((pagination: TablePaginationConfig, filters: Record<string, React.ReactText[] | null>, sorter: SorterResult<TableListItem> | SorterResult<...>[], extra: TableCurrentDataSource<...>)
   // table 的 onChange 事件
   const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
 
@@ -168,6 +171,12 @@ const Member: React.FC<MemberProps> = (props) => {
       type: 'memberListModel/searchList',
       payload: {}
     })
+
+    return () => {
+      dispatch({
+        type: 'memberListModel/clean'
+      })
+    }
   }, [])
 
   const onSubmit = (e: any) => {
@@ -208,8 +217,70 @@ const Member: React.FC<MemberProps> = (props) => {
     setCurrent(1)
   }
 
-  const downLoad = (e: any) => {
+  // 单选方法
+  const onSelect = (record: any, selected: boolean) => {
 
+    const newSelectRows = selectedRows
+    if (selected) {
+      newSelectRows.push(record)
+    } else {
+      _.remove(newSelectRows, (item: any) => (item.id === record.id))
+    }
+
+    const selectedRowKeys = _.map(newSelectRows, 'id')
+    dispatch({
+      type: 'memberListModel/saveSelectRowKeys',
+      payload: {
+        selectedRowKeys,
+        selectedRows: newSelectRows
+      }
+    })
+  }
+
+  // 全选方法
+  const onSelectAll = (selected: boolean, selectedRows: any, changeRows: any) => {
+
+    let newSelectRows = selectedRows
+    const changeRowKeys = _.map(changeRows, 'id')
+    if (selected) {
+      newSelectRows = _.uniqBy(_.concat(newSelectRows, changeRows), 'id')
+    } else {
+      _.remove(newSelectRows, (item: any) => (_.includes(changeRowKeys, item.id)))
+    }
+    const selectedRowKeys = _.map(newSelectRows, 'id')
+    dispatch({
+      type: 'memberListModel/saveSelectRowKeys',
+      payload: {
+        selectedRowKeys,
+        selectedRows: newSelectRows
+      }
+    })
+  }
+
+  const selectChange = (selectedRowKeys: any, selectedRows: any) => {
+    if (selectedRowKeys.length === 0 && selectedRows.length === 0) {
+      (() => {
+        return () => {
+          dispatch({
+            type: 'studentLeader/saveSelectRowKeys',
+            payload: {
+              selectedRowKeys: [],
+              selectedRows: []
+            }
+          })
+        }
+      })()()
+    }
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onSelect,
+    onSelectAll,
+    onChange: selectChange
+  }
+
+  const downLoad = (e: any) => {
     let data = []
     if (e.length !== 0) {
       data = e.map((item: any) => item.id)
@@ -241,7 +312,7 @@ const Member: React.FC<MemberProps> = (props) => {
         loading={loading}
         onChange={onChange}
         pagination={{ total: count, current: current}}
-        rowSelection={{}}
+        rowSelection={rowSelection}
       />
     </>
   );
@@ -252,6 +323,8 @@ export default connect(
     dataSource: memberListModel.list,
     loading: memberListModel.loading,
     count: memberListModel.count,
+    selectedRowKeys: memberListModel.selectedRowKeys,
+    selectedRows: memberListModel.selectedRows,
     schoolYear: global.SelectValue.schoolYear
   })
 )(Member);

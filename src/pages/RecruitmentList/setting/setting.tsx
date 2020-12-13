@@ -13,6 +13,8 @@ import SettingModal from './components/SettingModal';
 import EditorModal from './components/EditorModal';
 import AddModal from './components/AddModal';
 
+import moment from 'moment'
+
 const Statistic: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [settingmodalVisible, setSettingmodalVisible] = useState(false);
@@ -99,7 +101,7 @@ const Statistic: React.FC<{}> = () => {
         headerTitle={''}
         toolBarRender={(action, {}) => [
           // <Search enterButton />,
-          <DatePicker picker="year" />,
+          <DatePicker picker="year" defaultValue={moment('2020', 'YYYY')} />,
           <Button type="primary" onClick={() => setSettingmodalVisible(true)}>
             <SettingOutlined />
             设置

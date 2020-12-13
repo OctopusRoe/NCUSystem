@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Modal, Form, Button } from 'antd';
+import { Modal, Form, Button, Input } from 'antd';
 
 import FormListCom, { InputInfo } from '@/components/FormListCom/formlistcom';
 import { connect, Dispatch } from 'umi';
@@ -29,6 +29,7 @@ const formItemLayout = {
 };
 
 const FormItem = Form.Item;
+const { TextArea } = Input
 
 const AddForm: React.FC<AddFormProps> = (props) => {
   // input 输入框属性
@@ -44,26 +45,28 @@ const AddForm: React.FC<AddFormProps> = (props) => {
   const button = useRef<HTMLButtonElement>(null);
 
   const onFinish = (e: any) => {
-    var json = new Array();
-    for (var i = 0; i < e.memberList.length; i++) {
-      json.push(e.memberList[i].one);
-    }
 
-    const data = {
-      communityID: baseInfo.communityList[0].id,
-      memberList: json,
-    };
+    console.log(e)
+    // var json = new Array();
+    // for (var i = 0; i < e.memberList.length; i++) {
+    //   json.push(e.memberList[i].one);
+    // }
 
-    dispatch({
-      type: 'associationMember/addMember',
-      payload: data,
-    });
+    // const data = {
+    //   communityID: baseInfo.communityList[0].id,
+    //   memberList: json,
+    // };
 
-    onCancel();
+    // dispatch({
+    //   type: 'associationMember/addMember',
+    //   payload: data,
+    // });
 
-    setTimeout(() => {
-      afterClose();
-    }, 0.5 * 1000);
+    // onCancel();
+
+    // setTimeout(() => {
+    //   afterClose();
+    // }, 0.5 * 1000);
   };
 
   return (
@@ -76,11 +79,13 @@ const AddForm: React.FC<AddFormProps> = (props) => {
     >
       <Form onFinish={onFinish} autoComplete={'off'} hideRequiredMark>
         <FormItem {...formItemLayout} name={'studentID'} label={'学号'}>
-          <FormListCom
+          {/* <FormListCom
             formListName={'memberList'}
             info={info}
             showInput={{ two: false, three: false }}
-          />
+          /> */}
+          <TextArea autoSize={{maxRows: 200}} rows={200} />
+
         </FormItem>
 
         <FormItem style={{ display: 'none' }}>

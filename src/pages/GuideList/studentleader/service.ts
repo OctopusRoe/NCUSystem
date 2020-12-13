@@ -1,38 +1,13 @@
 import request from 'umi-request';
-import { TableListParams } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
-    params,
-  });
+import getPort from '@/services/global'
+
+// 社团指导 学生负责人 查询列表
+export function searchList (params: {Session: string, Name: string, PersonId: string, PageSize: number, PageIndex: number}) {
+  return request.get(getPort('member/getmemorylist'), {params: params})
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
-  });
-}
-
-export async function addRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
-  });
+// 社团指导 学生负责人 导出
+export function downLoad (data: any) {
+  return request.post(getPort('member/export'), {headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}, responseType: 'blob', data: data})
 }

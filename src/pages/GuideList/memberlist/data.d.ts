@@ -36,7 +36,10 @@ export interface TableListParams {
 }
 
 export interface MemberListState {
-  list: {}[],
-  loading: boolean,
+  list: {}[]
+  loading: boolean
   count: number
+  selectedRows: []
+  selectedRowKeys: []
 }
+

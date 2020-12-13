@@ -1,14 +1,14 @@
 // 申请活动 组件
 
 import React, { useState, useEffect } from 'react'
-import { Form, Input, Select, DatePicker, Button } from 'antd'
+import { Form, Input, Select, DatePicker, Button, Tooltip } from 'antd'
+
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 import CropImgView from '@/components/CropImgview'
 import { connect, Dispatch } from 'umi'
 
 import { CreateActiveState } from '../model'
-
-import SelectView from '@/components/SelectView/selectView'
 
 interface CreateActiveApplyProps {
   dispatch: Dispatch
@@ -43,30 +43,16 @@ const submitFormLayout = {
   },
 };
 
-const teacherTestList = [
-  {name: 1},
-  {name: 2},
-  {name: 3},
-  {name: 4},
-  {name: 5},
-  {name: 6},
-  {name: 7},
-  {name: 8},
-  {name: 9},
-]
+// Option render function
+const getOption = (list: any[]) => {
+  if (!list || list.length === 0) {
+    return <Option value={0}>未查询到数据</Option>
+  }
 
-const valueList = {
-  teacher: [
-    {name: 1},
-    {name: 2},
-    {name: 3},
-    {name: 4},
-    {name: 5},
-    {name: 6},
-    {name: 7},
-    {name: 8},
-    {name: 9},
-  ]
+  return list.map((item: string, index: number) => (
+    <Option value={item} key={item}>{item}</Option>
+  ))
+
 }
 
 const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
@@ -187,11 +173,7 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
           ]}
         >
           <Select placeholder={'请选择'}>
-            {
-              typeList.map((item: any, index: number) => (
-                <Option value={item} key={index}>{item}</Option>
-              ))
-            }
+            {getOption(typeList)}
           </Select>
         </FormItem>
         <FormItem
@@ -205,7 +187,9 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
             }
           ]}
         >
-          <Input placeholder={'请输入主办单位名称'} />
+          <Select showSearch placeholder={'请选择'}>
+            {getOption(typeList)}
+          </Select>
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -218,7 +202,9 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
             }
           ]}
         >
-          <Input placeholder={'请输入承办单位名称'} />
+          <Select showSearch placeholder={'请选择'}>
+            {getOption(typeList)}
+          </Select>
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -249,15 +235,19 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
         <FormItem
           {...formItemLayout}
           name={'scale'}
-          label={'活动规模'}
-          rules={[
-            {
-              required: true,
-              message: '请输入活动规模!'
-            }
-          ]}
+          label={
+            <span>
+              社团成员数
+            <span style={{ color: '#00000073' }}>（最高）
+              <Tooltip title='超过最高数后无法加入新成员'>
+                <QuestionCircleOutlined style={{ marginRight: 4 }} />
+              </Tooltip>
+              &nbsp;</span>
+            </span>
+          }
+          rules={[{ required: true, message: '请输入成员数量' }]}
         >
-          <Input placeholder={'请输入活动规模'} />
+          <Input style={{ width: '100px' }} suffix={<div style={{color: '#bfbfbf'}}>人</div>} />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -352,28 +342,11 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
           </Input.Group>
         </Form.Item>
         <FormItem
-          {...formItemLayout}
-          label={'审批人'}
-          name={'teacherName'}
-        >
-          <Select
-            showSearch
-            placeholder={'请选择审批人'}
-          >
-            {
-              teacherTestList.map((item: any) => (
-                <Option value={item.name}>{item.name}</Option>
-              ))
-            }
-          </Select>
-        </FormItem>
-        <FormItem
           {...submitFormLayout}
         >
-          <Button htmlType={'submit'} type={'primary'} size={'large'} >提交</Button>
+          <Button htmlType={'submit'} type={'primary'} size={'large'} >保存</Button>
         </FormItem>
       </Form>
-      <SelectView visible={visible} onClose={()=>setVisible(false)} valueList={valueList} />
     </>
   )
 }

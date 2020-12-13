@@ -46,8 +46,6 @@ const MemberCom: React.FC<MemberProps> = (props) => {
   });
   const { count, dataSorce, loading, dispatch, token, infoData } = props;
 
-  console.log(infoData);
-
   const actionRef = useRef<ActionType>();
 
   //编辑人员modal框
@@ -158,7 +156,6 @@ const MemberCom: React.FC<MemberProps> = (props) => {
         <>
           <a
             onClick={() => {
-              console.log(record);
               setEditModalVisible(true);
               setEditValue(record);
             }}

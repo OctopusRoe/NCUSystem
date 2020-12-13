@@ -9,5 +9,5 @@ export function searchList (params: {Session: string, Name: string, PersonId: st
 
 // 社团指导 成员列表 下载
 export function downLoad (data: string[]) {
-  return request.post(getPort('member/export'), {data: data, headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }, responseType: 'blob'})
+  return request.post(getPort('member/export'), {headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }, responseType: 'blob', data: data})
 }

@@ -14,8 +14,6 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
   const { TabPane } = Tabs;
   const callback = () => {};
 
-  console.log(infoData);
-
   const columns1 = [
     {
       title: '年份',

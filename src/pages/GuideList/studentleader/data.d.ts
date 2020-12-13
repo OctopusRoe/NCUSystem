@@ -34,3 +34,11 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+export interface StudentLeaderState {
+  list: {}[]
+  loading: boolean
+  count: number
+  selectedRows: []
+  selectedRowKeys: []
+}

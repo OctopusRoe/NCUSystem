@@ -15,6 +15,8 @@ interface MemberListType {
     saveList: Reducer<MemberListState>
     loading: Reducer<MemberListState>
     saveCount: Reducer<MemberListState>
+    saveSelectRowKeys: Reducer<MemberListState>
+    clean: Reducer<MemberListState>
   }
   effects: {
     searchList: Effect
@@ -27,7 +29,9 @@ const MemberListModel: MemberListType = {
   state: {
     list: [],
     loading: true,
-    count: 0
+    count: 0,
+    selectedRowKeys: [],
+    selectedRows: []
   },
   reducers: {
     saveList (state, { payload }) {
@@ -51,6 +55,25 @@ const MemberListModel: MemberListType = {
       newState.count = payload
       return {
         ...newState
+      }
+    },
+
+    saveSelectRowKeys (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.selectedRowKeys = payload.selectedRowKeys
+      newState.selectedRows = payload.selectedRows
+      return {
+        ...newState
+      }
+    },
+
+    clean () {
+      return {
+        list: [],
+        loading: true,
+        count: 0,
+        selectedRowKeys: [],
+        selectedRows: []
       }
     }
   },

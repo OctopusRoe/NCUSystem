@@ -1,7 +1,9 @@
 // 网络平台 组件
 
 import React, { useState, useEffect } from 'react';
-import { Input, Divider, Popconfirm, message,Image } from 'antd';
+import { Input, Divider, Popconfirm, message, Image, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons'
+
 import { PaginationProps } from 'antd/lib/pagination';
 import ProTable, { ProColumns } from '@ant-design/pro-table';
 import AddModal from './components/AddModal';
@@ -26,6 +28,7 @@ const NewMedia: React.FC<NewMediaProps> = (props) => {
 
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+
   const [stepFormValues, setStepFormValues] = useState<any>({});
 
   const columns: ProColumns<TableListItem>[] = [
@@ -121,6 +124,19 @@ const NewMedia: React.FC<NewMediaProps> = (props) => {
     }
   }, [])
 
+  const reload = () => {
+    dispatch({
+      type: 'associationNewMedia/searchNewMedia',
+      payload: {}
+    })
+
+    dispatch({
+      type: 'associationNewMedia/loading',
+      payload: true
+    })
+  }
+
+
   //删除成功
   const confirm = () => {
     message.success('删除成功');
@@ -156,6 +172,14 @@ const NewMedia: React.FC<NewMediaProps> = (props) => {
         headerTitle={'网络平台'}
         toolBarRender={(action, { selectedRows }) => [
           <Search enterButton placeholder={'请输入'} onSearch={onSearch} />,
+          <Button
+            type="primary"
+            onClick={() => {
+              setAddModalVisible(true);
+            }}
+          >
+            <PlusOutlined /> 新增
+          </Button>,
         ]}
         dataSource={dataSorce}
         pagination={{ total: count }}
