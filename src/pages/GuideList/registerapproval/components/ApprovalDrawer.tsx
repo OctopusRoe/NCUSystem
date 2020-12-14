@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Drawer, Row, Table, Tag } from 'antd';
+import { Button, Col, Divider, Drawer, Row, Table, Tag, Image } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
 import getPort from '@/services/global';
@@ -15,6 +15,8 @@ interface ApprovalDrawerProps {
 
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
   const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose } = props;
+  
+  console.log(infoData);
 
   const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
 
@@ -36,8 +38,8 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
       key: '申请材料：',
       value: (
         <>
-          <Tag color={'blue'}>查看正面</Tag>
-          <Tag color={'blue'}>查看反面</Tag>
+          <Tag color={'blue'} onClick={() => document.getElementById('frontImg')?.click()}>查看正面</Tag>
+          <Tag color={'blue'} onClick={() => document.getElementById('oppositeImg')?.click()}>查看反面</Tag>
         </>
       ),
     },
@@ -177,6 +179,9 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
         <Divider style={{ fontSize: '16px' }}>组织成员信息</Divider>
         <BottomTab />
       </div>
+
+      <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.opposite : '')} style={{ display: 'none' }} id='oppositeImg' />
+      <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.front : '')} style={{ display: 'none' }} id='frontImg' />
       <Drawer
         title="拒绝理由"
         width={400}

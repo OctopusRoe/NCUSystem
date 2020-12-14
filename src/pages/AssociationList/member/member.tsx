@@ -11,7 +11,7 @@ import CopyMember from './components/copyMember';
 import { connect, Dispatch } from 'umi';
 import { PaginationProps } from 'antd/lib/pagination';
 import * as _ from 'lodash';
-import { removeRule } from '@/pages/TeacherList/store/service';
+
 
 export interface PersonState {
   personList?: {
@@ -337,10 +337,29 @@ const MemberCom: React.FC<MemberProps> = (props) => {
     });
   };
 
+
+  //取消选择
+  const selectChange = (selectedRowKeys: any, selectedRows: any) => {
+    if (selectedRowKeys.length === 0 && selectedRows.length === 0) {
+      (() => {
+        return () => {
+          dispatch({
+            type: 'associationMember/saveSelectedRowKeys',
+            payload: {
+              selectedRowKeys: [],
+              selectedRows: []
+            }
+          })
+        }
+      })()()
+    }
+  }
+
   const rowSelection = {
     selectedRowKeys,
     onSelect: onSelect,
     onSelectAll: onSelectAll,
+    onChange: selectChange
   };
 
   return (

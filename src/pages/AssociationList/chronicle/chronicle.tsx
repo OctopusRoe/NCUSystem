@@ -33,7 +33,7 @@ interface ChronicleProps {
 
 const Chronicle: React.FC<ChronicleProps> = (props) => {
   const [visible, setVisible] = useState<boolean>(false);
-  const { dataSource, dispatch } = props;
+  const { dataSource, dispatch, loading } = props;
 
   useEffect(() => {
     dispatch({
@@ -72,7 +72,7 @@ const Chronicle: React.FC<ChronicleProps> = (props) => {
         <Row style={{ paddingTop: '20px' }}>
           <Col span={2} />
           <Col span={20}>
-            <Timeline mode={'alternate'} pending={true}>
+            <Timeline mode={'alternate'} pending={loading}>
               <Timeline.Item
                 style={{ height: '100px' }}
                 dot={

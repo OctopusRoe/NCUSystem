@@ -285,7 +285,6 @@ const StudentLeader: React.FC<StudentLeaderProps> = (props) => {
         rowSelection={rowSelection}
         onSubmit={onSubmit}
         onReset={onReset}
-        // pagination={{size: 'small', showSizeChanger: false, showTotal: (a,b)=>false}}
       />
       {/* <DetailsModal modalVisible={visible} onCancel={()=>{setVisible(false)}} /> */}
     </div>
