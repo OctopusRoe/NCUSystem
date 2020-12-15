@@ -1,15 +1,28 @@
-import { Button, Col, Divider, Drawer, Row, Table, Tabs, Tag } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
 
+import { Button, Col, Divider, Drawer, Row, Table, Input, message, Spin } from 'antd';
+
+import { connect, Dispatch } from 'umi'
+
+import { logoutApprovalState } from '../data'
+
 interface ApprovalDrawerProps {
+  info: any
+  loading: any
   drawerVisible: boolean;
   oncancel: () => void;
 }
 
+const { TextArea } = Input
+
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
-  const { drawerVisible, oncancel } = props;
-  const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
+
+  const { drawerVisible, info, loading, oncancel } = props;
+  
+  const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false)
+
+  const [ applyNum, setApplyNum ] = useState<number>(0)
+
   const Tab1 = () => {
     return (
       <>
@@ -26,7 +39,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>南昌大学南昌大学南昌大学</p>
+                    <p>{info.nameZh}</p>
                   </Col>
                 </Row>
               </Col>
@@ -40,7 +53,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>XXXXXXXXXXXXXX</p>
+                    <p>{info.nameEn}</p>
                   </Col>
                 </Row>
               </Col>
@@ -54,7 +67,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>创新创业类</p>
+                    <p>{info.category}</p>
                   </Col>
                 </Row>
               </Col>
@@ -68,7 +81,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>一级社团</p>
+                    <p>{info.level}</p>
                   </Col>
                 </Row>
               </Col>
@@ -82,7 +95,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>曲丽丽</p>
+                    <p>{info.approvalTeacher}</p>
                   </Col>
                 </Row>
               </Col>
@@ -100,7 +113,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>校团委</p>
+                    <p>{info.guidanceUnit}</p>
                   </Col>
                 </Row>
               </Col>
@@ -114,7 +127,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>1213</p>
+                    <p>{info.personNum}</p>
                   </Col>
                 </Row>
               </Col>
@@ -128,7 +141,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>1213</p>
+                    <p>{info.setUpDate}</p>
                   </Col>
                 </Row>
               </Col>
@@ -142,7 +155,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
               <Col span={16}>
                 <Row>
                   <Col>
-                    <p>曲丽丽</p>
+                    <p>{info.name}</p>
                   </Col>
                 </Row>
               </Col>
@@ -157,25 +170,88 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     const columns = [
       {
         title: '学号',
-        dataIndex: 'stuid',
-        key: 'stuid',
+        dataIndex: 'personId',
+        key: 'personId',
       },
       {
         title: '姓名',
         dataIndex: 'name',
         key: 'name',
       },
+      {
+        title: '学院',
+        dataIndex: 'college',
+        key: 'college'
+      }
     ];
 
     return (
       <>
-        <Table columns={columns} size="small" />
+        <Table
+          key={'personId'}
+          columns={columns}
+          size="small"
+          dataSource={info.member}
+          pagination={{pageSize: 5}}
+        />
       </>
     );
   };
 
+  const Tab3 = () => {
+    const columns = [
+      {
+        title: '审批人',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: '审批时间',
+        dataIndex: 'time',
+        key: 'time'
+      },
+      {
+        title: '审批单位',
+        dataIndex: 'department',
+        key: 'department'
+      },
+      {
+        title: '审批结果',
+        dataIndex: 'result',
+        key: 'result'
+      }
+    ]
+
+    return (
+      <>
+        <Table
+          key={'id'}
+          columns={columns}
+          size={'small'}
+          pagination={{pageSize: 5}}
+        />
+      </>
+    )
+  }
+
+  const applyFunc = () => {
+
+    const input = document.getElementById('logout-approval-textArea')?.innerHTML
+
+    // 拒绝的分支
+    if (applyNum === 0) {
+      message.error('拒绝')
+      return
+    }
+
+    // 同意的分支
+    message.success('同意')
+    return
+  }
+
   return (
     <Drawer
+      destroyOnClose
       title="升级审批"
       width={720}
       onClose={() => oncancel()}
@@ -187,33 +263,60 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
             textAlign: 'right',
           }}
         >
-          <Button onClick={() => oncancel()} type="primary" style={{ marginRight: 8 }}>
+          <Button onClick={
+            () => {
+              setApplyNum(1)
+              setChildrenDrawerVisible(true)
+            }
+          }
+            type="primary"
+            style={{ marginRight: 8 }}
+          >
             审批通过
           </Button>
-          <Button onClick={() => setChildrenDrawerVisible(true)} type="primary" danger>
+          <Button onClick={
+              () => {
+                setApplyNum(0)
+                setChildrenDrawerVisible(true)
+              }
+            } 
+            type="primary"
+            danger
+          >
             拒绝通过
           </Button>
         </div>
       }
     >
-      <div>
-        <Tab1 />
-        <Divider style={{ fontSize: '16px' }}>成员代表</Divider>
-        <Tab2 />
-      </div>
+      {
+        loading ? 
+        <div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Spin size={'large'} delay={300} />
+        </div>
+        :
+        <div>
+          <Tab1 />
+          <Divider style={{ fontSize: '16px' }}>成员代表</Divider>
+          <Tab2 />
+          <Divider style={{ fontSize: '16px' }}>审批意见</Divider>
+          <Tab3 />
+        </div>
+      }
       <Drawer
-        title="拒绝理由"
+        destroyOnClose
+        title={applyNum !== 0 ? '同意建议' : '拒绝理由'}
         width={400}
         closable={false}
         onClose={() => setChildrenDrawerVisible(false)}
         visible={childrenDrawerVisible}
       >
-        <TextArea rows={4} />
+        <TextArea id={'logout-approval-textArea'} rows={4} />
         <div style={{ paddingTop: '50px', textAlign: 'right' }}>
           <Button
             type="primary"
             onClick={() => {
-              oncancel();
+              // oncancel();
+              applyFunc()
               setChildrenDrawerVisible(false);
             }}
           >
@@ -225,4 +328,9 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
   );
 };
 
-export default ApprovalDrawer;
+export default connect(
+  ({logoutApproval}: {logoutApproval: logoutApprovalState}) => ({
+    loading: logoutApproval.infoLoading,
+    info: logoutApproval.info
+  })
+)(ApprovalDrawer)

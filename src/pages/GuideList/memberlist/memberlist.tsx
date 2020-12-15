@@ -238,12 +238,13 @@ const Member: React.FC<MemberProps> = (props) => {
   }
 
   // 全选方法
-  const onSelectAll = (selected: boolean, selectedRows: any, changeRows: any) => {
+  const onSelectAll = (selected: boolean, changeRows: any) => {
 
     let newSelectRows = selectedRows
     const changeRowKeys = _.map(changeRows, 'id')
     if (selected) {
-      newSelectRows = _.uniqBy(_.concat(newSelectRows, changeRows), 'id')
+      const sa = _.uniqBy(_.concat(newSelectRows, changeRows), 'id')
+      newSelectRows = sa.filter((item: any) => item !== undefined)
     } else {
       _.remove(newSelectRows, (item: any) => (_.includes(changeRowKeys, item.id)))
     }
@@ -258,11 +259,12 @@ const Member: React.FC<MemberProps> = (props) => {
   }
 
   const selectChange = (selectedRowKeys: any, selectedRows: any) => {
+
     if (selectedRowKeys.length === 0 && selectedRows.length === 0) {
       (() => {
         return () => {
           dispatch({
-            type: 'studentLeader/saveSelectRowKeys',
+            type: 'memberListModel/saveSelectRowKeys',
             payload: {
               selectedRowKeys: [],
               selectedRows: []

@@ -114,7 +114,7 @@ const MemberListModel: MemberListType = {
     *downLoad ({ payload }, { call, put}) {
 
       const back = yield call(downLoad, payload)
-      if (back.code !== 0) {
+      if (back.code && back.code !== 0) {
         message.error(back.msg)
         console.error(back.msg)
         return

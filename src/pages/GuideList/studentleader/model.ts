@@ -112,11 +112,9 @@ const StudentLeaderModel: StudentLeaderType = {
     },
 
     *downLoad ({ payload }, { call, put}) {
-
-      console.log(payload)
       
       const back = yield call(downLoad, payload)
-      if (back.code !== 0) {
+      if (back.code && back.code !== 0) {
         message.error(back.msg)
         console.error(back.msg)
         return

@@ -11,6 +11,7 @@ export interface TableListItem {
   updatedAt: Date;
   createdAt: Date;
   progress: number;
+  id: string
 }
 
 export interface TableListPagination {
@@ -33,4 +34,12 @@ export interface TableListParams {
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
+}
+
+export interface logoutApprovalState {
+  list: {}[]
+  count: number
+  loading: boolean
+  info: {}
+  infoLoading: boolean
 }

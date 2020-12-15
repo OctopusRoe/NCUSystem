@@ -16,7 +16,6 @@ interface InfoDrawerProps {
 
 const InfoDrawer: React.FC<InfoDrawerProps> = (props) => {
   const { drawervisible, info, isquery, cause, onCancel, dispatch } = props;
-  console.log(info)
   const columns = [
     {
       title: '学号',

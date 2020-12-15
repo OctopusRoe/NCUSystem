@@ -213,11 +213,12 @@ const StudentLeader: React.FC<StudentLeaderProps> = (props) => {
   }
 
   // 全选方法
-  const onSelectAll = (selected: boolean, selectedRows: any, changeRows: any) => {
+  const onSelectAll = (selected: boolean, changeRows: any) => {
     let newSelectRows = selectedRows
     const changeRowKeys = _.map(changeRows, 'id')
     if (selected) {
-      newSelectRows = _.uniqBy(_.concat(newSelectRows, changeRows), 'id')
+      const sa = _.uniqBy(_.concat(newSelectRows, changeRows), 'id')
+      newSelectRows = sa.filter((item: any) => item !== undefined)
     } else {
       _.remove(newSelectRows, (item: any) => (_.includes(changeRowKeys, item.id)))
     }

@@ -1,38 +1,13 @@
-import request from 'umi-request';
-import { TableListParams } from './data.d';
+import request from 'umi-request'
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
-    params,
-  });
+import getPort from '@/services/global'
+
+// 社团指导 注销审批 获取列表
+export async function searchList (params: {Name?: string, Status?: number, PageSize: number, PageIndex: number}) {
+  return request.get(getPort('logoutapproval/query'), {params: params})
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
-  });
-}
-
-export async function addRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
-  });
+// 社团指导 注销审批 获取详细信息
+export async function searchInfo (params: {Id: string}) {
+  return request.get(getPort('logoutapproval/detail'), {params: params})
 }
