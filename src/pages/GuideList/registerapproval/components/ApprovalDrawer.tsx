@@ -3,6 +3,7 @@ import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
 import getPort from '@/services/global';
 import { connect, Dispatch } from 'umi';
+import FileViewer from '@/assets/react-file-viewer/index'
 
 interface ApprovalDrawerProps {
   drawerVisible: boolean;
@@ -15,8 +16,8 @@ interface ApprovalDrawerProps {
 
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
   const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose } = props;
-  
-  console.log(infoData);
+
+  const [num, setNum] = useState(0)
 
   const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
 
@@ -32,20 +33,20 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     { key: '成员最高数：', value: infoData !== undefined ? infoData.memberCount : '' },
     {
       key: '社团章程：',
-      value: <Tag color={'blue'}>在线查看</Tag>,
+      value: <Tag color={'blue'} style={{ cursor: 'pointer' }}>在线查看</Tag>,
     },
     {
       key: '申请材料：',
       value: (
         <>
-          <Tag color={'blue'} onClick={() => document.getElementById('frontImg')?.click()}>查看正面</Tag>
-          <Tag color={'blue'} onClick={() => document.getElementById('oppositeImg')?.click()}>查看反面</Tag>
+          <Tag color={'blue'} style={{ cursor: 'pointer' }} onClick={() => document.getElementById('frontImg')?.click()}>查看正面</Tag>
+          <Tag color={'blue'} style={{ cursor: 'pointer' }} onClick={() => document.getElementById('oppositeImg')?.click()}>查看反面</Tag>
         </>
       ),
     },
   ];
 
-  const TopTab = () => {
+  const Details = () => {
     return (
       <>
         <Row>
@@ -102,7 +103,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     );
   };
 
-  const BottomTab = () => {
+  const MembersList = () => {
     const columns = [
       {
         title: '姓名',
@@ -125,6 +126,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
       <>
         <Table
           columns={columns}
+          pagination={{ pageSize: 5 }}
           dataSource={infoData !== undefined ? infoData.members : ''}
           size="small"
         />
@@ -132,28 +134,68 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     );
   };
 
+
+
+  const ApprovalList = () => {
+    const columns = [
+      {
+        title: '审批人',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: '审批时间',
+        dataIndex: 'personId',
+        key: 'personId',
+      },
+      {
+        title: '审批单位',
+        dataIndex: 'college',
+        key: 'college',
+      },
+      {
+        title: '审批结果',
+        dataIndex: 'college',
+        key: 'college',
+      },
+    ];
+
+    return (
+      <>
+        <Table
+          columns={columns}
+          pagination={false}
+          size="small" />
+      </>
+    );
+  };
+
+
+
+
+
+
   //审批通过
   const through = () => {
     const data = {
       Id: detailId,
       Status: 1,
     };
-    console.log(data);
-
     // dispatch({
     //   type: 'communityRegisterApproval/registerAudit',
     //   payload: data,
     // });
 
-    oncancel();
+    // oncancel();
 
-    setTimeout(() => {
-      afterClose();
-    }, 0.5 * 1000);
+    // setTimeout(() => {
+    //   afterClose();
+    // }, 0.5 * 1000);
   };
 
   return (
     <Drawer
+      destroyOnClose={true}
       title="注册审批"
       width={720}
       onClose={() => oncancel()}
@@ -165,25 +207,29 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
             textAlign: 'right',
           }}
         >
-          <Button onClick={() => through()} type="primary" style={{ marginRight: 8 }}>
+          <Button onClick={() => { setChildrenDrawerVisible(true); setNum(1) }} type="primary" style={{ marginRight: 8 }}>
             审批通过
           </Button>
-          <Button onClick={() => setChildrenDrawerVisible(true)} type="primary" danger>
+          <Button onClick={() => { setChildrenDrawerVisible(true); setNum(2) }} type="primary" danger>
             拒绝通过
           </Button>
         </div>
       }
     >
+      <FileViewer fileType={'pdf'} filePath={'http://172.20.5.133:5000/api/v1/registapproval/getconstitution?Url=Temp%5CApplyConstitution%5C12345.pdf'} />
       <div>
-        <TopTab />
-        <Divider style={{ fontSize: '16px' }}>组织成员信息</Divider>
-        <BottomTab />
+        <Details />
+        <Divider >组织成员信息</Divider>
+        <MembersList />
+        <Divider >审批意见</Divider>
+        <ApprovalList />
       </div>
-
       <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.opposite : '')} style={{ display: 'none' }} id='oppositeImg' />
       <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.front : '')} style={{ display: 'none' }} id='frontImg' />
+    
       <Drawer
-        title="拒绝理由"
+        destroyOnClose={true}
+        title={num === 1 ? '同意建议' : '拒绝理由'}
         width={400}
         closable={false}
         onClose={() => setChildrenDrawerVisible(false)}
@@ -199,7 +245,6 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
                 Status: 2,
                 Value: document.getElementById('textValue')?.innerHTML,
               };
-              console.log(data);
 
               // dispatch({
               //   type: 'communityRegisterApproval/registerAudit',

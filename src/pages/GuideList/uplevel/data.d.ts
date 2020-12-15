@@ -34,3 +34,32 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+//社团指导  升级审批 state
+export interface UpgradeApprovalState {
+  UpgradeApprovalList: {
+    id: string;
+    number: string;
+    communityId: string;
+    communityName: string;
+    category: string;
+    level: string;
+    guidanceUnit: string;
+    status: number;
+  }[];
+  count: number;
+  loading: boolean;
+  DetailInfoList?: {
+    id: string;
+    nameZh: string;
+    nameEn: string;
+    guidanceUnit: string;
+    personNum: number;
+    category: string;
+    level: string;
+    setUpDate: string;
+    name: string;
+    approvalTeacher: string;
+    project: string;
+  }[];
+}

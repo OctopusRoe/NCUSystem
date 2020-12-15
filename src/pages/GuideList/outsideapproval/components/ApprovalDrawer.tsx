@@ -1,179 +1,98 @@
-import { Button, Col, Divider, Drawer, Row, Table, Tabs, Tag } from 'antd';
+import { Button, Col, Divider, Drawer, Row, Table } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
+import { size } from 'lodash';
 import React, { useState } from 'react';
+import { connect, Dispatch } from 'umi';
+
 
 interface ApprovalDrawerProps {
   drawerVisible: boolean;
   oncancel: () => void;
+  infoData: any;
+  dispatch: Dispatch;
+  detailId: any;
+  afterClose: () => void;
 }
 
+
+
+
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
-  const { drawerVisible, oncancel } = props;
+  const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose } = props;
   const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
-  const Tab1 = () => {
+  const [num, setNum] = useState(0)   //1同意  2拒绝
+
+
+  const LeftData = [
+    { key: '社团中文全称：', value: infoData !== undefined ? infoData.nameZh : '' },
+    { key: '社团英文全称：', value: infoData !== undefined ? infoData.nameEn : '' },
+    { key: '社团类别：', value: infoData !== undefined ? infoData.category : '' },
+    { key: '社团级别：', value: infoData !== undefined ? infoData.level : '' },
+    { key: '申请人：', value: infoData !== undefined ? infoData.name : '' },
+    { key: '外出事由：', value: infoData !== undefined ? infoData.reason : '' },
+  ];
+
+  const RightData = [
+    { key: '指导单位：', value: infoData !== undefined ? infoData.guidanceUnit : '' },
+    { key: '指导审批人：', value: infoData !== undefined ? infoData.approvalTeacher : '' },
+    { key: '离/返校时间：', value: infoData !== undefined ? infoData.setUpDate : '' },
+    { key: '外出地点：', value: infoData !== undefined ? infoData.place : '' },
+    { key: '外出负责人：', value: infoData !== undefined ? infoData.responsible : '' },
+  ];
+
+
+
+
+  const Details = () => {
     return (
       <>
         <Row>
           <Col span={12}>
             <Row>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>社团中文全称：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>南昌大学南昌大学南昌大学</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>社团英文全称：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>XXXXXXXXXXXXXX</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>社团类别：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>创新创业类</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>社团级别：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>一级社团</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>申请人：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>曲丽丽</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>外出事由：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
-                  </Col>
-                </Row>
-              </Col>
+              {LeftData.map((item: any, index) => {
+                return (
+                  <React.Fragment key={`left${index}`}>
+                    <Col span={8}>
+                      <Row justify="end">
+                        <Col>
+                          <p style={{ color: '#939393' }}>{item.key}</p>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col span={16}>
+                      <Row>
+                        <Col>
+                          <p>{item.value}</p>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </React.Fragment>
+                );
+              })}
             </Row>
           </Col>
           <Col span={12}>
             <Row>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>指导单位：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>校团委</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>指导审批人：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>曲丽丽</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>离/返校时间：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>2020.10.02--2020.10.03</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>外出地点：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>XXXXXXXXXXXXXXX</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row justify="end">
-                  <Col>
-                    <p style={{ color: '#939393' }}>外出负责人：</p>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={16}>
-                <Row>
-                  <Col>
-                    <p>XXX</p>
-                  </Col>
-                </Row>
-              </Col>
+              {RightData.map((item: any, index) => {
+                return (
+                  <React.Fragment key={`right${index}`}>
+                    <Col span={8}>
+                      <Row justify="end">
+                        <Col>
+                          <p style={{ color: '#939393' }}>{item.key}</p>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col span={16}>
+                      <Row>
+                        <Col>
+                          <p>{item.value}</p>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </React.Fragment>
+                );
+              })}
             </Row>
           </Col>
         </Row>
@@ -181,17 +100,17 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     );
   };
 
-  const Tab2 = () => {
+  const MembersList = () => {
     const columns = [
-      {
-        title: '学号',
-        dataIndex: 'stuid',
-        key: 'stuid',
-      },
       {
         title: '姓名',
         dataIndex: 'name',
         key: 'name',
+      },
+      {
+        title: '学号',
+        dataIndex: 'personId',
+        key: 'personId',
       },
       {
         title: '学院',
@@ -202,13 +121,55 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
 
     return (
       <>
-        <Table columns={columns} size="small" />
+        <Table
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          dataSource={infoData !== undefined ? infoData.members : ''}
+          size="small" />
       </>
     );
   };
 
+  const ApprovalList = () => {
+    const columns = [
+      {
+        title: '审批人',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: '审批时间',
+        dataIndex: 'personId',
+        key: 'personId',
+      },
+      {
+        title: '审批单位',
+        dataIndex: 'college',
+        key: 'college',
+      },
+      {
+        title: '审批结果',
+        dataIndex: 'college',
+        key: 'college',
+      },
+    ];
+
+    return (
+      <>
+        <Table
+          columns={columns}
+          pagination={false}
+          size="small" />
+      </>
+    );
+  };
+
+
+
+
   return (
     <Drawer
+      destroyOnClose
       title="外出审批"
       width={720}
       onClose={() => oncancel()}
@@ -220,28 +181,31 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
             textAlign: 'right',
           }}
         >
-          <Button onClick={() => oncancel()} type="primary" style={{ marginRight: 8 }}>
+          <Button onClick={() => { setChildrenDrawerVisible(true); setNum(1) }} type="primary" style={{ marginRight: 8 }}>
             审批通过
           </Button>
-          <Button onClick={() => setChildrenDrawerVisible(true)} type="primary" danger>
+          <Button onClick={() => { setChildrenDrawerVisible(true); setNum(2) }} type="primary" danger>
             拒绝通过
           </Button>
         </div>
       }
     >
       <div>
-        <Tab1 />
-        <Divider style={{ fontSize: '16px' }}>外出成员</Divider>
-        <Tab2 />
+        <Details />
+        <Divider >外出成员</Divider>
+        <MembersList />
+        <Divider >审批意见</Divider>
+        <ApprovalList />
       </div>
       <Drawer
-        title="拒绝理由"
+        destroyOnClose
+        title={num === 1 ? '同意建议' : '拒绝理由'}
         width={400}
         closable={false}
         onClose={() => setChildrenDrawerVisible(false)}
         visible={childrenDrawerVisible}
       >
-        <TextArea rows={4} />
+        <TextArea rows={10} />
         <div style={{ paddingTop: '50px', textAlign: 'right' }}>
           <Button
             type="primary"
@@ -258,4 +222,4 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
   );
 };
 
-export default ApprovalDrawer;
+export default connect()(ApprovalDrawer);

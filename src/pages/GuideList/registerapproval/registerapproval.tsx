@@ -1,7 +1,7 @@
 // 注册审批页面
 import { Button, Divider, Input, Popconfirm, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import {} from './service';
+import { } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import ApprovalDrawer from './components/ApprovalDrawer';
@@ -25,6 +25,7 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
   const [detailId, setDetailId] = useState();
 
   const { count, dataSource, loading, dispatch, detailInfo } = props;
+  console.log(detailInfo);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -119,8 +120,8 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
         <>
           <a
             onClick={() => {
-              setApprovalDrawerVisible(true);
               getDetail(record);
+              setApprovalDrawerVisible(true);
             }}
           >
             审核
@@ -142,10 +143,11 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
   //查看申请详情
   const getDetail = (record: any) => {
     setDetailId(record.id);
-    dispatch({
-      type: 'communityRegisterApproval/getDetail',
-      payload: record.id,
-    });
+    setTimeout(
+      dispatch({
+        type: 'communityRegisterApproval/getDetail',
+        payload: record.id,
+      }), 0.5 * 1000)
   };
 
   //删除成功
