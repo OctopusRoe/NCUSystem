@@ -14,15 +14,10 @@ import { GlobalModelState } from '@/models/global'
 import moment from 'moment'
 
 interface BaseInfoProps {
-  canTeacherUse: boolean
-  teacherCount: number
-  canDepartmentUse: boolean
-  departmentCount: number
   association: any
   selectValue: any
-  tGUID: string
-  dGUID: string
   reload: number
+  departmentList: any
   dispatch: Dispatch
 }
 
@@ -47,108 +42,35 @@ const submitFormLayout = {
 
 const { Option } = Select
 
+// Option 渲染函数
+const getOption = (list: any[]) => {
+  if (!list || list.length === 0) {
+    return <Option value={0} >未查询到数据</Option>
+  }
+
+  return list.map((item: any, index: number) => (
+    <Option value={item.id} key={item.id}>{item.name}</Option>
+  ))
+}
+
 const BaseInfo: React.FC<BaseInfoProps> = (props) => {
 
   const intl = useIntl()
 
-  const { 
-    canTeacherUse,
-    teacherCount,
-    canDepartmentUse,
-    departmentCount,
+  const {
     association,
     selectValue,
-    tGUID,
-    dGUID,
     reload,
+    departmentList,
     dispatch
   } = props
 
   // const [ info ] = associationList.filter((item: any) => item.isResponsible)
-  
-  // 保存指导老师电话
-  const [ getTeacher, setGetTeacher ] = useState<string>('')
 
-  // 保存指导部门电话
-  const [ getDepartment, setGetDepartment ] = useState<string>('')
-
-  // 选择指导老师电话
-  const selectTeacher = (e: string) => {
-    setGetTeacher(e)
+  // 指导部门选择改变
+  const selectDepartmentChange = (e: number) => {
+    // 点击部门后去请求接口，获取老师列表
   }
-
-  // 选择指导部门电话
-  const selectDepartment = (e: string) => {
-    setGetDepartment(e)
-  }
-
-  // 老师设置倒计时方法
-  const teacherCountDown = () => {
-    if (getTeacher === '') {
-      return
-    }
-
-    dispatch({
-      type: 'associationBaseInfo/getTeacherCode',
-      payload: getTeacher
-    })
-
-    dispatch({
-      type: 'associationBaseInfo/setTeacherCount',
-      payload: [60, false]
-    })
-  }
-
-  // 部门设置倒计时方法
-  const departmentCountDown = () => {
-    if (getDepartment === '') {
-      return
-    }
-
-    dispatch({
-      type: 'associationBaseInfo/getDepartmentCode',
-      payload: getDepartment
-    })
-
-    dispatch({
-      type: 'associationBaseInfo/setDepartmentCount',
-      payload: [60, false]
-    })
-  }
-
-  // 老师倒计时
-  useEffect(() => {
-    if (teacherCount > 1) {
-      setTimeout(() => {
-        dispatch({
-          type: 'associationBaseInfo/setTeacherCount',
-          payload: [teacherCount - 1, false]
-        })
-      }, 1000)
-    } else {
-      dispatch({
-        type: 'associationBaseInfo/setTeacherCount',
-        payload: [1, true]
-      })
-    }
-  },[teacherCount])
-
-  // 部门倒计时
-  useEffect(() => {
-    if (departmentCount > 1) {
-      setTimeout(() => {
-        dispatch({
-          type: 'associationBaseInfo/setDepartmentCount',
-          payload: [departmentCount - 1, false]
-        })
-      }, 1000)
-    } else {
-      dispatch({
-        type: 'associationBaseInfo/setDepartmentCount',
-        payload: [1, true]
-      })
-    }
-  }, [departmentCount])
 
   // 表单数据获取
   const handleFinish = (e:any) => {
@@ -164,10 +86,6 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     form.append('GuidanceUnit', e.guidanceUnit)
     form.append('PersonNum', e.personNum)
     form.append('SetUpDate', e.startTime.format('YYYY'))
-    form.append('TeacherGuid', tGUID)
-    form.append('TeacherCode', e.teacherCode)
-    form.append('DepartmentGuid', dGUID)
-    form.append('DepartmentCode', e.departmentCode)
 
     if (typeof e.logo !== 'string') {
       form.append('Logo', e.logo.originFileObj)
@@ -182,14 +100,6 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
     }
     
     const data = {
-      teacher: {
-        guid: tGUID,
-        code: e.teacherCode
-      },
-      department: {
-        guid: dGUID,
-        code: e.departmentCode
-      },
       form: form
     }
 
@@ -349,74 +259,34 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         >
           <CropImgView id="thumbnail" />
         </Form.Item>
-        <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'teacherId'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导老师!'}]}
+        <Form.Item
+            {...formItemLayout}
+            label={'指导部门'}
+            name={'selectDepartment'}
           >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
-              {
-                association.instructorInfo && association.instructorInfo.map((item: any) => (
-                  <Option value={item.personId} key={item.personId}>
-                    {item.name}
-                  </Option>
-                ))
-              }
+            <Select
+              showSearch
+              style={{width: '50%'}}
+              placeholder={'请选择'}
+              onChange={selectDepartmentChange}
+            >
+              {getOption(departmentList)}
             </Select>
           </Form.Item>
           <Form.Item
-            name={'teacherCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
+            {...formItemLayout}
+            label={'指导老师'}
+            name={'selectTeacher'}
           >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={teacherCountDown}
-            disabled={canTeacherUse ? false : true}
-            type={canTeacherUse ? 'primary' : 'default'}
-          >
-            {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
-      <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
-        <Input.Group compact>
-          <Form.Item
-            name={'departmentId'}
-            style={{display: 'inline-block', width: '25%'}}
-            rules={[{required: true, message: '请选择指导部门!'}]}
-          >
-            <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-              {
-                association.instructorInfo && association.instructorInfo.map((item: any) => (
-                  <Option value={item.personId} key={item.personId}>
-                    {item.name}
-                  </Option>
-                ))
-              }
+            <Select
+              showSearch
+              style={{width: '50%'}}
+              placeholder={'请选择'}
+            >
+              {getOption(departmentList)}
             </Select>
           </Form.Item>
-          <Form.Item
-            name={'departmentCode'}
-            style={{display: 'inline-block', width: '50%'}}
-            rules={[{required: true, message: '请输入手机验证码!'}]}
-          >
-            <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-          </Form.Item>
-          <Button
-            style={{width: '25%'}}
-            onClick={departmentCountDown}
-            disabled={canDepartmentUse ? false : true}
-            type={canDepartmentUse ? 'primary' : 'default'}
-          >
-            {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
-          </Button>
-        </Input.Group>
-      </Form.Item>
+        
         <Form.Item
           {...submitFormLayout}
         >
@@ -440,15 +310,11 @@ export default connect(
     global: GlobalModelState
   })=>{
     return {
-      canTeacherUse: associationBaseInfo.canTeacherUse,
-      teacherCount: associationBaseInfo.teacherCount,
-      canDepartmentUse: associationBaseInfo.canDepartmentUse,
-      departmentCount: associationBaseInfo.departmentCount,
       association: global.association,
       reload: global.reload,
       selectValue: global.SelectValue,
-      tGUID: associationBaseInfo.tGUID,
-      dGUID: associationBaseInfo.dGUID
+
+      departmentList: global.SelectValue.department
     }
   }
 )(BaseInfo)

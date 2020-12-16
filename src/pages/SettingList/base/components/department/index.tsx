@@ -62,6 +62,11 @@ const Department: React.FC<DepartmentProps> = (props) => {
       key: 'test',
     },
     {
+      title: '部门负责人',
+      dataIndex: 'leader',
+      key: 'leader',
+    },
+    {
       title: '排序号',
       dataIndex: 'level',
       key: 'level',

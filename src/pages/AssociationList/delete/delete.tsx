@@ -2,7 +2,7 @@
 
 import React,{ useState, useEffect } from 'react';
 
-import { Card, Form, Input, message, Button, Select } from 'antd'
+import { Card, Form, Input, Button, Select } from 'antd'
 import { connect, Dispatch } from 'umi';
 
 import { GlobalModelState } from '@/models/global'
@@ -19,14 +19,9 @@ interface DeleteProps {
   baseInfo: any
   association: any
   valueList: any
-  canTeacherUse: boolean
-  teacherCount: number
-  canDepartmentUse: boolean
-  departmentCount: number
   reload: number
   count: string
-  tGUID: string
-  dGUID: string
+  departmentList: any
 }
 
 const formItemLayout = {
@@ -53,6 +48,17 @@ const { Option } = Select;
 const FormItem = Form.Item
 const { TextArea } = Input
 
+// Option 渲染函数
+const getOption = (list: any[]) => {
+  if (!list || list.length === 0) {
+    return <Option value={0} >未查询到数据</Option>
+  }
+
+  return list.map((item: any, index: number) => (
+    <Option value={item.id} key={item.id}>{item.name}</Option>
+  ))
+}
+
 const memberInfo: { one: InputInfo; two?: InputInfo } = {
   one: {
     message: '请输入成员学号!',
@@ -67,16 +73,11 @@ const memberInfo: { one: InputInfo; two?: InputInfo } = {
 const Delete: React.FC<DeleteProps> = (props) => {
 
   const {
-    canTeacherUse,
-    teacherCount,
-    canDepartmentUse,
-    departmentCount,
     baseInfo,
     association,
     reload,
     valueList,
-    tGUID,
-    dGUID,
+    departmentList,
     dispatch
   } = props
 
@@ -101,88 +102,6 @@ const Delete: React.FC<DeleteProps> = (props) => {
     return <Success />
   }
 
-  // 保存指导老师电话
-  const [ getTeacher, setGetTeacher ] = useState<string>('')
-
-  // 保存指导部门电话
-  const [ getDepartment, setGetDepartment ] = useState<string>('')
-
-  // 选择指导老师电话
-  const selectTeacher = (e: string) => {
-    setGetTeacher(e)
-  }
-
-  // 选择指导部门电话
-  const selectDepartment = (e: string) => {
-    setGetDepartment(e)
-  }
-
-  // 老师设置倒计时方法
-  const teacherCountDown = () => {
-    if (getTeacher === '') {
-      return
-    }
-    dispatch({
-      type: 'deleteModel/setTeacherCount',
-      payload: [60, false]
-    })
-
-    dispatch({
-      type: 'deleteModel/getTeacherCode',
-      payload: getTeacher
-    })
-  }
-
-  // 部门设置倒计时方法
-  const departmentCountDown = () => {
-    if (getDepartment === '') {
-      return
-    }
-    dispatch({
-      type: 'deleteModel/setDepartmentCount',
-      payload: [60, false]
-    })
-
-    dispatch({
-      type: 'deleteModel/getDepartmentCode',
-      payload: getDepartment
-    })
-  }
-
-  // 老师倒计时
-  useEffect(() => {
-    if (teacherCount > 1) {
-      setTimeout(() => {
-        dispatch({
-          type: 'deleteModel/setTeacherCount',
-          payload: [teacherCount - 1, false]
-        })
-      }, 1000)
-    } else {
-      dispatch({
-        type: 'deleteModel/setTeacherCount',
-        payload: [1, true]
-      })
-    }
-  },[teacherCount])
-
-  // 部门倒计时
-  useEffect(() => {
-    if (departmentCount > 1) {
-      setTimeout(() => {
-        dispatch({
-          type: 'deleteModel/setDepartmentCount',
-          payload: [departmentCount - 1, false]
-        })
-      }, 1000)
-    } else {
-      dispatch({
-        type: 'deleteModel/setDepartmentCount',
-        payload: [1, true]
-      })
-    }
-  }, [departmentCount])
-
   // 失去焦点后访问接口获取学生姓名
   const onBlurFun = async (e: string, i: number) => {
 
@@ -204,9 +123,10 @@ const Delete: React.FC<DeleteProps> = (props) => {
     })
   }
 
-  // 控制页面刷新
-  // useEffect(() => {
-  // },[count])
+  // 指导部门选择改变
+  const selectDepartmentChange = (e: number) => {
+    // 点击部门后去请求接口，获取老师列表
+  }
 
   // 表单数据获取
   const onFinish = (e:any) => {
@@ -217,18 +137,10 @@ const Delete: React.FC<DeleteProps> = (props) => {
     form.append('Reason', e.cause)
     form.append('Member', e['student-member-list'].map((item:any) => item.one))
     form.append('TeacherPersonId', e.teacher)
-    form.append('TeacherGuid', tGUID)
-    form.append('TeacherCode', e.teacherCode)
     form.append('DepartmentId', e.departmentPerson)
-    form.append('DepartmentGuid', dGUID)
-    form.append('DepartmentCode', e.departmentCode)
 
     const data = {
-      form: form,
-      tGUID: tGUID,
-      teacherCode: e.teacherCode,
-      dGUID: dGUID,
-      departmentCode: e.departmentCode
+      form: form
     }
 
     dispatch({
@@ -327,74 +239,33 @@ const Delete: React.FC<DeleteProps> = (props) => {
               onBlurFun={onBlurFun}
             />
           </FormItem>
-          <Form.Item  {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px'}}>
-          <Input.Group compact>
-            <Form.Item
-              name={'teacher'}
-              style={{display: 'inline-block', width: '25%'}}
-              rules={[{required: true, message: '请选择指导老师!'}]}
+          <FormItem
+            {...formItemLayout}
+            label={'指导部门'}
+            name={'selectDepartment'}
+          >
+            <Select
+              showSearch
+              style={{width: '50%'}}
+              placeholder={'请选择'}
+              onChange={selectDepartmentChange}
             >
-              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
-                {
-                  association !== null && association.instructorInfo.map((item: any, index: number) => (
-                    <Option value={item.personId} key={item.personId}>
-                      {item.name}
-                    </Option>
-                  ))
-                }
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name={'teacherCode'}
-              style={{display: 'inline-block', width: '50%'}}
-              rules={[{required: true, message: '请输入手机验证码!'}]}
+              {getOption(departmentList)}
+            </Select>
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'指导老师'}
+            name={'selectTeacher'}
+          >
+            <Select
+              showSearch
+              style={{width: '50%'}}
+              placeholder={'请选择'}
             >
-              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            </Form.Item>
-            <Button
-              style={{width: '25%'}}
-              onClick={teacherCountDown}
-              disabled={canTeacherUse ? false : true}
-              type={canTeacherUse ? 'primary' : 'default'}
-            >
-              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
-        <Form.Item  {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px'}}>
-          <Input.Group compact>
-            <Form.Item
-              name={'departmentPerson'}
-              style={{display: 'inline-block', width: '25%'}}
-              rules={[{required: true, message: '请选择指导部门!'}]}
-            >
-              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-                {
-                  association !== null && association.instructorInfo.map((item: any, index: number) => (
-                    <Option value={item.personId} key={item.personId}>
-                      {item.name}
-                    </Option>
-                  ))
-                }
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name={'departmentCode'}
-              style={{display: 'inline-block', width: '50%'}}
-              rules={[{required: true, message: '请输入手机验证码!'}]}
-            >
-              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            </Form.Item>
-            <Button
-              style={{width: '25%'}}
-              onClick={departmentCountDown}
-              disabled={canDepartmentUse ? false : true}
-              type={canDepartmentUse ? 'primary' : 'default'}
-            >
-              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
+              {getOption(departmentList)}
+            </Select>
+          </FormItem>
           <Form.Item
             {...submitFormLayout}
           >
@@ -411,17 +282,12 @@ const Delete: React.FC<DeleteProps> = (props) => {
 export default connect(
   ({deleteModel, global}: {deleteModel: DeleteState, global: GlobalModelState}) => {
     return {
-      canTeacherUse: deleteModel.canTeacherUse,
-      teacherCount: deleteModel.teacherCount,
-      canDepartmentUse: deleteModel.canDepartmentUse,
-      departmentCount: deleteModel.departmentCount,
       valueList: deleteModel.valueList,
       count: deleteModel.count,
       reload: global.reload,
       baseInfo: global.baseInfo,
       association: global.association,
-      tGUID: deleteModel.tGUID,
-      dGUID: deleteModel.dGUID,
+      departmentList: global.SelectValue.department
     }
   }
 )(Delete);

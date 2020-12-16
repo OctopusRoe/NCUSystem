@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button, Form, Input, Select, Modal } from 'antd';
 
 import { connect, Dispatch } from 'umi'
@@ -23,6 +23,8 @@ const EditModal: React.FC<EditModalProps> = (props) => {
 
   const { modalvisible, typeValue, formValue, onCancel, afterClose, dispatch } = props;
 
+  const button = useRef<HTMLButtonElement>(null)
+
   const onFinish = (values: any) => {
     
     const data = {
@@ -46,18 +48,13 @@ const EditModal: React.FC<EditModalProps> = (props) => {
     console.log('Failed:', errorInfo);
   };
 
-  //modal框确定按钮
-  const okChange = () => {
-    document.getElementById('edit-btnok')?.click();
-  };
-
   return (
     <>
       <Modal
         title="编辑单位"
         visible={modalvisible}
         onCancel={onCancel}
-        onOk={okChange}
+        onOk={() => button.current?.click()}
         okText="确定"
         cancelText="取消"
         destroyOnClose
@@ -118,6 +115,15 @@ const EditModal: React.FC<EditModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item
+            label={'部门负责人'}
+            name={'leader'}
+          >
+            <Select placeholder={'请选择部门负责人'}>
+              <Option value={1}>{1}</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
             label="排序号"
             name="level"
             rules={[{ required: true, message: '请输入排序号' }]}
@@ -126,7 +132,7 @@ const EditModal: React.FC<EditModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
-            <Button type="primary" htmlType="submit" id="edit-btnok"/>
+            <Button type="primary" htmlType="submit" ref={button} />
           </Form.Item>
         </Form>
       </Modal>

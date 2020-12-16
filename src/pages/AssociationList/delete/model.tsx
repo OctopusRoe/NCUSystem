@@ -14,14 +14,10 @@ interface DeleteType {
   namespace: string
   state: DeleteState
   reducers: {
-    setTeacherCount: Reducer<DeleteState>
-    setDepartmentCount: Reducer<DeleteState>
     setNewFormValue: Reducer<DeleteState>
     cleanAll: Reducer<DeleteState>
     rmFormValue: Reducer<DeleteState>
     setCount: Reducer<DeleteState>
-    saveTGUID: Reducer<DeleteState>
-    saveDGUID: Reducer<DeleteState>
   }
   effects: {
     getStudentName: Effect;
@@ -45,12 +41,6 @@ const DeleteModel: DeleteType = {
     // },
     valueList: [],
     count: '',
-    canTeacherUse: true,
-    teacherCount: 1,
-    canDepartmentUse: true,
-    departmentCount: 1,
-    tGUID: '',
-    dGUID: ''
   },
   reducers: {
     setNewFormValue(state: any, action: any) {
@@ -73,43 +63,11 @@ const DeleteModel: DeleteType = {
         ...state
       }
     },
-    // 设置老师倒计时
-    setTeacherCount(state: any, action: any) {
-      state.teacherCount = action.payload[0]
-      state.canTeacherUse = action.payload[1]
-      return {
-        ...state
-      }
-    },
-    // 设置部门倒计时
-    setDepartmentCount(state: any, action: any) {
-      state.departmentCount = action.payload[0]
-      state.canDepartmentUse = action.payload[1]
-      return {
-        ...state
-      }
-    },
     // 设置count计数器
     setCount(state, payload) {
 
       const newState = JSON.parse(JSON.stringify(state))
       newState.count = `${new Date().getTime()}${payload}`
-      return {
-        ...newState
-      }
-    },
-
-    saveTGUID (state, { payload }) {
-      const newState = JSON.parse(JSON.stringify(state))
-      newState.tGUID = payload
-      return {
-        ...newState
-      }
-    },
-
-    saveDGUID (state, { payload }) {
-      const newState = JSON.parse(JSON.stringify(state))
-      newState.dGUID = payload
       return {
         ...newState
       }

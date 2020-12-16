@@ -14,10 +14,6 @@ export interface BaseInfoModelType {
   namespace: string
   state: BaseInfoState
   reducers: {
-    setTeacherCount: Reducer<BaseInfoState>
-    setDepartmentCount: Reducer<BaseInfoState>
-    saveTGUID: Reducer<BaseInfoState>
-    saveDGUID: Reducer<BaseInfoState>
   },
   effects: {
     getTeacherCode: Effect;
@@ -29,46 +25,8 @@ export interface BaseInfoModelType {
 const baseInfoModel: BaseInfoModelType = {
   namespace: 'associationBaseInfo',
   state: {
-    canTeacherUse: true,
-    teacherCount: 1,
-    canDepartmentUse: true,
-    departmentCount: 1,
-    tGUID: '',
-    dGUID: ''
   },
   reducers: {
-    // 设置老师倒计时
-    setTeacherCount (state: any, action: any) {
-      state.teacherCount = action.payload[0]
-      state.canTeacherUse = action.payload[1]
-      return {
-        ...state
-      }
-    },
-    // 设置部门倒计时
-    setDepartmentCount (state: any, action: any) {
-      state.departmentCount = action.payload[0]
-      state.canDepartmentUse = action.payload[1]
-      return {
-        ...state
-      }
-    },
-
-    saveTGUID (state, { payload }) {
-      const newState = JSON.parse(JSON.stringify(state))
-      newState.tGUID = payload
-      return {
-        ...newState
-      }
-    },
-
-    saveDGUID (state, { payload }) {
-      const newState = JSON.parse(JSON.stringify(state))
-      newState.dGUID = payload
-      return {
-        ...newState
-      }
-    }
   },
   effects: {
     *getTeacherCode ({ payload }, { call , put }) {
