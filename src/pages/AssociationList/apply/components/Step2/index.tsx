@@ -4,6 +4,8 @@ import { Form, Button, Input, Radio } from 'antd';
 import { connect, Dispatch } from 'umi';
 import { StateType } from '../../model';
 import styles from './index.less';
+import { GlobalModelState } from '@/models/global'
+
 
 const formItemLayout = {
   labelCol: {
@@ -14,23 +16,21 @@ const formItemLayout = {
   },
 };
 
-export interface GlobalModelState {
-  token: any;
-}
 
 interface Step2Props {
   data?: StateType['step'];
   dispatch?: Dispatch;
   submitting?: boolean;
-  token: any;
+  baseInfo: any;
 }
 
 const Step2: React.FC<Step2Props> = (props) => {
   const [form] = Form.useForm();
-  const { data, dispatch, submitting, token } = props;
+  const { data, dispatch, submitting, baseInfo } = props;
   const info = {
     ...data,
-    ApplicantPersonId: token.personId,
+    ApplicantPersonId: baseInfo.personId,
+    name: baseInfo.name
   };
 
   if (!data) {
@@ -154,6 +154,6 @@ export default connect(
   }) => ({
     submitting: loading.effects['formAndstepForm/submitStepForm'],
     data: formAndstepForm.step,
-    token: global.token,
+    baseInfo: global.baseInfo,
   }),
 )(Step2);

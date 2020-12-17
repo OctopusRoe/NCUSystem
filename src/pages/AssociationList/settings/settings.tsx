@@ -28,13 +28,6 @@ interface SettingsState {
 }
 
 
-const formInfo = {
-  teacherValue: [{name: '名字1', phone: '11011211911'},{name: '名字2', phone: '11011211119'}],
-  associationType: ['类别1', '类别2', '类别3', '类别4'],
-  associationGrade: ['级别1', '级别2', '级别3', '级别4'],
-  department: ['部门1', '部门2', '部门3', '部门4']
-}
-
 class InfoBase extends Component<SettingsProps, SettingsState> {
   main: HTMLDivElement | undefined = undefined
 

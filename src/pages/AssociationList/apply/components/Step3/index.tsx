@@ -14,6 +14,7 @@ interface Step2Props {
   submitting?: boolean;
   teacherValueList: any;
   memberValueList: any;
+  count: string
 }
 
 const formItemLayout = {
@@ -31,23 +32,40 @@ const teacherInfo: { one: InputInfo; two: InputInfo; three: InputInfo } = {
     placeHodel: '请输入工号',
   },
   two: {
+    message: '请输入工号来获取姓名!',
     disabled: true,
   },
   three: {
+    message: '请输入工号来获取学院',
+    disabled: true,
+  },
+};
+
+const memberInfo: { one: InputInfo; two: InputInfo; three: InputInfo } = {
+  one: {
+    message: '请输入学号!',
+    placeHodel: '请输入学号',
+  },
+  two: {
+    message: '请输入成员学号来获取姓名!',
+    disabled: true,
+  },
+  three: {
+    message: '请输入成员学号来获取学院',
     disabled: true,
   },
 };
 
 const Step3: React.FC<Step2Props> = (props) => {
-  const { teacherValueList, memberValueList } = props;
-  const [count, setCount] = useState<any>(0);
+
   const [form] = Form.useForm();
-  const { data, dispatch, submitting } = props;
+
+  const { teacherValueList, data, memberValueList, dispatch, submitting, count } = props;
+
   if (!data) {
     return null;
   }
 
-  console.log('data3', data);
   const { validateFields, getFieldsValue } = form;
   const onPrev = () => {
     const values = getFieldsValue();
@@ -69,7 +87,7 @@ const Step3: React.FC<Step2Props> = (props) => {
       Members: members,
       Instructor: instructor,
     };
-    
+
     dispatch({
       type: 'formAndstepForm/saveStepFormData',
       payload: {
@@ -121,17 +139,13 @@ const Step3: React.FC<Step2Props> = (props) => {
     }
   };
 
-  // 手动控制页面刷新
-  useEffect(() => {}, [count]);
-
   // 指导老师失去焦点后的动作
   const teacherOnBlur = (e: string, i: number) => {
     dispatch({
-      type: 'associationApplyStep3/setTeacherValueList',
+      type: 'associationApplyStep3/getTeacherInfo',
       payload: [i, e],
     });
 
-    setCount(e);
   };
 
   // 指导老师点击删除的动作
@@ -144,12 +158,15 @@ const Step3: React.FC<Step2Props> = (props) => {
 
   // 成员列表失去焦点后的动作
   const memberOnBlur = (e: string, i: number) => {
+
+    if (e === '') {
+      return
+    }
     dispatch({
-      type: 'associationApplyStep3/setMemberValueList',
+      type: 'associationApplyStep3/getStudentInfo',
       payload: [i, e],
     });
 
-    setCount(e);
   };
 
   // 成员列表点击删除的动作
@@ -160,15 +177,17 @@ const Step3: React.FC<Step2Props> = (props) => {
     });
   };
 
-  // 退出组件清除成员列表
+  // //退出组件清除成员列表
   // useEffect(()=>{
   //   return function () {
   //     dispatch({
   //       type: 'associationApplyStep3/cleanAll',
-  //       payload: []
   //     })
   //   }
   // },[])
+
+  useEffect(() => { }, [count])
+
 
   const onFinish = (values: any) => {
     console.log(values);
@@ -196,9 +215,9 @@ const Step3: React.FC<Step2Props> = (props) => {
             removeFun={teacherRemove}
           />
         </Form.Item>
-        <Form.Item label="社团成员" name="Members">
+        <Form.Item label="社团组织成员" name="Members">
           <FormListCom
-            info={teacherInfo}
+            info={memberInfo}
             formListName={'memberName'}
             showInput={{ two: true, three: true }}
             valueList={memberValueList}
@@ -234,18 +253,20 @@ export default connect(
     loading,
     associationApplyStep3,
   }: {
-    formAndstepForm: StateType;
+    formAndstepForm: StateType,
     loading: {
       effects: { [key: string]: boolean };
-    };
+    },
     associationApplyStep3: {
       teacherValueList: any[];
       memberValueList: any[];
-    };
+      count: string
+    }
   }) => ({
     submitting: loading.effects['formAndstepForm/submitStepForm'],
     data: formAndstepForm.step,
     teacherValueList: associationApplyStep3.teacherValueList,
     memberValueList: associationApplyStep3.memberValueList,
+    count: associationApplyStep3.count
   }),
 )(Step3);

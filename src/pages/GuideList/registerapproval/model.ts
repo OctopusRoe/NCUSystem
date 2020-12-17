@@ -17,6 +17,8 @@ export interface PersonType {
     loading: Reducer<RegisterApprovalState>;
     cleanState: Reducer<RegisterApprovalState>;
     saveDetailInfoList: Reducer<RegisterApprovalState>;
+    detailLoading: Reducer<RegisterApprovalState>;
+    cleanDetail: Reducer<RegisterApprovalState>;
   };
   effects: {
     queryRegisterapproval: Effect;
@@ -33,6 +35,7 @@ const registerapprovalModel: PersonType = {
     count: 0,
     loading: true,
     DetailInfoList: [],
+    detailLoading: true,
   },
   reducers: {
     saveCount(state, { payload }) {
@@ -70,12 +73,32 @@ const registerapprovalModel: PersonType = {
         ...newState,
       };
     },
+    detailLoading(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state));
+      newState.detailLoading = payload;
 
+      return {
+        ...newState,
+      };
+    },
+    cleanDetail(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state));
+      newState.detailLoading = payload;
+      newState.detailLoading = {};
+      const sa = {
+        DetailInfoList: [],
+      };
+      return {
+        ...newState,
+        ...sa,
+      };
+    },
     cleanState() {
       const state = {
         RegisterApprovalList: [],
         count: 0,
         loading: true,
+        detailLoading: true,
       };
 
       return {
@@ -144,6 +167,11 @@ const registerapprovalModel: PersonType = {
       yield put({
         type: 'saveDetailInfoList',
         payload: back.data,
+      });
+
+      yield put({
+        type: 'detailLoading',
+        payload: false,
       });
     },
 

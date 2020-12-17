@@ -128,7 +128,7 @@ const Step1: React.FC<Step1Props> = (props) => {
           name="Constitution"
           rules={[{ required: true, message: '请上传社团章程' }]}
         >
-          <Upload showUploadList={false} fileList={uploadFileList}>
+          <Upload showUploadList={false} fileList={uploadFileList} >
             <Button icon={<UploadOutlined />}>点击上传</Button>
           </Upload>
         </Form.Item>

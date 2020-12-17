@@ -1,9 +1,7 @@
-import { Button, Col, Divider, Drawer, Row, Table } from 'antd';
+import { Button, Col, Divider, Drawer, Row, Spin, Table } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { size } from 'lodash';
 import React, { useState } from 'react';
 import { connect, Dispatch } from 'umi';
-
 
 interface ApprovalDrawerProps {
   drawerVisible: boolean;
@@ -12,32 +10,30 @@ interface ApprovalDrawerProps {
   dispatch: Dispatch;
   detailId: any;
   afterClose: () => void;
+  loading: any
 }
 
 
-
-
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
-  const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose } = props;
+  const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose, loading } = props;
   const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
   const [num, setNum] = useState(0)   //1同意  2拒绝
 
-
   const LeftData = [
-    { key: '社团中文全称：', value: infoData !== undefined ? infoData.nameZh : '' },
-    { key: '社团英文全称：', value: infoData !== undefined ? infoData.nameEn : '' },
-    { key: '社团类别：', value: infoData !== undefined ? infoData.category : '' },
-    { key: '社团级别：', value: infoData !== undefined ? infoData.level : '' },
-    { key: '申请人：', value: infoData !== undefined ? infoData.name : '' },
-    { key: '外出事由：', value: infoData !== undefined ? infoData.reason : '' },
+    { name: '社团中文全称：', value: infoData !== undefined ? infoData.nameZh : '' },
+    { name: '社团英文全称：', value: infoData !== undefined ? infoData.nameEn : '' },
+    { name: '社团类别：', value: infoData !== undefined ? infoData.category : '' },
+    { name: '社团级别：', value: infoData !== undefined ? infoData.level : '' },
+    { name: '申请人：', value: infoData !== undefined ? infoData.name : '' },
+    { name: '外出事由：', value: infoData !== undefined ? infoData.reason : '' },
   ];
 
   const RightData = [
-    { key: '指导单位：', value: infoData !== undefined ? infoData.guidanceUnit : '' },
-    { key: '指导审批人：', value: infoData !== undefined ? infoData.approvalTeacher : '' },
-    { key: '离/返校时间：', value: infoData !== undefined ? infoData.setUpDate : '' },
-    { key: '外出地点：', value: infoData !== undefined ? infoData.place : '' },
-    { key: '外出负责人：', value: infoData !== undefined ? infoData.responsible : '' },
+    { name: '指导单位：', value: infoData !== undefined ? infoData.guidanceUnit : '' },
+    { name: '指导审批人：', value: infoData !== undefined ? infoData.approvalTeacher : '' },
+    { name: '离/返校时间：', value: infoData !== undefined ? infoData.setUpDate : '' },
+    { name: '外出地点：', value: infoData !== undefined ? infoData.place : '' },
+    { name: '外出负责人：', value: infoData !== undefined ? infoData.responsible : '' },
   ];
 
 
@@ -55,7 +51,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
                     <Col span={8}>
                       <Row justify="end">
                         <Col>
-                          <p style={{ color: '#939393' }}>{item.key}</p>
+                          <p style={{ color: '#939393' }}>{item.name}</p>
                         </Col>
                       </Row>
                     </Col>
@@ -79,7 +75,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
                     <Col span={8}>
                       <Row justify="end">
                         <Col>
-                          <p style={{ color: '#939393' }}>{item.key}</p>
+                          <p style={{ color: '#939393' }}>{item.name}</p>
                         </Col>
                       </Row>
                     </Col>
@@ -135,22 +131,22 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
       {
         title: '审批人',
         dataIndex: 'name',
-        key: 'name',
+        key: 'apr',
       },
       {
         title: '审批时间',
         dataIndex: 'personId',
-        key: 'personId',
+        key: 'time',
       },
       {
         title: '审批单位',
         dataIndex: 'college',
-        key: 'college',
+        key: 'cof',
       },
       {
         title: '审批结果',
         dataIndex: 'college',
-        key: 'college',
+        key: 'reus',
       },
     ];
 
@@ -172,7 +168,14 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
       destroyOnClose
       title="外出审批"
       width={720}
-      onClose={() => oncancel()}
+      onClose={() => {
+        //关闭时重置loading 状态
+        dispatch({
+          type: 'communityOutRegistration/cleanDetail'
+        })
+        oncancel();
+
+      }}
       visible={drawerVisible}
       bodyStyle={{ paddingBottom: 80 }}
       footer={
@@ -190,19 +193,29 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
         </div>
       }
     >
-      <div>
-        <Details />
-        <Divider >外出成员</Divider>
-        <MembersList />
-        <Divider >审批意见</Divider>
-        <ApprovalList />
-      </div>
+      {loading ?
+        <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Spin size={'large'} delay={300} />
+        </div> :
+        <div>
+          <Details />
+          <Divider >外出成员</Divider>
+          <MembersList />
+          <Divider >审批意见</Divider>
+          <ApprovalList />
+        </div>
+      }
+
+
+
       <Drawer
         destroyOnClose
         title={num === 1 ? '同意建议' : '拒绝理由'}
         width={400}
         closable={false}
-        onClose={() => setChildrenDrawerVisible(false)}
+        onClose={() =>
+          setChildrenDrawerVisible(false)
+        }
         visible={childrenDrawerVisible}
       >
         <TextArea rows={10} />
@@ -210,6 +223,9 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
           <Button
             type="primary"
             onClick={() => {
+              dispatch({
+                type: 'communityOutRegistration/cleanDetail'
+              })
               oncancel();
               setChildrenDrawerVisible(false);
             }}
@@ -218,7 +234,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
           </Button>
         </div>
       </Drawer>
-    </Drawer>
+    </Drawer >
   );
 };
 

@@ -22,7 +22,8 @@ const Fail: React.FC<failProps> = ({ nameZH, nameEN }) => {
       </div>
       <div style={{ marginBottom: 16 }}>
         <ExclamationCircleOutlined style={{ marginRight: 8 }} className={styles.error_icon} />
-        <FormattedMessage id="communityName" defaultMessage={`${nameZH}(${nameEN})`} />
+        <span>{`${nameZH}(${nameEN})`} </span>
+        {/* <FormattedMessage id="resultandfail.error.communityName" defaultMessage=/> */}
       </div>
     </Fragment>
   );

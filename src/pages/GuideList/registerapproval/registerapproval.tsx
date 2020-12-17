@@ -10,12 +10,19 @@ import { connect, Dispatch } from 'umi';
 import { RegisterApprovalState } from './data';
 import { PaginationProps } from 'antd/lib/pagination';
 
+import { GlobalModelState } from '@/models/global'
+
+
 interface RegisterApprovalProps {
   count: number;
   dataSource: any;
   loading: boolean;
   dispatch: Dispatch;
   detailInfo: any;
+  detailLoading: boolean
+  level: any
+  type: any
+  department: any
 }
 const { Option } = Select;
 const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
@@ -24,7 +31,7 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [detailId, setDetailId] = useState();
 
-  const { count, dataSource, loading, dispatch, detailInfo } = props;
+  const { count, dataSource, loading, dispatch, detailInfo, detailLoading, level, type, department } = props;
   console.log(detailInfo);
 
   const columns: ProColumns<TableListItem>[] = [
@@ -54,43 +61,30 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
       dataIndex: 'category',
       key: 'category',
       hideInSearch: true,
-      filters: [
-        { text: 'A', value: 'a' },
-        { text: 'B', value: 'b' },
-        { text: 'C', value: 'c' },
-        { text: 'D', value: 'd' },
-      ],
+      filters: (() => {
+        const typeList = type && type.map((item: any) => ({ text: item.name, value: item.name }))
+        return typeList
+      })(),
     },
     {
       title: '社团级别',
       dataIndex: 'level',
       key: 'level',
       hideInSearch: true,
-      filters: [
-        {
-          text: '一级社团',
-          value: 'one',
-        },
-        {
-          text: '二级社团',
-          value: 'two',
-        },
-        {
-          text: '三级社团',
-          value: 'three',
-        },
-      ],
+      filters: (() => {
+        const levelList = level && level.map((item: any) => ({ text: item.name, value: item.name }))
+        return levelList
+      })(),
     },
     {
       title: '业务指导单位',
       dataIndex: 'organization',
       key: 'organization',
       hideInSearch: true,
-      filters: [
-        { text: 'A', value: 'a' },
-        { text: 'B', value: 'b' },
-        { text: 'C', value: 'c' },
-      ],
+      filters: (() => {
+        const departmentList = department && department.map((item: any) => ({ text: item.name, value: item.name }))
+        return departmentList
+      })(),
     },
     {
       title: '审批状态',
@@ -98,8 +92,9 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
       hideInSearch: false,
       key: 'status',
       valueEnum: {
-        1: { text: '已审批', status: 'Success' },
-        0: { text: '未审批', status: 'Error' },
+        0: { text: '未审批', status: 'default' },
+        1: { text: '同意', status: 'Success' },
+        2: { text: '拒绝', status: 'Error' },
       },
       renderFormItem: () => {
         return (
@@ -143,11 +138,13 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
   //查看申请详情
   const getDetail = (record: any) => {
     setDetailId(record.id);
-    setTimeout(
+    setTimeout(() => {
       dispatch({
         type: 'communityRegisterApproval/getDetail',
         payload: record.id,
-      }), 0.5 * 1000)
+      });
+    }, 0.5 * 1000);
+
   };
 
   //删除成功
@@ -244,6 +241,7 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
         infoData={detailInfo}
         detailId={detailId}
         afterClose={reloadValue}
+        loading={detailLoading}
       />
       <CardInfo visible={cardInfo} onCancel={() => setCardInfo(false)} />
     </div>
@@ -251,12 +249,16 @@ const RegisterApproval: React.FC<RegisterApprovalProps> = (props) => {
 };
 
 export default connect(
-  ({ communityRegisterApproval }: { communityRegisterApproval: RegisterApprovalState }) => {
+  ({ communityRegisterApproval, global }: { communityRegisterApproval: RegisterApprovalState, global: GlobalModelState }) => {
     return {
       dataSource: communityRegisterApproval.RegisterApprovalList,
       count: communityRegisterApproval.count,
       loading: communityRegisterApproval.loading,
       detailInfo: communityRegisterApproval.DetailInfoList,
+      detailLoading: communityRegisterApproval.detailLoading,
+      level: global.SelectValue.level,
+      type: global.SelectValue.type,
+      department: global.SelectValue.department
     };
   },
 )(RegisterApproval);

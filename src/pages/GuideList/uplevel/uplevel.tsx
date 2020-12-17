@@ -1,6 +1,6 @@
 // 升级审批 组件
 
-import { Button, Divider, Input, message, Popconfirm, Select } from 'antd';
+import { Button, Divider, Input, Popconfirm, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { TableListItem, UpgradeApprovalState } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
@@ -9,6 +9,7 @@ import CardInfo from '@/components/CardInfo/index';
 import { connect, Dispatch } from 'umi';
 import { PaginationProps } from 'antd/lib/pagination';
 
+import { GlobalModelState } from '@/models/global'
 
 interface UpgradeApprovalProps {
   count: number;
@@ -16,6 +17,10 @@ interface UpgradeApprovalProps {
   loading: boolean;
   dispatch: Dispatch;
   detailInfo: any;
+  detailLoading: boolean;
+  level: any
+  type: any
+  department: any
 }
 
 const { Option } = Select;
@@ -23,7 +28,7 @@ const UpLevel: React.FC<UpgradeApprovalProps> = (props) => {
   const [ApprovalDrawerVisible, setApprovalDrawerVisible] = useState(false);
   const [cardInfo, setcardInfo] = useState(false);
   const actionRef = useRef<ActionType>();
-  const { count, dataSource, loading, dispatch, detailInfo } = props;
+  const { count, dataSource, loading, dispatch, detailInfo, detailLoading, type, level, department } = props;
   const [detailId, setDetailId] = useState();
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -34,8 +39,8 @@ const UpLevel: React.FC<UpgradeApprovalProps> = (props) => {
     },
     {
       title: '社团名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'communityName',
+      key: 'communityName',
       render: (text, record) => {
         return (
           <Button type={'link'} size={'small'} onClick={() => setcardInfo(true)}>
@@ -52,43 +57,30 @@ const UpLevel: React.FC<UpgradeApprovalProps> = (props) => {
       dataIndex: 'category',
       key: 'category',
       hideInSearch: true,
-      filters: [
-        { text: 'A', value: 'a' },
-        { text: 'B', value: 'b' },
-        { text: 'C', value: 'c' },
-        { text: 'D', value: 'd' },
-      ],
+      filters: (() => {
+        const typeList = type && type.map((item: any) => ({ text: item.name, value: item.name }))
+        return typeList
+      })(),
     },
     {
       title: '社团级别',
       dataIndex: 'level',
       key: 'level',
       hideInSearch: true,
-      filters: [
-        {
-          text: '一级社团',
-          value: 'one',
-        },
-        {
-          text: '二级社团',
-          value: 'two',
-        },
-        {
-          text: '三级社团',
-          value: 'three',
-        },
-      ],
+      filters: (() => {
+        const levelList = level && level.map((item: any) => ({ text: item.name, value: item.name }))
+        return levelList
+      })(),
     },
     {
       title: '业务指导单位',
-      dataIndex: 'unit',
-      key: 'unit',
+      dataIndex: 'guidanceUnit',
+      key: 'guidanceUnit',
       hideInSearch: true,
-      filters: [
-        { text: 'A', value: 'a' },
-        { text: 'B', value: 'b' },
-        { text: 'C', value: 'c' },
-      ],
+      filters: (() => {
+        const departmentList = department && department.map((item: any) => ({ text: item.name, value: item.name }))
+        return departmentList
+      })(),
     },
     {
       title: '审批状态',
@@ -96,9 +88,9 @@ const UpLevel: React.FC<UpgradeApprovalProps> = (props) => {
       hideInSearch: false,
       key: 'status',
       valueEnum: {
-        2: { text: '已拒绝', status: 'Success' },
-        1: { text: '已通过', status: 'Success' },
-        0: { text: '未审批', status: 'Error' },
+        0: { text: '未审批', status: 'default' },
+        1: { text: '同意', status: 'Success' },
+        2: { text: '拒绝', status: 'Error' },
       },
       renderFormItem: () => {
         return (
@@ -119,8 +111,8 @@ const UpLevel: React.FC<UpgradeApprovalProps> = (props) => {
         <>
           <a
             onClick={() => {
-              setApprovalDrawerVisible(true);
               getDetail(record);
+              setApprovalDrawerVisible(true);
             }}
           >
             审核
@@ -186,10 +178,12 @@ const UpLevel: React.FC<UpgradeApprovalProps> = (props) => {
   //查看申请详情
   const getDetail = (record: any) => {
     setDetailId(record.id);
-    dispatch({
-      type: 'communityUpgradeApproval/getDetail',
-      payload: record.id,
-    });
+    setTimeout(() => {
+      dispatch({
+        type: 'communityUpgradeApproval/getDetail',
+        payload: record.id,
+      });
+    }, 0.5 * 1000);
   };
 
 
@@ -241,17 +235,22 @@ const UpLevel: React.FC<UpgradeApprovalProps> = (props) => {
         infoData={detailInfo}
         detailId={detailId}
         afterClose={reloadValue}
+        loading={detailLoading}
       />
       <CardInfo visible={cardInfo} onCancel={() => setcardInfo(false)} />
     </div>
   );
 };
 
-export default connect(({ communityUpgradeApproval }: { communityUpgradeApproval: UpgradeApprovalState }) => {
+export default connect(({ communityUpgradeApproval, global }: { communityUpgradeApproval: UpgradeApprovalState, global: GlobalModelState }) => {
   return {
     dataSource: communityUpgradeApproval.UpgradeApprovalList,
     count: communityUpgradeApproval.count,
     loading: communityUpgradeApproval.loading,
     detailInfo: communityUpgradeApproval.DetailInfoList,
+    detailLoading: communityUpgradeApproval.detailLoading,
+    level: global.SelectValue.level,
+    type: global.SelectValue.type,
+    department: global.SelectValue.department
   }
 })(UpLevel);

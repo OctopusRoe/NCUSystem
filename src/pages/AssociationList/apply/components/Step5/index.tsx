@@ -1,40 +1,23 @@
 // 申请最后1步组件
 
+import React, { useEffect, useState } from 'react';
 import ApplyUploadView from '@/components/ApplyUploadView/uploadView';
 import { PrinterOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select } from 'antd';
-import React, { useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
 import styles from './index.less';
 import { StateType } from '../../model';
-
+import { BaseInfoState, } from './data'
 import { StepstateType } from './model';
 
-export interface GlobalModelState {
-  association: any;
-}
+import { GlobalModelState } from '@/models/global'
 
-export interface BaseInfoState {
-  canTeacherUse: boolean;
-  teacherCount: number;
-  canDepartmentUse: boolean;
-  departmentCount: number;
-  tGUID: string;
-  dGUID: string;
-}
 
 interface Step3Props {
   data?: StateType['step'];
   dispatch: Dispatch;
-  formInfo: FormInfo;
-  canTeacherUse: boolean;
-  teacherCount: number;
-  canDepartmentUse: boolean;
-  departmentCount: number;
   submitting?: boolean;
   association: any;
-  tGUID: string;
-  dGUID: string;
 }
 
 const formItemLayout = {
@@ -46,35 +29,22 @@ const formItemLayout = {
   },
 };
 
-interface FormInfo {
-  teacherValue: { name: string; phone: string }[];
-  associationType: string[];
-  associationGrade: string[];
-  department: string[];
-}
 
-const { Option } = Select;
 
 const Step5: React.FC<Step3Props> = (props) => {
   const {
     data,
     dispatch,
-    canTeacherUse,
-    teacherCount,
-    canDepartmentUse,
-    departmentCount,
     submitting,
-    association,
-    tGUID,
-    dGUID,
   } = props;
+
+
   const [form] = Form.useForm();
   if (!data) {
     return null;
   }
 
-  //指导老师信息
-  const teacherInfo = association.instructorInfo;
+
 
   const { getFieldsValue } = form;
 
@@ -95,89 +65,7 @@ const Step5: React.FC<Step3Props> = (props) => {
     }
   };
 
-  // 保存指导老师电话
-  const [getTeacher, setGetTeacher] = useState<string>('');
-
-  // 保存指导部门电话
-  const [getDepartment, setGetDepartment] = useState<string>('');
-
-  // 选择指导老师电话
-  const selectTeacher = (e: string) => {
-    setGetTeacher(e);
-  };
-
-  // 选择指导部门电话
-  const selectDepartment = (e: string) => {
-    setGetDepartment(e);
-  };
-
-  // 老师设置倒计时方法
-  const teacherCountDown = () => {
-    if (getTeacher === '') {
-      return;
-    }
-    dispatch({
-      type: 'associationBaseInfo/getTeacherCode',
-      payload: getTeacher,
-    });
-
-    dispatch({
-      type: 'associationBaseInfo/setTeacherCount',
-      payload: [60, false],
-    });
-  };
-
-  // 部门设置倒计时方法
-  const departmentCountDown = () => {
-    if (getDepartment === '') {
-      return;
-    }
-    dispatch({
-      type: 'associationBaseInfo/getDepartmentCode',
-      payload: getDepartment,
-    });
-
-    dispatch({
-      type: 'associationBaseInfo/setDepartmentCount',
-      payload: [60, false],
-    });
-  };
-
-  // 老师倒计时
-  useEffect(() => {
-    if (teacherCount > 1) {
-      setTimeout(() => {
-        dispatch({
-          type: 'associationBaseInfo/setTeacherCount',
-          payload: [teacherCount - 1, false],
-        });
-      }, 1000);
-    } else {
-      dispatch({
-        type: 'associationBaseInfo/setTeacherCount',
-        payload: [1, true],
-      });
-    }
-  }, [teacherCount]);
-
-  // 部门倒计时
-  useEffect(() => {
-    if (departmentCount > 1) {
-      setTimeout(() => {
-        dispatch({
-          type: 'associationBaseInfo/setDepartmentCount',
-          payload: [departmentCount - 1, false],
-        });
-      }, 1000);
-    } else {
-      dispatch({
-        type: 'associationBaseInfo/setDepartmentCount',
-        payload: [1, true],
-      });
-    }
-  }, [departmentCount]);
-
-  const onFinish = (value: any) => {};
+  const onFinish = (value: any) => { };
   const { validateFields } = form;
   const onValidateForm = async () => {
     const values = await validateFields();
@@ -187,12 +75,11 @@ const Step5: React.FC<Step3Props> = (props) => {
         payload: {
           ...data,
           ...values,
-          TeacherGuid: tGUID,
-          DepartmentGuid: dGUID,
         },
       });
     }
   };
+
 
   return (
     <>
@@ -231,72 +118,7 @@ const Step5: React.FC<Step3Props> = (props) => {
         >
           <ApplyUploadView id="Opposite" imgTip="反面" />
         </Form.Item>
-        <Form.Item {...formItemLayout} label={'指导老师审批'} style={{ marginBottom: '0px' }}>
-          <Input.Group compact>
-            <Form.Item
-              name={'Teacher'}
-              style={{ display: 'inline-block', width: '25%' }}
-              rules={[{ required: true, message: '请选择指导老师!' }]}
-            >
-              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectTeacher}>
-                {teacherInfo &&
-                  teacherInfo.map((item: any) => (
-                    <Option value={item.personId} key={item.personId}>
-                      {item.name}
-                    </Option>
-                  ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name={'TeacherCode'}
-              style={{ display: 'inline-block', width: '50%' }}
-              rules={[{ required: true, message: '请输入手机验证码!' }]}
-            >
-              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            </Form.Item>
-            <Button
-              style={{ width: '25%' }}
-              onClick={teacherCountDown}
-              disabled={canTeacherUse ? false : true}
-              type={canTeacherUse ? 'primary' : 'default'}
-            >
-              {canTeacherUse ? '点击获取' : `${teacherCount}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
-        <Form.Item {...formItemLayout} label={'指导部门审批'} style={{ marginBottom: '0px' }}>
-          <Input.Group compact>
-            <Form.Item
-              name={'Department'}
-              style={{ display: 'inline-block', width: '25%' }}
-              rules={[{ required: true, message: '请选择指导部门!' }]}
-            >
-              <Select style={{ width: '100%' }} placeholder={'请选择'} onChange={selectDepartment}>
-                {teacherInfo &&
-                  teacherInfo.map((item: any) => (
-                    <Option value={item.personId} key={item.personId}>
-                      {item.name}
-                    </Option>
-                  ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name={'DepartmentCode'}
-              style={{ display: 'inline-block', width: '50%' }}
-              rules={[{ required: true, message: '请输入手机验证码!' }]}
-            >
-              <Input style={{ borderRight: 'none' }} placeholder={'请输入手机验证码'} />
-            </Form.Item>
-            <Button
-              style={{ width: '25%' }}
-              onClick={departmentCountDown}
-              disabled={canDepartmentUse ? false : true}
-              type={canDepartmentUse ? 'primary' : 'default'}
-            >
-              {canDepartmentUse ? '点击获取' : `${departmentCount}秒后重试`}
-            </Button>
-          </Input.Group>
-        </Form.Item>
+
         <Form.Item
           wrapperCol={{
             xs: { span: 24, offset: 0 },
@@ -322,7 +144,6 @@ export default connect(
   ({
     formAndstepForm,
     global,
-    associationBaseInfo,
   }: {
     formAndstepForm: StateType;
     applyStep5: StepstateType;
@@ -330,12 +151,6 @@ export default connect(
     associationBaseInfo: BaseInfoState;
   }) => ({
     data: formAndstepForm.step,
-    canTeacherUse: associationBaseInfo.canTeacherUse,
-    teacherCount: associationBaseInfo.teacherCount,
-    canDepartmentUse: associationBaseInfo.canDepartmentUse,
-    departmentCount: associationBaseInfo.departmentCount,
     association: global.association,
-    tGUID: associationBaseInfo.tGUID,
-    dGUID: associationBaseInfo.dGUID,
   }),
 )(Step5);

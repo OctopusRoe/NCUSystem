@@ -87,10 +87,6 @@ const Model: ModelType = {
       formData.append('Members', payload.Members);
       formData.append('Front', payload.Front.originFileObj);
       formData.append('Opposite', payload.Opposite.originFileObj);
-      formData.append('TeacherGuid', payload.TeacherGuid);
-      formData.append('TeacherCode', payload.TeacherCode);
-      formData.append('DepartmentGuid', payload.DepartmentGuid);
-      formData.append('DepartmentCode', payload.DepartmentCode);
 
       const back = yield call(registerApply, formData);
       if (back.code !== 0) {
@@ -98,7 +94,7 @@ const Model: ModelType = {
         console.error(back.msg);
         return;
       }
-      message.success(back.msg);
+      message.success('提交成功');
       yield put({
         type: 'saveStepFormData',
         payload,

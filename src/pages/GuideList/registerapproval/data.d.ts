@@ -48,6 +48,7 @@ export interface RegisterApprovalState {
   }[];
   count: number;
   loading: boolean;
+  detailLoading: boolean;
   DetailInfoList?: {
     nameZh: string;
     nameEn: string;

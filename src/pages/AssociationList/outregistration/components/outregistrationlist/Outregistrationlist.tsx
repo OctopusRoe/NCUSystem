@@ -83,12 +83,6 @@ const Outregistrationlist: React.FC<OutregistrationListProps> = (props) => {
         2: { text: '未通过', status: 'Error'}
       }
     },
-    // {
-    //   title: '外出负责人',
-    //   dataIndex: 'desc',
-    //   hideInSearch: true,
-    //   key: 'desc',
-    // },
     {
       title: '操作',
       dataIndex: 'desc',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Col, Divider, Drawer, Row, Table, Tabs, Tag } from 'antd';
+import { Button, Col, Divider, Drawer, Row, Spin, Table, Tabs, Tag } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { connect, Dispatch } from 'umi';
 
@@ -10,27 +10,29 @@ interface ApprovalDrawerProps {
   dispatch: Dispatch;
   detailId: any;
   afterClose: () => void;
+  loading: any
 }
 
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
-  const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose } = props;
+  const { drawerVisible, oncancel, infoData, dispatch, detailId, loading, afterClose } = props;
   const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
   const [num, setNum] = useState(0)
+  console.log(infoData);
 
   const LeftData = [
-    { key: '社团中文全称：', value: infoData !== undefined ? infoData.nameZh : '' },
-    { key: '社团英文全称：', value: infoData !== undefined ? infoData.nameEn : '' },
-    { key: '社团类别：', value: infoData !== undefined ? infoData.category : '' },
-    { key: '社团级别：', value: infoData !== undefined ? infoData.level : '' },
-    { key: '申请人：', value: infoData !== undefined ? infoData.name : '' },
+    { key: '社团中文全称：', value: infoData !== null && infoData !== undefined ? infoData.nameZh : '' },
+    { key: '社团英文全称：', value: infoData !== null && infoData !== undefined ? infoData.nameEn : '' },
+    { key: '社团类别：', value: infoData !== null && infoData !== undefined ? infoData.category : '' },
+    { key: '社团级别：', value: infoData !== null && infoData !== undefined ? infoData.level : '' },
+    { key: '申请人：', value: infoData !== null && infoData !== undefined ? infoData.name : '' },
   ];
 
   const RightData = [
-    { key: '指导单位：', value: infoData !== undefined ? infoData.guidanceUnit : '' },
-    { key: '社团成员数：', value: infoData !== undefined ? infoData.approvalTeacher : '' },
-    { key: '成立年份：', value: infoData !== undefined ? infoData.setUpDate : '' },
-    { key: '精品项目：', value: infoData !== undefined ? infoData.place : '' },
-    { key: '指导审批人：', value: infoData !== undefined ? infoData.responsible : '' },
+    { key: '指导单位：', value: infoData !== null && infoData !== undefined ? infoData.guidanceUnit : '' },
+    { key: '社团成员数：', value: infoData !== null && infoData !== undefined ? infoData.approvalTeacher : '' },
+    { key: '成立年份：', value: infoData !== null && infoData !== undefined ? infoData.setUpDate : '' },
+    { key: '精品项目：', value: infoData !== null && infoData !== undefined ? infoData.place : '' },
+    { key: '指导审批人：', value: infoData !== null && infoData !== undefined ? infoData.responsible : '' },
   ];
 
 
@@ -155,7 +157,13 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
       destroyOnClose
       title="升级审批"
       width={720}
-      onClose={() => oncancel()}
+      onClose={() => {
+        dispatch({
+          type: 'communityUpgradeApproval/cleanDetail'
+        });
+        oncancel()
+      }}
+
       visible={drawerVisible}
       bodyStyle={{ paddingBottom: 80 }}
       footer={
@@ -173,13 +181,21 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
         </div>
       }
     >
-      <div>
-        <Details />
-        <Divider>年审情况</Divider>
-        <AuditList />
-        <Divider >审批意见</Divider>
-        <ApprovalList />
-      </div>
+
+      {loading ?
+        <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Spin size={'large'} delay={300} />
+        </div>
+        :
+        <div>
+          <Details />
+          <Divider>年审情况</Divider>
+          <AuditList />
+          <Divider >审批意见</Divider>
+          <ApprovalList />
+        </div>
+      }
+
       <Drawer
         destroyOnClose
         title={num === 1 ? '同意建议' : '拒绝理由'}
@@ -193,6 +209,9 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
           <Button
             type="primary"
             onClick={() => {
+              dispatch({
+                type: 'communityUpgradeApproval/cleanDetail'
+              })
               oncancel();
               setChildrenDrawerVisible(false);
             }}

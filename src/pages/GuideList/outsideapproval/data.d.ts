@@ -49,6 +49,7 @@ export interface OutRegistrationApprovalState {
   }[];
   count: number;
   loading: boolean;
+  detailLoading: boolean;
   DetailInfoList?: {
     id: string;
     nameZh: string;

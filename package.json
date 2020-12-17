@@ -50,7 +50,7 @@
     "@ant-design/pro-layout": "6.4.19",
     "@ant-design/pro-table": "2.8.0",
     "@umijs/route-utils": "^1.0.32",
-    "antd": "^4.7.0",
+    "antd": "4.7.3",
     "antd-img-crop": "^3.13.1",
     "bizcharts": "^4.0.14",
     "classnames": "^2.2.6",

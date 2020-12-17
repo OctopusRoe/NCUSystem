@@ -11,17 +11,18 @@ interface ApprovalDrawerProps {
   loading: any
   drawerVisible: boolean;
   oncancel: () => void;
+  dispatch: Dispatch;
 }
 
 const { TextArea } = Input
 
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
 
-  const { drawerVisible, info, loading, oncancel } = props;
-  
+  const { drawerVisible, info, loading, oncancel, dispatch } = props;
+
   const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false)
 
-  const [ applyNum, setApplyNum ] = useState<number>(0)
+  const [applyNum, setApplyNum] = useState<number>(0)
 
   const Tab1 = () => {
     return (
@@ -192,7 +193,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
           columns={columns}
           size="small"
           dataSource={info.member}
-          pagination={{pageSize: 5}}
+          pagination={{ pageSize: 5 }}
         />
       </>
     );
@@ -228,7 +229,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
           key={'id'}
           columns={columns}
           size={'small'}
-          pagination={{pageSize: 5}}
+          pagination={{ pageSize: 5 }}
         />
       </>
     )
@@ -254,7 +255,13 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
       destroyOnClose
       title="升级审批"
       width={720}
-      onClose={() => oncancel()}
+      onClose={() => {
+        //关闭时重置loading 状态
+        dispatch({
+          type: 'logoutApproval/cleanInfo'
+        })
+        oncancel();
+      }}
       visible={drawerVisible}
       bodyStyle={{ paddingBottom: 80 }}
       footer={
@@ -275,11 +282,11 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
             审批通过
           </Button>
           <Button onClick={
-              () => {
-                setApplyNum(0)
-                setChildrenDrawerVisible(true)
-              }
-            } 
+            () => {
+              setApplyNum(0)
+              setChildrenDrawerVisible(true)
+            }
+          }
             type="primary"
             danger
           >
@@ -289,18 +296,18 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
       }
     >
       {
-        loading ? 
-        <div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <Spin size={'large'} delay={300} />
-        </div>
-        :
-        <div>
-          <Tab1 />
-          <Divider style={{ fontSize: '16px' }}>成员代表</Divider>
-          <Tab2 />
-          <Divider style={{ fontSize: '16px' }}>审批意见</Divider>
-          <Tab3 />
-        </div>
+        loading ?
+          <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Spin size={'large'} delay={300} />
+          </div>
+          :
+          <div>
+            <Tab1 />
+            <Divider style={{ fontSize: '16px' }}>成员代表</Divider>
+            <Tab2 />
+            <Divider style={{ fontSize: '16px' }}>审批意见</Divider>
+            <Tab3 />
+          </div>
       }
       <Drawer
         destroyOnClose
@@ -310,12 +317,16 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
         onClose={() => setChildrenDrawerVisible(false)}
         visible={childrenDrawerVisible}
       >
-        <TextArea id={'logout-approval-textArea'} rows={4} />
+        <TextArea id={'logout-approval-textArea'} rows={10} />
         <div style={{ paddingTop: '50px', textAlign: 'right' }}>
           <Button
             type="primary"
             onClick={() => {
-              // oncancel();
+              //关闭时重置loading 状态
+              dispatch({
+                type: 'logoutApproval/cleanInfo'
+              })
+              oncancel();
               applyFunc()
               setChildrenDrawerVisible(false);
             }}
@@ -329,7 +340,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
 };
 
 export default connect(
-  ({logoutApproval}: {logoutApproval: logoutApprovalState}) => ({
+  ({ logoutApproval }: { logoutApproval: logoutApprovalState }) => ({
     loading: logoutApproval.infoLoading,
     info: logoutApproval.info
   })

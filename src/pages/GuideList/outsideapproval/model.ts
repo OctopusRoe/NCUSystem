@@ -5,7 +5,7 @@ import { message } from 'antd';
 
 import { OutRegistrationApprovalState } from './data';
 
-import { queryOutRegistrationApproval,deleteOutRegistrationApproval,getDetail } from './service';
+import { queryOutRegistrationApproval, deleteOutRegistrationApproval, getDetail } from './service';
 
 export interface OutRegistrationType {
   namespace: string;
@@ -15,12 +15,14 @@ export interface OutRegistrationType {
     saveOutRegistration: Reducer<OutRegistrationApprovalState>;
     loading: Reducer<OutRegistrationApprovalState>;
     cleanState: Reducer<OutRegistrationApprovalState>;
+    detailLoading: Reducer<OutRegistrationApprovalState>;
     saveDetailInfoList: Reducer<OutRegistrationApprovalState>;
+    cleanDetail: Reducer<OutRegistrationApprovalState>;
   };
   effects: {
     queryOutRegistrationApproval: Effect;
-    deleteOutRegistrationApproval:Effect
-    getDetail:Effect
+    deleteOutRegistrationApproval: Effect;
+    getDetail: Effect;
   };
 }
 
@@ -31,6 +33,7 @@ const outRegistrationModel: OutRegistrationType = {
     count: 0,
     loading: true,
     DetailInfoList: [],
+    detailLoading: true,
   },
   reducers: {
     saveCount(state, { payload }) {
@@ -69,11 +72,33 @@ const outRegistrationModel: OutRegistrationType = {
       };
     },
 
+    detailLoading(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state));
+      newState.detailLoading = payload;
+
+      return {
+        ...newState,
+      };
+    },
+    cleanDetail(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state));
+      newState.detailLoading = payload;
+      newState.detailLoading = {};
+      const sa = {
+        DetailInfoList: [],
+      };
+      return {
+        ...newState,
+        ...sa,
+      };
+    },
     cleanState() {
       const state = {
         OutRegistrationApprovalList: [],
+        DetailInfoList: [],
         count: 0,
         loading: true,
+        detailLoading: true,
       };
 
       return {
@@ -141,6 +166,10 @@ const outRegistrationModel: OutRegistrationType = {
       yield put({
         type: 'saveDetailInfoList',
         payload: back.data,
+      });
+      yield put({
+        type: 'detailLoading',
+        payload: false,
       });
     },
   },

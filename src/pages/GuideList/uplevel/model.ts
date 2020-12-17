@@ -16,6 +16,8 @@ export interface UpgradeApprovalType {
     loading: Reducer<UpgradeApprovalState>;
     cleanState: Reducer<UpgradeApprovalState>;
     saveDetailInfoList: Reducer<UpgradeApprovalState>;
+    detailLoading: Reducer<UpgradeApprovalState>;
+    cleanDetail: Reducer<UpgradeApprovalState>;
   };
   effects: {
     queryUpgradeApproval: Effect;
@@ -31,6 +33,7 @@ const upgradeApprovalModel: UpgradeApprovalType = {
     count: 0,
     loading: true,
     DetailInfoList: [],
+    detailLoading: true,
   },
   reducers: {
     saveCount(state, { payload }) {
@@ -69,11 +72,34 @@ const upgradeApprovalModel: UpgradeApprovalType = {
       };
     },
 
+    detailLoading(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state));
+      newState.detailLoading = payload;
+
+      return {
+        ...newState,
+      };
+    },
+
+    cleanDetail(state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state));
+      newState.detailLoading = payload;
+      newState.detailLoading = {};
+      const sa = {
+        DetailInfoList: [],
+      };
+      return {
+        ...newState,
+        ...sa,
+      };
+    },
+
     cleanState() {
       const state = {
         UpgradeApprovalList: [],
         count: 0,
         loading: true,
+        detailLoading: true,
       };
 
       return {
@@ -126,6 +152,11 @@ const upgradeApprovalModel: UpgradeApprovalType = {
       yield put({
         type: 'saveDetailInfoList',
         payload: back.data,
+      });
+
+      yield put({
+        type: 'detailLoading',
+        payload: false,
       });
     },
 

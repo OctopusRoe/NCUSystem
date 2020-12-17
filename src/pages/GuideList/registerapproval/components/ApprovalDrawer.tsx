@@ -1,9 +1,10 @@
-import { Button, Col, Divider, Drawer, Row, Table, Tag, Image } from 'antd';
+import { Button, Col, Divider, Drawer, Row, Table, Tag, Image, Spin, Modal } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
 import getPort from '@/services/global';
 import { connect, Dispatch } from 'umi';
 import FileViewer from '@/assets/react-file-viewer/index'
+import { DownloadOutlined } from '@ant-design/icons';
 
 interface ApprovalDrawerProps {
   drawerVisible: boolean;
@@ -12,11 +13,12 @@ interface ApprovalDrawerProps {
   dispatch: Dispatch;
   detailId: any;
   afterClose: () => void;
+  loading: any
 }
 
 const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
-  const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose } = props;
-
+  const { drawerVisible, oncancel, infoData, dispatch, detailId, afterClose, loading } = props;
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const [num, setNum] = useState(0)
 
   const [childrenDrawerVisible, setChildrenDrawerVisible] = useState(false);
@@ -33,7 +35,7 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     { key: '成员最高数：', value: infoData !== undefined ? infoData.memberCount : '' },
     {
       key: '社团章程：',
-      value: <Tag color={'blue'} style={{ cursor: 'pointer' }}>在线查看</Tag>,
+      value: <Tag color={'blue'} style={{ cursor: 'pointer' }} onClick={() => setIsModalVisible(true)}>在线查看</Tag>,
     },
     {
       key: '申请材料：',
@@ -140,23 +142,23 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     const columns = [
       {
         title: '审批人',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'aa',
+        key: 'aa',
       },
       {
         title: '审批时间',
         dataIndex: 'personId',
-        key: 'personId',
+        key: 'persoaanId',
       },
       {
         title: '审批单位',
         dataIndex: 'college',
-        key: 'college',
+        key: 'sss',
       },
       {
         title: '审批结果',
         dataIndex: 'college',
-        key: 'college',
+        key: 'colleddge',
       },
     ];
 
@@ -193,75 +195,98 @@ const ApprovalDrawer: React.FC<ApprovalDrawerProps> = (props) => {
     // }, 0.5 * 1000);
   };
 
+  const modalCancel = () => {
+    setIsModalVisible(false)
+  }
+
+
   return (
-    <Drawer
-      destroyOnClose={true}
-      title="注册审批"
-      width={720}
-      onClose={() => oncancel()}
-      visible={drawerVisible}
-      bodyStyle={{ paddingBottom: 80 }}
-      footer={
-        <div
-          style={{
-            textAlign: 'right',
-          }}
-        >
-          <Button onClick={() => { setChildrenDrawerVisible(true); setNum(1) }} type="primary" style={{ marginRight: 8 }}>
-            审批通过
-          </Button>
-          <Button onClick={() => { setChildrenDrawerVisible(true); setNum(2) }} type="primary" danger>
-            拒绝通过
-          </Button>
-        </div>
-      }
-    >
-      <FileViewer fileType={'pdf'} filePath={'http://172.20.5.133:5000/api/v1/registapproval/getconstitution?Url=Temp%5CApplyConstitution%5C12345.pdf'} />
-      <div>
-        <Details />
-        <Divider >组织成员信息</Divider>
-        <MembersList />
-        <Divider >审批意见</Divider>
-        <ApprovalList />
-      </div>
-      <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.opposite : '')} style={{ display: 'none' }} id='oppositeImg' />
-      <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.front : '')} style={{ display: 'none' }} id='frontImg' />
-    
+    <React.Fragment>
+      <Modal destroyOnClose title="社团章程" visible={isModalVisible} onCancel={modalCancel} footer={<Button type='primary'><DownloadOutlined />下载</Button>}>
+        <FileViewer fileType={'docx'} filePath={'http://172.20.5.133:5000/api/v1/registapproval/getconstitution?Url=Temp%5CApplyConstitution%5C12345.docx'} />
+      </Modal>
       <Drawer
         destroyOnClose={true}
-        title={num === 1 ? '同意建议' : '拒绝理由'}
-        width={400}
-        closable={false}
-        onClose={() => setChildrenDrawerVisible(false)}
-        visible={childrenDrawerVisible}
-      >
-        <TextArea rows={10} id="textValue" />
-        <div style={{ paddingTop: '50px', textAlign: 'right' }}>
-          <Button
-            type="primary"
-            onClick={() => {
-              const data = {
-                Id: detailId,
-                Status: 2,
-                Value: document.getElementById('textValue')?.innerHTML,
-              };
-
-              // dispatch({
-              //   type: 'communityRegisterApproval/registerAudit',
-              //   payload: data,
-              // });
-              oncancel();
-              setChildrenDrawerVisible(false);
-              setTimeout(() => {
-                afterClose();
-              }, 0.5 * 1000);
+        title="注册审批"
+        width={720}
+        onClose={() => {
+          //关闭时重置loading 状态
+          dispatch({
+            type: 'communityRegisterApproval/cleanDetail'
+          })
+          oncancel()
+        }}
+        visible={drawerVisible}
+        bodyStyle={{ paddingBottom: 80 }}
+        footer={
+          <div
+            style={{
+              textAlign: 'right',
             }}
           >
-            确定
+            <Button onClick={() => { setChildrenDrawerVisible(true); setNum(1) }} type="primary" style={{ marginRight: 8 }}>
+              审批通过
           </Button>
-        </div>
+            <Button onClick={() => { setChildrenDrawerVisible(true); setNum(2) }} type="primary" danger>
+              拒绝通过
+          </Button>
+          </div>
+        }
+      >
+
+        {loading ? <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Spin size={'large'} delay={300} />
+        </div> : <div>
+            <Details />
+            <Divider >组织成员信息</Divider>
+            <MembersList />
+            <Divider >审批意见</Divider>
+            <ApprovalList />
+          </div>}
+
+        <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.opposite : '')} style={{ display: 'none' }} id='oppositeImg' />
+        <Image src={getPort('image/') + escape(infoData !== undefined ? infoData.front : '')} style={{ display: 'none' }} id='frontImg' />
+
+        <Drawer
+          destroyOnClose={true}
+          title={num === 1 ? '同意建议' : '拒绝理由'}
+          width={400}
+          closable={false}
+          onClose={() => setChildrenDrawerVisible(false)}
+          visible={childrenDrawerVisible}
+        >
+          <TextArea rows={10} id="textValue" />
+          <div style={{ paddingTop: '50px', textAlign: 'right' }}>
+            <Button
+              type="primary"
+              onClick={() => {
+                const data = {
+                  Id: detailId,
+                  Status: 2,
+                  Value: document.getElementById('textValue')?.innerHTML,
+                };
+
+                // dispatch({
+                //   type: 'communityRegisterApproval/registerAudit',
+                //   payload: data,
+                // });
+                oncancel();
+                //关闭时重置loading 状态
+                dispatch({
+                  type: 'communityRegisterApproval/cleanDetail'
+                })
+                setChildrenDrawerVisible(false);
+                setTimeout(() => {
+                  afterClose();
+                }, 0.5 * 1000);
+              }}
+            >
+              确定
+          </Button>
+          </div>
+        </Drawer>
       </Drawer>
-    </Drawer>
+    </React.Fragment>
   );
 };
 
