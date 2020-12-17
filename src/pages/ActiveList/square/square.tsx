@@ -22,7 +22,7 @@ const { Paragraph } = Typography;
 
 interface ProjectsProps {
   dispatch: Dispatch;
-  listAndsearchAndprojects: StateType;
+  ActiveSquare: StateType;
   loading: boolean;
 }
 
@@ -62,7 +62,7 @@ const testValue = () => {
 
 const ActiveSquare: React.FC<ProjectsProps> = ({
   dispatch,
-  listAndsearchAndprojects: { list = [] },
+  ActiveSquare: { list = [] },
   loading,
 }) => {
   // creat test data of list
@@ -123,7 +123,7 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
     <List<ListItemDataType>
       rowKey="id"
       pagination={{ showSizeChanger: false, pageSize: 8 }}
-      // loading={loading}
+      loading={loading}
       grid={{
         gutter: 16,
         xs: 1,
@@ -257,13 +257,13 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
 
 export default connect(
   ({
-    listAndsearchAndprojects,
+    ActiveSquare,
     loading,
   }: {
-    listAndsearchAndprojects: StateType;
+    ActiveSquare: StateType;
     loading: { models: { [key: string]: boolean } };
   }) => ({
-    listAndsearchAndprojects,
+    ActiveSquare,
     loading: loading.models.ActiveSquare,
   }),
 )(ActiveSquare);

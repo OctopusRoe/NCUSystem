@@ -1,22 +1,32 @@
 // 招新设置 组件
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Button, DatePicker, Divider, Image, message, Popconfirm } from 'antd';
-import { connect } from 'umi';
+import { Button, DatePicker, Divider, Image, Popconfirm } from 'antd';
+import { PaginationProps } from 'antd/lib/pagination';
+import { connect, Dispatch } from 'umi';
 import { PlusOutlined, QrcodeOutlined, SettingOutlined } from '@ant-design/icons';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 
-import { TableListItem } from './data.d';
-import { queryRule } from './service';
+import { TableListItem, RecruitmentSettingState } from './data.d';
+
 import SettingModal from './components/SettingModal';
 import EditorModal from './components/EditorModal';
 import AddModal from './components/AddModal';
 
 import moment from 'moment'
 
-const Statistic: React.FC<{}> = () => {
-  const actionRef = useRef<ActionType>();
+interface StatisticProps {
+  dataSource: any
+  loading: boolean
+  count: number
+  dispatch: Dispatch
+}
+
+const Statistic: React.FC<StatisticProps> = (props) => {
+
+  const { dataSource, loading, count, dispatch } = props
+
   const [settingmodalVisible, setSettingmodalVisible] = useState(false);
   const [EditorModalVisible, setEditorModalVIsible] = useState(false);
   const [formValue, setFormValue] = useState<any>({});
@@ -24,6 +34,12 @@ const Statistic: React.FC<{}> = () => {
   const [imgPath, setImgPath] = useState<string>(
     'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603790956805&di=f790eea405e9fa1fde821f54d7716ddf&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F25%2F04%2F20%2F16571d91951a416.jpg',
   );
+
+  const [current, setCurrent] = useState<number>(0)
+
+  const [searchValue, setSearchValue] = useState<number>()
+ 
+  
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '部门',
@@ -37,28 +53,32 @@ const Statistic: React.FC<{}> = () => {
     },
     {
       title: '招新要求',
-      dataIndex: 'requirements',
-      key: 'requirements',
+      dataIndex: 'request',
+      key: 'request',
     },
     {
       title: '招新人数',
-      dataIndex: 'count',
-      key: 'count',
+      dataIndex: 'number',
+      key: 'number',
     },
     {
       title: '报名人数',
-      dataIndex: 'registrationnumber',
-      key: 'registrationnumber',
+      dataIndex: 'entryNumber',
+      key: 'entryNumber',
     },
     {
       title: '录取人数',
-      dataIndex: 'enrollmentnumber',
-      key: 'enrollmentnumber',
+      dataIndex: 'admissionNumber',
+      key: 'admissionNumber',
     },
     {
       title: '状态',
-      dataIndex: 'state',
-      key: 'state',
+      dataIndex: 'status',
+      key: 'status',
+      valueEnum: {
+        0: { text: '招新中', status: 'success'},
+        1: { text: '已招满', status: 'default'}
+      }
     },
     {
       title: '操作',
@@ -76,7 +96,7 @@ const Statistic: React.FC<{}> = () => {
             编辑
           </a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除？" onConfirm={confirm} onCancel={cancel}>
+          <Popconfirm title="是否要删除？" onConfirm={() => confirm(record.id)} >
             <a>删除</a>
           </Popconfirm>
         </>
@@ -84,29 +104,109 @@ const Statistic: React.FC<{}> = () => {
     },
   ];
 
-  const confirm = () => {
-    message.success('删除成功');
+  useEffect(() => {
+    dispatch({
+      type: 'recruitmentSetting/searchList',
+      payload: {}
+    })
+
+    dispatch({
+      type: 'recruitmentSetting/getSetInfo'
+    })
+
+    dispatch({
+      type: 'recruitmentSetting/getInfo'
+    })
+
+    return () => {
+      dispatch({
+        type: 'recruitmentSetting/clean'
+      })
+
+      setSearchValue(new Date().getFullYear())
+    }
+  },[])
+
+  // 删除
+  const confirm = (id: string) => {
+    dispatch({
+      type: 'recruitmentSetting/deletPosition',
+      payload: id
+    })
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000)
   };
 
-  const cancel = () => {
-    message.error('取消删除');
-  };
+  // table 的 onChange 事件
+  const onChange = (pagination: PaginationProps, filters: any, sorter: any, extra: any) => {
+    
+    const params = {
+      year: searchValue,
+      pageSize: pagination.pageSize,
+      pageIndex: pagination.current
+    }
+
+    dispatch({
+      type: 'recruitmentSetting/loading',
+      payload: true
+    })
+
+    dispatch({
+      type: 'recruitmentSetting/searchList',
+      paylaod: params
+    })
+
+    setCurrent(pagination.current as number)
+  }
+
+  // 更新后的回调
+  const reloadValue = () => {
+    dispatch({
+      type: 'recruitmentSetting/loading',
+      payload: true
+    })
+
+    dispatch({
+      type: 'recruitmentSetting/searchList',
+      payload: {}
+    })
+  }
 
   return (
     <div>
       <ProTable<TableListItem>
-        rowKey="key"
+        rowKey="id"
         search={false}
-        actionRef={actionRef}
         headerTitle={''}
         toolBarRender={(action, {}) => [
-          // <Search enterButton />,
-          <DatePicker picker="year" defaultValue={moment('2020', 'YYYY')} />,
-          <Button type="primary" onClick={() => setSettingmodalVisible(true)}>
+          <DatePicker
+            picker="year"
+            defaultValue={moment(new Date().getFullYear().toString(), 'YYYY')}
+            onChange={(e) => {
+              setSearchValue(e?.year())
+              dispatch({
+                type: 'recruitmentSetting/loading',
+                payload: true
+              })
+              dispatch({
+                type: 'recruitmentSetting/searchList',
+                payload: {year: e?.year()}
+              })
+            }}
+          />,
+          <Button
+            type="primary"
+            onClick={() => setSettingmodalVisible(true)}
+          >
             <SettingOutlined />
             设置
           </Button>,
-          <Button type="primary" onClick={() => setAddmodalVisible(true)}>
+          <Button
+            type="primary"
+            onClick={() => setAddmodalVisible(true)}
+          >
             <PlusOutlined />
             新增
           </Button>,
@@ -120,22 +220,36 @@ const Statistic: React.FC<{}> = () => {
             二维码
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
+        dataSource={dataSource}
+        loading={loading}
+        onChange={onChange}
+        pagination={{ total: count, current: current}}
       />
       <EditorModal
+        formValue={formValue}
+        afterClose={reloadValue}
         modalVisible={EditorModalVisible}
         onCancel={() => setEditorModalVIsible(false)}
-        formValue={formValue}
       />
       <SettingModal
         modalVisible={settingmodalVisible}
         onCancel={() => setSettingmodalVisible(false)}
       />
-      <AddModal modalVisible={addmodalVisible} onCancel={() => setAddmodalVisible(false)} />
+      <AddModal
+        afterClose={reloadValue}
+        modalVisible={addmodalVisible}
+        onCancel={() => setAddmodalVisible(false)}
+      />
       <Image style={{ display: 'none' }} id={'settingQRCode'} src={imgPath} />
     </div>
   );
 };
 
-export default connect()(Statistic);
+export default connect(
+  ({recruitmentSetting}: {recruitmentSetting: RecruitmentSettingState}) => ({
+    dataSource: recruitmentSetting.list,
+    loading: recruitmentSetting.loading,
+    count: recruitmentSetting.count
+  })
+)(Statistic);

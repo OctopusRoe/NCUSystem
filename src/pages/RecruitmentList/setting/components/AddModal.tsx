@@ -1,25 +1,60 @@
-import { Button, Form, Input } from 'antd';
+import React, { useRef } from 'react';
+import { Button, Form, Input, Select } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import TextArea from 'antd/lib/input/TextArea';
 import Modal from 'antd/lib/modal/Modal';
-import React, { useRef } from 'react';
 
-interface EditorModalProps {
+import { connect, Dispatch } from 'umi'
+
+import { RecruitmentSettingState } from '../data'
+
+interface AddModalProps {
   modalVisible: boolean;
+  departmentList: any
+  positionList: any
   onCancel: () => void;
+  dispatch: Dispatch
+  afterClose: () => void
 }
 
-const AddModal: React.FC<EditorModalProps> = (props) => {
-  const { modalVisible, onCancel } = props;
-  const button = useRef<HTMLFontElement>(null);
-  //modal框确定按钮
-  const okChange = () => {
-    button.current?.click();
-  };
+const { Option } = Select
 
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
+// Option 渲染函数
+const getOption = (list: any[]) => {
+  if (!list || list.length === 0) {
+    return <Option value={0} >未查询到数据</Option>
+  }
+
+  return list.map((item: any, index: number) => (
+    <Option value={item.id} key={item.id}>{item.name}</Option>
+  ))
+}
+
+const AddModal: React.FC<AddModalProps> = (props) => {
+  
+  const { modalVisible, departmentList, positionList, onCancel, dispatch, afterClose } = props
+  const button = useRef<HTMLFontElement>(null)
+
+  const onFinish = (e: any) => {
+    const data = {
+      department: e.department,
+      position: e.position,
+      request: e.requirements,
+      number: e.count
+    }
+
+    dispatch({
+      type: 'recruitmentSetting/create',
+      payload: data
+    })
+
+    onCancel()
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000)
+
+  }
 
   return (
     <Modal
@@ -27,27 +62,41 @@ const AddModal: React.FC<EditorModalProps> = (props) => {
       title="新增部门"
       visible={modalVisible}
       onCancel={onCancel}
-      onOk={okChange}
+      onOk={() => button.current?.click()}
       okText="确定"
       cancelText="取消"
     >
-      <Form labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} onFinish={onFinish} hideRequiredMark autoComplete={'off'}>
+      <Form
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 17 }}
+        onFinish={onFinish}
+        hideRequiredMark
+        autoComplete={'off'}
+      >
         <FormItem
           name="department"
           label="部门"
           rules={[{ required: true, message: '请输入部门' }]}
         >
-          <Input />
+          <Select showSearch placeholder={'请选择部门'} >
+            {getOption(departmentList)}
+          </Select>
         </FormItem>
-        <FormItem name="position" label="职务" rules={[{ required: true, message: '请输入职务' }]}>
-          <Input />
+        <FormItem
+          name="position"
+          label="职务"
+          rules={[{ required: true, message: '请输入职务' }]}
+        >
+          <Select showSearch placeholder={'请选择职务'} >
+            {getOption(positionList)}
+          </Select>
         </FormItem>
         <FormItem
           name="requirements"
           label="招新要求"
           rules={[{ required: true, message: '请输入招新要求' }]}
         >
-          <TextArea showCount maxLength={100} rows={3} />
+          <TextArea showCount maxLength={100} rows={3} placeholder={'请输入...'} />
         </FormItem>
         <FormItem
           name="count"
@@ -64,4 +113,9 @@ const AddModal: React.FC<EditorModalProps> = (props) => {
   );
 };
 
-export default AddModal;
+export default connect(
+  ({recruitmentSetting}: {recruitmentSetting: RecruitmentSettingState}) => ({
+    departmentList: recruitmentSetting.department,
+    positionList: recruitmentSetting.position
+  })
+)(AddModal)

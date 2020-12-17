@@ -1,27 +1,42 @@
+import React, { useRef } from 'react';
 import { Button, Form, Input } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import TextArea from 'antd/lib/input/TextArea';
 import Modal from 'antd/lib/modal/Modal';
-import React, { useRef } from 'react';
+
+import { connect, Dispatch } from 'umi'
 
 interface EditorModalProps {
   modalVisible: boolean;
   onCancel: () => void;
-  formValue: { requirements: string; count: string; department: string; position: string };
+  formValue: { requirements: string; count: string; department: string; position: string, id: string };
+  afterClose: () => void
+  dispatch: Dispatch
 }
 
 const EditorModal: React.FC<EditorModalProps> = (props) => {
-  const { modalVisible, onCancel, formValue } = props;
+  const { modalVisible, onCancel, formValue, dispatch, afterClose } = props;
   const button = useRef<HTMLFontElement>(null);
 
-  //modal框确认按钮
-  const okChange = () => {
-    button.current?.click();
-    console.log(formValue);
-  };
+  const onFinish = (e: any) => {
+    
+    const data = {
+      Id: formValue.id,
+      request: e.request,
+      number: e.number
+    }
 
-  const onFinish = (value: any) => {
-    console.log('Success:', value);
+    dispatch({
+      type: 'recruitmentSetting/upData',
+      payload: data
+    })
+
+    setTimeout(() => {
+      afterClose()
+    }, 0.5 * 1000)
+
+    onCancel()
+
   };
 
   return (
@@ -30,7 +45,7 @@ const EditorModal: React.FC<EditorModalProps> = (props) => {
       title={`${formValue.department}-${formValue.position}`}
       visible={modalVisible}
       onCancel={onCancel}
-      onOk={okChange}
+      onOk={() => button.current?.click()}
       okText="确定"
       cancelText="取消"
     >
@@ -43,14 +58,14 @@ const EditorModal: React.FC<EditorModalProps> = (props) => {
         autoComplete={'off'}
       >
         <FormItem
-          name="requirements"
+          name="request"
           label="招新要求"
           rules={[{ required: true, message: '请输入招新要求' }]}
         >
           <TextArea showCount maxLength={100} rows={3} />
         </FormItem>
         <FormItem
-          name="count"
+          name="number"
           label="招新人数"
           rules={[{ required: true, message: '请输入招新人数' }]}
         >
@@ -64,4 +79,4 @@ const EditorModal: React.FC<EditorModalProps> = (props) => {
   );
 };
 
-export default EditorModal;
+export default connect()(EditorModal);

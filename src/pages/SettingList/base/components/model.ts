@@ -41,7 +41,7 @@ const baseViewModel: BaseViewModelType = {
       formData.append('SchoolName', payload.logo.originFileObj)
       formData.append('HelpDoc', payload.help.file.originFileObj)
 
-      const back = yield call(baseInfoUpdata(formData))
+      const back = yield call(baseInfoUpdata, formData)
       if (back.code !== 0) {
         message.error(back.msg)
         console.error(back.msg)

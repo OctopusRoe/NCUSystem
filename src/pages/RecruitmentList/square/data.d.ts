@@ -4,26 +4,59 @@ export interface Member {
   id: string;
 }
 
+// export interface ListItemDataType {
+//   id: string;
+//   owner: string;
+//   title: string;
+//   avatar: string;
+//   cover: string;
+//   status: 'normal' | 'exception' | 'active' | 'success';
+//   percent: number;
+//   logo: string;
+//   href: string;
+//   body?: any;
+//   updatedAt: number;
+//   createdAt: number;
+//   subDescription: string;
+//   description: string;
+//   activeUser: number;
+//   newUser: number;
+//   star: number;
+//   like: number;
+//   message: number;
+//   content: string;
+//   members: Member[];
+// }
+
+export interface Position {
+  id: string;
+  department: string;
+  position: string;
+  request: string;
+  number: number;
+  entryNumber: number;
+  isEnter: boolean
+}
+
 export interface ListItemDataType {
   id: string;
-  owner: string;
-  title: string;
-  avatar: string;
-  cover: string;
-  status: 'normal' | 'exception' | 'active' | 'success';
-  percent: number;
-  logo: string;
-  href: string;
-  body?: any;
-  updatedAt: number;
-  createdAt: number;
-  subDescription: string;
-  description: string;
-  activeUser: number;
-  newUser: number;
-  star: number;
-  like: number;
-  message: number;
-  content: string;
-  members: Member[];
+  poster: string;
+  name: string;
+  communityId: string;
+  slogan: string;
+  endDate: string;
+  category: number;
+  createDate: string;
+  level: number;
+  responsible: string;
+  qq: string;
+  guidanceUnit: string;
+  instructor: string;
+  entryNumber: number;
+  position: Position[]
+}
+
+export interface SquareState {
+  list: ListItemDataType[];
+  loading: boolean;
 }

@@ -1,48 +1,77 @@
+// 招新管理 招新广场 model
+
 import { Effect, Reducer } from 'umi';
+import { message } from 'antd'
 
-import { ListItemDataType } from './data.d';
-import { queryFakeList } from './service';
+import { SquareState } from './data.d';
+import { searchPosterList } from './service';
 
-export interface StateType {
-  list: ListItemDataType[];
-}
-
-export interface ModelType {
+interface SquareType {
   namespace: string;
-  state: StateType;
-  effects: {
-    fetch: Effect;
-  };
+  state: SquareState
   reducers: {
-    queryList: Reducer<StateType>;
-  };
+    saveList: Reducer<SquareState>
+    loading: Reducer<SquareState>
+  }
+  effects: {
+    searchPosterList: Effect
+  }
 }
 
-const Model: ModelType = {
-  namespace: 'listAndsearchAndprojects',
-
+const SquareModel: SquareType = {
+  namespace: 'recruitmentSquare',
   state: {
     list: [],
+    loading: true
   },
-
-  effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
-      yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
-      });
-    },
-  },
-
   reducers: {
-    queryList(state, action) {
+    saveList (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.list = payload
       return {
-        ...state,
-        list: action.payload,
-      };
+        ...newState
+      }
     },
+    loading (state, { payload }) {
+      const newState = JSON.parse(JSON.stringify(state))
+      newState.loading = payload
+      return {
+        ...newState
+      }
+    }
   },
-};
+  effects: {
+    *searchPosterList ({ payload }, { put, call}) {
 
-export default Model;
+      const data = {
+        page: {
+          pageSize: payload.pageSize ? payload.pageSize : 8,
+          pageIndex: payload.pageIndex ? payload.pageIndex : 1,
+        },
+        key: payload.key || '',
+        category: payload.category || [],
+        guidance: payload.guidance || null,
+        orderby: payload.orderby || '',
+      }
+
+      const back = yield call(searchPosterList, data)
+      if (back.code !== 0) {
+        message.error(back.msg)
+        console.error(back.msg)
+        return
+      }
+
+      yield put({
+        type: 'saveList',
+        payload: back.data
+      })
+
+      yield put({
+        type: 'loading',
+        payload: false
+      })
+    }
+  }
+}
+
+export default SquareModel
