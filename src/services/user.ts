@@ -47,3 +47,8 @@ export async function getDepartment () {
 export async function getTeacher (params: {PersonId: string}) {
   return request.get(getPort('community/getteacher'), {params: params})
 }
+
+// 获取活动类别列表
+export async function getActiveType () {
+  return request.get(getPort('activitytype/query'))
+}

@@ -2,19 +2,23 @@
 
 import React, { useState, useEffect } from 'react'
 
-import { Modal, Row, Col, Divider, Image, Switch, Table, Popover, message, Tag } from 'antd'
-import { ClockCircleOutlined } from '@ant-design/icons'
+import { Modal, Row, Col, Divider, Image, Switch, Table, Popover, Tag, Button, message } from 'antd'
+import { ClockCircleOutlined, DownloadOutlined } from '@ant-design/icons'
 
 import FormatGrid from './formartgrid'
 import { TableListItem } from './data'
+import { connect, Dispatch } from 'umi'
 
 import getPort from '@/services/global'
-
+import FileViewer from '@/assets/react-file-viewer/index'
 
 interface CardInfoProps {
   visible: boolean
+  joinNumber: number
   onCancel: () => void
   dataInfo: any
+  afterClose: () => void
+  dispatch: Dispatch
 }
 
 // 改变鼠标样式
@@ -22,38 +26,9 @@ const changeMouseStyle = {
   cursor: 'pointer'
 }
 
-// 测试数据
-const testData = () => {
-
-  const valueList = []
-
-  for (let i = 0; i < 100; i++) {
-    const value = {
-      key: i,
-      department: `测试部门${i}`,
-      position: `测试职务${i}`,
-      requirement: `测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求${i}`,
-      recruit: '10',
-      report: '100',
-      option: false
-    }
-    valueList.push(value)
-  }
-
-  return valueList
-  
-}
-
-const clickMe = () => {
-  message.error({
-    content: '测试用方法',
-    duration: 5
-  })
-}
-
 const CardInfo: React.FC<CardInfoProps> = (props) => {
 
-  const { dataInfo } = props
+  const { dataInfo,  afterClose, visible, onCancel, dispatch, joinNumber } = props
 
   if (!dataInfo) {
     return <></>
@@ -61,11 +36,13 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
 
   const [count, setCount] = useState<string>('')
 
+  const [fileVisible, setFileVible] = useState<boolean>(false)
+
   // 社团详细信息测试数据
   const data = [
-    [{title: '社团类别', value: dataInfo.category},{title: '成立时间', value: dataInfo.createDate},{title: '社团章程', value: <Tag onClick={clickMe} color={"blue"} style={changeMouseStyle} >在线查看</Tag>}],
+    [{title: '社团类别', value: dataInfo.category},{title: '成立时间', value: dataInfo.createDate},{title: '社团章程', value: <Tag onClick={() => setFileVible(true)} color={"blue"} style={changeMouseStyle} >在线查看</Tag>}],
     [{title: '社团级别', value: dataInfo.level},{title: '学生负责人', value: dataInfo.responsible},{title: '招新QQ群', value: dataInfo.qq,copy: true}],
-    [{title: '指导单位', value: '信息工程学院'},{title: '指导老师', value: '测试人员'}]
+    [{title: '指导单位', value: dataInfo.guidanceUnit},{title: '指导老师', value: dataInfo.instructor}]
   ]
 
   // 每列属性
@@ -124,7 +101,13 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
       key: 'option',
       render: (e, record: any) => (
         <>
-          <Switch checkedChildren="已报名" unCheckedChildren="未报名" onChange={(event)=>{sginUp(event, e, record)}} defaultChecked={record.isEnter} />
+          <Switch
+            checkedChildren="已报名"
+            unCheckedChildren="未报名"
+            onChange={(event)=>{sginUp(event, e, record)}}
+            defaultChecked={record.isEnter}
+            disabled={ joinNumber >= 2 ? true : false}
+          />
         </>
       ),
     },
@@ -137,25 +120,25 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
 
       record.entryNumber--
       record.isEnter = event
-      message.warning({
-        content: '取消成功',
-        duration: 5,
+      dispatch({
+        type: 'recruitmentSquare/cancelAssociation',
+        payload: record.id
       })
 
       setCount(new Date().getTime().toString())
       return
     }
 
+    dispatch({
+      type: 'recruitmentSquare/signAssociation',
+      payload: record.id
+    })
+
     record.entryNumber++
     record.isEnter = event
-    message.success({
-      content: '报名成功',
-      duration: 5,
-    })
 
     setCount(new Date().getTime().toString())
 
-    console.log(record)
   }
 
   // 模拟触发 antd Image组件的预览方法
@@ -163,7 +146,15 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
     document.getElementById('square-card-info-image')?.click()
   }
 
-  const { visible, onCancel } = props
+  const downLoad = () => {
+    dispatch({
+      type: 'recruitmentSquare/downFile',
+      payload: {
+        url: `${getPort('registapproval/getconstitution')}?Url=${escape(dataInfo.constitution)}`,
+        name: dataInfo.name
+      }
+    })
+  }
 
   useEffect(() => {}, [count])
 
@@ -171,7 +162,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
     <Modal
       destroyOnClose
       visible={visible}
-      onCancel={onCancel}
+      onCancel={() => {onCancel(); afterClose()}}
       width={1200}
       title={dataInfo.name}
       footer={null}
@@ -192,7 +183,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
           }
         </Col>
         </Row>
-      <Divider dashed style={{fontSize: '14px', color: '#D2D2D2'}} ><ClockCircleOutlined /> 报名截止时间：{dataInfo.endDate.split('T')[0]}</Divider>
+      <Divider dashed style={{fontSize: '14px', color: '#D2D2D2'}} ><ClockCircleOutlined /> 报名截止时间：{dataInfo.endDate && dataInfo.endDate.split('T')[0]}</Divider>
       <Row>
         <Col span={24}>
           <Table<any>
@@ -204,8 +195,19 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
           />
         </Col>
       </Row>
+      <Modal
+        destroyOnClose
+        title="社团章程"
+        width={800}
+        bodyStyle={{height: '700px'}}
+        visible={fileVisible}
+        onCancel={() => setFileVible(false)}
+        footer={<Button type='primary' onClick={downLoad}><DownloadOutlined />下载</Button>}
+      >
+        <FileViewer fileType={'docx'} filePath={`${getPort('registapproval/getconstitution')}?Url=${escape(dataInfo.constitution)}`} />
+      </Modal>
     </Modal>
   )
 }
 
-export default CardInfo
+export default connect()(CardInfo)

@@ -118,3 +118,8 @@ export interface AssociationTypeState {
 export interface DepartmentTypeState {
   valueList: {one: string, id: number}[]
 }
+
+// 活动类别的 state
+export interface ActiveTypeState {
+  valueList: {one: string, id: number}[]
+}

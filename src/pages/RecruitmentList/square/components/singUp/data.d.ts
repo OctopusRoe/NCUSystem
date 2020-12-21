@@ -5,6 +5,9 @@ export interface TableListItem {
   dataIndex: string
   width?: number | string
   key: string
+  request: string
+  status: boolean
+  id: string
   render?: (e: any, a: ListItem) => ReactNode
 }
 

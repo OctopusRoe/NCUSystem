@@ -158,10 +158,6 @@ const Department: React.FC<DepartmentProps> = (props) => {
       PageSize: pagination.pageSize,
       PageIndex: pagination.current,
     };
-    dispatch({
-      type: 'baseDepartment/searchDepartment',
-      payload: data,
-    });
 
     // 修改 table 的 loading 值
     dispatch({
@@ -169,19 +165,26 @@ const Department: React.FC<DepartmentProps> = (props) => {
       payload: true,
     });
 
+
+    dispatch({
+      type: 'baseDepartment/searchDepartment',
+      payload: data,
+    });
+
     setCurrent(pagination.current as number)
   };
 
   // 更新后的回调
   const reloadValue = () => {
-    dispatch({
-      type: 'baseDepartment/searchDepartment',
-      payload: {},
-    });
 
     dispatch({
       type: 'baseDepartment/loading',
       payload: true,
+    });
+
+    dispatch({
+      type: 'baseDepartment/searchDepartment',
+      payload: {},
     });
   };
 

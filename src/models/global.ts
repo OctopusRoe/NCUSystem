@@ -8,7 +8,8 @@ import {
   getAssociationLevel,
   getAssociationType,
   getDepartment,
-  getSchoolYear
+  getSchoolYear,
+  getActiveType
 } from '@/services/user';
 
 export interface GlobalModelState {
@@ -93,6 +94,7 @@ const GlobalModel: GlobalModelType = {
       const level = yield call(getAssociationLevel)
       const type = yield call(getAssociationType)
       const department = yield call(getDepartment)
+      const activeType = yield call(getActiveType)
       const schoolYear = yield call(getSchoolYear, {PageSize: 10, PageIndex: 1})
 
       switch (true) {
@@ -108,6 +110,10 @@ const GlobalModel: GlobalModelType = {
           message.error(department.msg)
           console.error(department.msg)
           return
+        case activeType.code !== 0:
+          message.error(activeType.msg)
+          console.error(activeType.msg)
+          return
         case schoolYear.code !== 0:
           message.error(schoolYear.msg)
           console.error(schoolYear.msg)
@@ -120,6 +126,7 @@ const GlobalModel: GlobalModelType = {
         level: level.data,
         type: type.data,
         department: department.data,
+        activeType: activeType.data,
         schoolYear: schoolYear.data
       }
 

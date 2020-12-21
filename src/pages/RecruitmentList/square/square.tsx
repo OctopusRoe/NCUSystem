@@ -23,7 +23,7 @@ interface ProjectsProps {
   dispatch: Dispatch;
   recruitmentSquare: SquareState;
   department: [],
-  type: []
+  type: [],
 }
 
 // 切换按钮列表
@@ -64,7 +64,7 @@ const getTagSelectOption = (list: any[]) => {
 
 const Square: React.FC<ProjectsProps> = ({
   dispatch,
-  recruitmentSquare: { list = [], loading },
+  recruitmentSquare: { list = [], loading, count, joinNumber },
   department,
   type
 }) => {
@@ -85,44 +85,55 @@ const Square: React.FC<ProjectsProps> = ({
   // 保存 input 输入框输入的搜索内容
   const [ inputSearch, setInputSearch ] = useState<string>('')
 
+  // 保存分页数
+  const [ current, setCurrent ] = useState<number>(1)
+
   useEffect(() => {
     dispatch({
       type: 'recruitmentSquare/searchPosterList',
       payload: {},
     });
+
+    dispatch({
+      type: 'recruitmentSquare/getJoinNumber',
+    });
+
+    return () => {
+      dispatch({
+        type: 'recruitmentSquare/clean'
+      });
+    }
   }, []);
 
   // 分页器改变的方法
   const pageSizeChange = (page: number, pageSize: number | undefined) => {
-
-  }
-
-  // 搜索的方法
-  const searchFunc = () => {
-
+    
     const data = {
-      page: {},
+      pageIndex: page,
       key: inputSearch,
       category: selectType,
       guidance: selectDepartment,
       orderby: sort
     }
 
-    console.log(data)
+    dispatch({
+      type: 'recruitmentSquare/loading',
+      payload: true
+    })
 
     dispatch({
       type: 'recruitmentSquare/searchPosterList',
       payload: data
     })
 
+    setCurrent(page)
   }
-
 
   const cardList = list && (
     <List<ListItemDataType>
       rowKey="id"
       loading={loading}
-      pagination={{ showSizeChanger: false, pageSize: 8, onChange: pageSizeChange, }}
+      pagination={{ showSizeChanger: false, pageSize: 8, onChange: pageSizeChange, total: count, current: current }}
       grid={{
         gutter: 16,
         xs: 1,
@@ -297,7 +308,13 @@ const Square: React.FC<ProjectsProps> = ({
       onTabChange={(key)=>setGetChildren(key)}
     >
       {getChildrenNode()}
-      <CardInfo onCancel={()=>{setVisible(false)}} dataInfo={dataInfo} visible={visible} />
+      <CardInfo
+        joinNumber={joinNumber}
+        afterClose={() => setDataInfo({})}
+        onCancel={()=>{setVisible(false)}}
+        dataInfo={dataInfo}
+        visible={visible}
+      />
     </PageContainer>
   );
 };
