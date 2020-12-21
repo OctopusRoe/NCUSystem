@@ -2,19 +2,16 @@
 
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Select, DatePicker, Button, Tooltip } from 'antd'
-import moment from 'moment'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 
 import CropImgView from '@/components/CropImgview'
 import { connect, Dispatch } from 'umi'
-
+import ApplyView from '@/components/ApplyView'
 import { CreateActiveState } from '../model'
 
 interface CreateActiveApplyProps {
   dispatch: Dispatch
-  typeList: string[]
-
-
+  typeList: {}[]
 }
 
 const FormItem = Form.Item
@@ -46,8 +43,8 @@ const getOption = (list: any[]) => {
     return <Option value={0}>未查询到数据</Option>
   }
 
-  return list.map((item: string) => (
-    <Option value={item} key={item}>{item}</Option>
+  return list.map((item: any) => (
+    <Option value={item.id} key={item.id}>{item.value}</Option>
   ))
 
 }
@@ -56,14 +53,28 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
 
   const { typeList, dispatch } = props
 
-  const [, setVisible] = useState<boolean>(false)
-
 
   const onFinish = (e: any) => {
-    setVisible(true)
-    console.log(e)
-    console.log(e.time[0].format('YYYY-MM-DD hh:mm:ss'));
-    console.log(e.time[1].format('YYYY-MM-DD hh:mm:ss'));
+
+    const data = {
+      Id: '',
+      Name: e.name,
+      Type: e.Type,
+      Sponsor: e.sponsor,
+      Organizer: e.organizer,
+      Posters: e.image.originFileObj,
+      StartTime: e.time[0].format('YYYY-MM-DD hh:mm'),
+      EndTime: e.time[1].format('YYYY-MM-DD hh:mm'),
+      Place: e.place,
+      Detail: e.info,
+      Scale: e.scale
+    }
+
+    dispatch({
+      type: 'createActive/activeApply',
+      payload: data,
+    })
+
   }
 
   return (
@@ -113,7 +124,7 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
             }
           ]}
         >
-          <Select showSearch placeholder={'请选择'}>
+          <Select placeholder={'请选择'}>
             {getOption(typeList)}
           </Select>
         </FormItem>
@@ -128,7 +139,7 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
             }
           ]}
         >
-          <Select showSearch placeholder={'请选择'}>
+          <Select placeholder={'请选择'}>
             {getOption(typeList)}
           </Select>
         </FormItem>
@@ -143,7 +154,11 @@ const CreateActiveApply: React.FC<CreateActiveApplyProps> = (props) => {
             }
           ]}
         >
-          <RangePicker showTime style={{ width: '100%' }} />
+          <RangePicker
+            showTime={{ format: 'HH:mm' }}
+            format="YYYY-MM-DD HH:mm"
+            style={{ width: '100%' }}
+          />
         </FormItem>
         <FormItem
           {...formItemLayout}

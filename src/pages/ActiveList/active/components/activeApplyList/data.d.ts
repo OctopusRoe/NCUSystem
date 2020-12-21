@@ -1,4 +1,6 @@
 export interface TableListItem {
+  createTime: any;
+  id(id: any): void;
   key: number;
   disabled?: boolean;
   href: string;
