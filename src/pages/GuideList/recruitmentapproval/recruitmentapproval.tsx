@@ -6,7 +6,6 @@ import { queryRule } from './service';
 import { TableListItem } from './data';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { DownloadOutlined } from '@ant-design/icons';
-import Infomodal from '@/components/InfoModal/Infomodal';
 import DetailsModal from '@/components/DetailsModal/DetailsModal'
 
 const RecruitmentApproval: React.FC<{}> = () => {

@@ -142,3 +142,13 @@ export async function getDepartmentType () {
 export async function upDepartmentType (data: FormData) {
   return request.put(getPort('sysbasicorganizationtype/sysbasicorganizationtypecreateorupdateordeletebat'), {data: data})
 }
+
+// 系统设置 活动类别 查询
+export async function getActiveType () {
+  return request.get(getPort('activitytype/query'))
+}
+
+// 系统设置 活动类别 修改
+export async function upActiveType (data: {id: number, name: string}[]) {
+  return request.post(getPort('activitytype/update'), {data: data})
+}

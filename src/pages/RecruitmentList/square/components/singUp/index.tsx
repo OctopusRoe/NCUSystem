@@ -1,50 +1,44 @@
 // 我的报名 组件
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Card, Table, Popover, Tag, Switch, message, Badge } from 'antd';
-
+import { Card, Popover, Tag, Switch, DatePicker } from 'antd';
+import ProTabel, { ProColumns } from '@ant-design/pro-table'
 import { TableListItem } from './data';
+import { connect, Dispatch } from 'umi'
+import { MysignUpState } from '../../data'
+
+import moment from 'moment'
+
+interface SingUpProps {
+  mySignUp: MysignUpState
+  dispatch: Dispatch
+}
+
 
 // 改变鼠标样式
 const changeMouseStyle = {
   cursor: 'pointer',
-};
+}
 
-// 测试数据
-const testData = () => {
-  const valueList = [];
+const SingUp: React.FC<SingUpProps> = ({
+  mySignUp: { list = [], loading, count},
+  dispatch
+}) => {
 
-  for (let i = 0; i < 100; i++) {
-    const value = {
-      key: i,
-      time: new Date().toLocaleDateString(),
-      name: `测试名称${i}`,
-      department: `测试部门${i}`,
-      position: `测试职务${i}`,
-      requirement: `测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求${i}`,
-      recruit: '10',
-      report: '100',
-      status: i % 3 === 1 ? 1 : 0,
-      option: false,
-    };
-    valueList.push(value);
-  }
+  const [ saveYear, setSaveYear ] = useState<number>(NaN)
+  const [ current, setCurrent ] = useState<number>(1)
 
-  return valueList;
-};
-
-const SingUp: React.FC<{}> = (props) => {
-  const columns: TableListItem[] = [
+  const columns: ProColumns<TableListItem>[] = [
     {
       title: '届数',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'session',
+      key: 'session',
     },
     {
       title: '社团名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'communityName',
+      key: 'communityName',
     },
     {
       title: '部门',
@@ -63,7 +57,7 @@ const SingUp: React.FC<{}> = (props) => {
       render: (_, record) => {
         const text = (
           <div>
-            <p style={{ width: '200px' }}>{record.requirement}</p>
+            <p style={{ width: '200px' }}>{record.request}</p>
           </div>
         );
 
@@ -80,31 +74,25 @@ const SingUp: React.FC<{}> = (props) => {
     },
     {
       title: '招新数',
-      dataIndex: 'recruit',
+      dataIndex: 'number',
       width: '10%',
-      key: 'recruit',
+      key: 'number',
     },
     {
       title: '报名数',
-      dataIndex: 'report',
+      dataIndex: 'entryNumber',
       width: '10%',
-      key: 'report',
+      key: 'entryNumber',
     },
     {
       title: '录取状态',
       dataIndex: 'status',
       width: '10%',
       key: 'status',
-      render: (e, record) => {
-        switch (e) {
-          case 0:
-            return <Badge status={'success'} text={'已录取'} />;
-            break;
-          default:
-            return <Badge status={'default'} text={'未录取'} />;
-            break;
-        }
-      },
+      valueEnum: {
+        'false': { text: '未录取', status: 'default' },
+        'true': { text: '录取', stateus: 'success' }
+      }
     },
     {
       title: '报名',
@@ -114,10 +102,11 @@ const SingUp: React.FC<{}> = (props) => {
       render: (e, record) => (
         <>
           <Switch
+            defaultChecked={true}
             checkedChildren="已报名"
             unCheckedChildren="未报名"
             onChange={(event) => {
-              sginUp(event, e, record);
+              sginUp(event, record);
             }}
           />
         </>
@@ -125,32 +114,100 @@ const SingUp: React.FC<{}> = (props) => {
     },
   ];
 
+  const reloadValue = () => {
+
+    dispatch({
+      type: 'mySignUp/loading',
+      payload: true
+    })
+
+    dispatch({
+      type: 'mySignUp/searchList',
+      payload: {}
+    })
+
+  }
+
   // Switch 组件的报名方法
-  const sginUp = (event: boolean, e: any, record: any) => {
-    if (!event) {
-      message.warning({
-        content: '取消成功',
-        duration: 5,
-      });
-      return;
+  const sginUp = (event: boolean, record: TableListItem) => {
+    if (record.status) {
+      return
     }
+
+    dispatch({
+      type: 'mySignUp/cancelAssociation',
+      payload: record.id
+    })
+
+    setTimeout(() => {
+      reloadValue()
+    }, 0.5 * 1000)
+
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'mySignUp/searchList',
+      payload: {}
+    })
+
+    return () => {
+      dispatch({
+        type: 'mySignUp/clean'
+      })
+
+      setSaveYear(NaN)
+    }
+  }, [])
+
+  const onChange = (pagination: any, filters: any) => {
+    const data = {
+      pageSize: pagination.pageSize,
+      pageIndex: pagination.current,
+      year: !isNaN(saveYear) ? saveYear : new Date().getFullYear()
+    }
+
+    dispatch({
+      type: 'mySignUp/loading',
+      payload: true
+    })
+
+    dispatch({
+      type: 'mySignUp/searchList',
+      payload: data
+    })
+
+    setCurrent(pagination.current)
+
+  }
+
+  const yearChange = (date: any) => {
+    setSaveYear(date.year())
+  }
 
   return (
     <Card>
-      <Table
-        rowKey="key"
+      <ProTabel
+        rowKey="id"
+        search={false}
+        toolBarRender={(action, e) => [
+          <DatePicker picker={'year'} placeholder={'请选择年份'} onChange={yearChange} defaultValue={moment(new Date())} />
+        ]}
         columns={columns}
-        dataSource={testData()}
-        pagination={{
-          size: 'small',
-          showSizeChanger: false,
-          pageSize: 20,
-          showTotal: (a, b) => false,
-        }}
+        dataSource={list}
+        loading={loading}
+        pagination={{ total: count, current: current}}
+        onChange={onChange}
+        // 操作栏的刷新控制
+        options={{reload: () => reloadValue()}}
+
       />
     </Card>
   );
 };
 
-export default SingUp;
+export default connect(
+  ({mySignUp}: {mySignUp: MysignUpState}) => ({
+    mySignUp
+  })
+)(SingUp)

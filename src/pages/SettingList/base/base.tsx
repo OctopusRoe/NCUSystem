@@ -16,6 +16,7 @@ import AssociationType from './components/associationtype'
 import AssociationGrade from './components/associationgrade'
 import DepartmentType from './components/departmenttype'
 import MicroSystem from './components/microsystem'
+import ActiveType from './components/activeType'
 
 const { Item } = Menu;
 
@@ -24,7 +25,7 @@ interface SettingsProps {
   currentUser: CurrentUser;
 }
 
-type SettingsStateKeys = 'base' | 'department' | 'academicyear' | 'specialty' | 'setclass' | 'onlineplatform'  | 'associationtype' | 'associationgrade' | 'departmenttype' | 'microsystem';
+type SettingsStateKeys = 'base' | 'department' | 'academicyear' | 'specialty' | 'setclass' | 'onlineplatform'  | 'associationtype' | 'associationgrade' | 'departmenttype' | 'activetype' | 'microsystem';
 interface SettingsState {
   mode: 'inline' | 'horizontal';
   menuMap: {
@@ -90,6 +91,12 @@ class Base extends Component<SettingsProps, SettingsState> {
           defaultMessage="Departmenttype Settings"
         />
       ),
+      activetype: (
+        <FormattedMessage
+          id="setting.menuMap.activetype"
+          defaultMessage="Departmenttype Settings"
+        />
+      ),
       microsystem: (
         <FormattedMessage
           id="setting.menuMap.microsystem"
@@ -121,6 +128,10 @@ class Base extends Component<SettingsProps, SettingsState> {
     // 获取单位类别
     this.props.dispatch({
       type: 'baseDepartmentType/getType'
+    })
+    // 获取活动类别
+    this.props.dispatch({
+      type: 'baseActiveType/getType'
     })
   }
 
@@ -187,6 +198,8 @@ class Base extends Component<SettingsProps, SettingsState> {
         return <AssociationType />;
       case 'departmenttype':
         return <DepartmentType />;
+      case 'activetype':
+        return <ActiveType />;
       case 'microsystem':
         return <MicroSystem />
       default:

@@ -57,6 +57,15 @@ export interface ListItemDataType {
 }
 
 export interface SquareState {
-  list: ListItemDataType[];
-  loading: boolean;
+  list: ListItemDataType[]
+  count: number
+  loading: boolean
+  signResult: boolean
+  joinNumber: number
+}
+
+export interface MysignUpState {
+  list: [],
+  count: number
+  loading: boolean
 }

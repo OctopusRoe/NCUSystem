@@ -8,6 +8,7 @@ export default {
   'setting.menuMap.associationgrade': '社团级别',
   'setting.menuMap.associationtype': '社团类别',
   'setting.menuMap.departmenttype': '单位类别',
+  'setting.menuMap.activetype': '活动类别',
   'setting.menuMap.microsystem': '小程序配置',
   
   'setting.basic.avatar': '头像',
