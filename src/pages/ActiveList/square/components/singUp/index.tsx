@@ -1,50 +1,36 @@
 // 我的报名 组件
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Card, Table, Popover, Tag, Switch, message, Badge } from 'antd';
-
 import { TableListItem } from './data';
+import { connect, Dispatch } from 'umi'
+import { ActiveListState } from '../../data'
+
+interface SingUpProps {
+  activeList: ActiveListState
+  dispatch: Dispatch
+}
 
 // 改变鼠标样式
 const changeMouseStyle = {
   cursor: 'pointer',
 };
 
-// 测试数据
-const testData = () => {
-  const valueList = [];
-
-  for (let i = 0; i < 100; i++) {
-    const value = {
-      key: i,
-      time: new Date().toLocaleDateString(),
-      name: `测试名称${i}`,
-      department: `测试部门${i}`,
-      position: `测试职务${i}`,
-      requirement: `测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求测试要求${i}`,
-      recruit: '10',
-      report: '100',
-      status: i % 3 === 1 ? 1 : 0,
-      option: false,
-    };
-    valueList.push(value);
-  }
-
-  return valueList;
-};
-
-const SingUp: React.FC<{}> = (props) => {
+const SingUp: React.FC<SingUpProps> = ({
+  activeList: { list = [], loading, count},
+  dispatch
+}) => {
   const columns: TableListItem[] = [
     {
       title: '活动名称',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '活动类型',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: '活动时间',
@@ -53,8 +39,8 @@ const SingUp: React.FC<{}> = (props) => {
     },
     {
       title: '活动地点',
-      dataIndex: 'position',
-      key: 'position',
+      dataIndex: 'place',
+      key: 'place',
     },
     {
       title: '活动详情',
@@ -123,6 +109,13 @@ const SingUp: React.FC<{}> = (props) => {
     },
   ];
 
+  useEffect(() => {
+    dispatch({
+      type: 'activeList/searchList',
+      payload: {}
+    })
+  }, [])
+
   // Switch 组件的报名方法
   const sginUp = (event: boolean, e: any, record: any) => {
     if (!event) {
@@ -137,9 +130,9 @@ const SingUp: React.FC<{}> = (props) => {
   return (
     <Card>
       <Table
-        rowKey="key"
+        rowKey="id"
         columns={columns}
-        dataSource={testData()}
+        dataSource={list}
         pagination={{
           size: 'small',
           showSizeChanger: false,
@@ -151,4 +144,8 @@ const SingUp: React.FC<{}> = (props) => {
   );
 };
 
-export default SingUp;
+export default connect(
+  ( {activeList}: {activeList: ActiveListState}) => ({
+    activeList
+  })
+)(SingUp)

@@ -146,7 +146,7 @@ const Square: React.FC<ProjectsProps> = ({
       dataSource={list}
       renderItem={(item) => (
         <List.Item>
-          <Card className={styles.card} hoverable cover={<img alt={item.name} src={`${getPort('image/')}${escape(item.poster)}`} onClick={()=>{showModal(item)}} />}>
+          <Card className={styles.card} hoverable onClick={()=>{showModal(item)}} cover={<img alt={item.name} src={`${getPort('image/')}${escape(item.poster)}`} style={{height: '239px'}} />}>
             <Card.Meta
               title={<a>{item.name}</a>}
               description={
@@ -174,11 +174,11 @@ const Square: React.FC<ProjectsProps> = ({
       <Card bordered={false}>
         <Form
           layout="inline"
-          onValuesChange={(e) => {
-            // 已禁止
-            // 表单项变化时请求数据
-            // 模拟查询表单生效
-          }}
+          // onValuesChange={(e) => {
+          // 已禁止
+          // 表单项变化时请求数据
+          // 模拟查询表单生效
+          // }}
         >
           <StandardFormRow title="社团类别" block style={{ paddingBottom: 11 }}>
             <FormItem name="category">

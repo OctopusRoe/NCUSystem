@@ -4,26 +4,49 @@ export interface Member {
   id: string;
 }
 
+// export interface ListItemDataType {
+//   id: string;
+//   owner: string;
+//   title: string;
+//   avatar: string;
+//   cover: string;
+//   status: 'normal' | 'exception' | 'active' | 'success';
+//   percent: number;
+//   logo: string;
+//   href: string;
+//   body?: any;
+//   updatedAt: number;
+//   createdAt: number;
+//   subDescription: string;
+//   description: string;
+//   activeUser: number;
+//   newUser: number;
+//   star: number;
+//   like: number;
+//   message: number;
+//   content: string;
+//   members: Member[];
+// }
+
 export interface ListItemDataType {
   id: string;
-  owner: string;
-  title: string;
-  avatar: string;
-  cover: string;
-  status: 'normal' | 'exception' | 'active' | 'success';
-  percent: number;
-  logo: string;
-  href: string;
-  body?: any;
-  updatedAt: number;
-  createdAt: number;
-  subDescription: string;
-  description: string;
-  activeUser: number;
-  newUser: number;
-  star: number;
-  like: number;
-  message: number;
-  content: string;
-  members: Member[];
+  name: string;
+  endTime: string;
+  scale: string;
+  detail: string;
+  posters: string;
+  entryNumber: number;
+}
+
+export interface SquareState {
+  list: []
+  count: number
+  loading: boolean
+  info: {}
+}
+
+export interface ActiveListState {
+  list: [],
+  count: number,
+  loading: boolean
 }

@@ -13,7 +13,6 @@ interface SquareType {
     saveList: Reducer<SquareState>
     saveCount: Reducer<SquareState>
     loading: Reducer<SquareState>
-    saveSignResult: Reducer<SquareState>
     saveJoinNumber: Reducer<SquareState>
     clean: Reducer<SquareState>
   }
@@ -32,7 +31,6 @@ const SquareModel: SquareType = {
     list: [],
     count: 0,
     loading: true,
-    signResult: false,
     joinNumber: 0,
   },
   reducers: {
@@ -60,14 +58,6 @@ const SquareModel: SquareType = {
         ...newState
       }
     },
-    // 保存报名结果
-    saveSignResult (state, { payload }) {
-      const newState = JSON.parse(JSON.stringify(state))
-      newState.signResult = payload
-      return {
-        ...newState
-      }
-    },
     // 保存已加入社团数
     saveJoinNumber (state, { payload }) {
       const newState = JSON.parse(JSON.stringify(state))
@@ -82,7 +72,6 @@ const SquareModel: SquareType = {
         list: [],
         count: 0,
         loading: true,
-        signResult: false,
         joinNumber: 0,
       }
     }
@@ -155,11 +144,6 @@ const SquareModel: SquareType = {
         console.error(back.msg)
         return
       }
-
-      yield put({
-        type: 'saveSignResult',
-        payload: true
-      })
 
       message.success('报名成功')
     },

@@ -7,14 +7,16 @@ import { Card, Col, Form, List, Row, Select, Typography, Input, Tag, Switch, mes
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, Dispatch } from 'umi';
-import { StateType } from './model';
-import { ListItemDataType } from './data';
+import { ListItemDataType, SquareState } from './data';
+import { GlobalModelState } from '@/models/global';
+
+import getPort from '@/services/global'
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
 import SingUp from './components/singUp';
 import styles from './style.less';
-
-import ActiveInfoModal from '@/components/ActiveInfoModal/ActiveInfoModal';
+// import ActiveInfoModal from '@/components/ActiveInfoModal/ActiveInfoModal';
+import ActiveSingUpModal from './components/ActiveSingUpModal'
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -22,8 +24,10 @@ const { Paragraph } = Typography;
 
 interface ProjectsProps {
   dispatch: Dispatch;
-  ActiveSquare: StateType;
+  activeSquare: SquareState;
   loading: boolean;
+  activeType: any;
+  department: any;
 }
 
 // 切换按钮列表
@@ -40,71 +44,98 @@ const formItemLayout = {
   },
 };
 
-const value: any = [];
-
-const testValue = () => {
-  for (let i = 0; i < 100; i++) {
-    value.push({
-      title: `测试用活动名${i}`,
-      content:
-        '测试用活动规则1，测试用活动规则2，测试用活动规则3，测试用活动规则4，测试用活动规则5',
-      src:
-        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1604483398656&di=fd62903774f27486cc86935a48c4480e&imgtype=0&src=http%3A%2F%2Fdik.img.kttpdq.com%2Fpic%2F44%2F30172%2F39bb32ae796d398e.jpg',
-      time: new Date().toLocaleDateString(),
-      type: '类型1',
-      sponsor: '测试用主办单位',
-      organizer: '测试用承办单位',
-      place: '测试用活动地点',
-      scale: '100',
-    });
+// Option 渲染函数
+const getOption = (list: any[]) => {
+  if (!list || list.length === 0) {
+    return <Option value={0} >未查询到数据</Option>
   }
-};
+
+  return list.map((item: any, index: number) => (
+    <Option value={item.id} key={item.id}>{item.name}</Option>
+  ))
+}
+
+// TagSelect.Option 渲染函数
+const getTagSelectOption = (list: any[]) => {
+  if (!list || list.length === 0) {
+    return <TagSelect.Option value={0} >未查询到数据</TagSelect.Option>
+  }
+
+  return list.map((item: any, index: number) => (
+      <TagSelect.Option value={item.id} key={item.id} >{item.name}</TagSelect.Option>
+    ))
+
+}
 
 const ActiveSquare: React.FC<ProjectsProps> = ({
   dispatch,
-  ActiveSquare: { list = [] },
-  loading,
+  activeSquare: { list = [], loading, count },
+  activeType,
+  department
 }) => {
-  // creat test data of list
-  testValue();
 
   const [visible, setVisible] = useState(false);
-  const [dataInfo, setDataInfo] = useState<any>();
   const [getChildren, setGetChildren] = useState<string>();
 
+  // 保存选择的活动类别
+  const [ selectType, setSelectType ] = useState<[]>([])
+
+  // 保存选择的主办单位
+  const [ selectSponsor, setSelectSponsor ] = useState<number | null>(null)
+
+  // 保存选择的排序
+  const [ sort, setSort ] = useState<string>('')
+
+  // 保存 input 输入框输入的搜索内容
+  const [ inputSearch, setInputSearch ] = useState<string>('')
+
+  // 保存分页数
+  const [ current, setCurrent ] = useState<number>(1)
+
+  useEffect(() => {
+    dispatch({
+      type: 'activeSquare/searchPosterList',
+      payload: {}
+    })
+
+    return () => {
+      dispatch({
+        type: 'activeSquare/clean'
+      })
+    }
+  }, [])
+
+  // 分页器改变的方法
+  const pageSizeChange = (page: number, pageSize: number | undefined) => {
+    
+    const data = {
+      pageIndex: page,
+      key: inputSearch,
+      category: selectType,
+      guidance: selectSponsor,
+      orderby: sort
+    }
+
+    dispatch({
+      type: 'activeSquare/loading',
+      payload: true
+    })
+
+    dispatch({
+      type: 'activeSquare/searchPosterList',
+      payload: data
+    })
+
+    setCurrent(page)
+  }
+
   const showModal = (item: any) => {
-    const testValue = {
-      src: item.src,
-      data: [
-        [
-          { title: '活动名称', value: item.title },
-          { title: '活动类型', value: item.type },
-          { title: '活动时间', value: item.time },
-        ],
-        [
-          { title: '主办单位', value: item.sponsor },
-          { title: '承办单位', value: item.organizer },
-          { title: '活动规模', value: item.scale },
-        ],
-        [
-          { title: '活动详情', value: item.content },
-          { title: '活动地点', value: item.place },
-          {
-            title: '报名',
-            value: (
-              <Switch
-                checkedChildren="已报名"
-                unCheckedChildren="未报名"
-                onChange={(event) => {
-                  sginUp(event);
-                }}
-              />
-            ),
-          },
-        ],
-      ],
-    };
-    setDataInfo(testValue);
+
+    dispatch({
+      type: 'activeSquare/getInfo',
+      payload: item.id
+    })
+
     setVisible(true);
   };
 
@@ -122,7 +153,7 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
   const cardList = list && (
     <List<ListItemDataType>
       rowKey="id"
-      pagination={{ showSizeChanger: false, pageSize: 8 }}
+      pagination={{ showSizeChanger: false, pageSize: 8, onChange: pageSizeChange, total: count, current: current }}
       loading={loading}
       grid={{
         gutter: 16,
@@ -133,19 +164,20 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
         xl: 4,
         xxl: 4,
       }}
-      dataSource={value}
+      dataSource={list}
       renderItem={(item: any, index: number) => (
         <List.Item key={index}>
           <Card
             className={styles.card}
             hoverable
-            cover={<img alt={item.title} src={item.src} onClick={() => showModal(item)} />}
+            onClick={() => showModal(item)} 
+            cover={<img alt={item.name} src={`${getPort('image/')}${escape(item.posters)}`} style={{height: '239px'}} />}
           >
             <Card.Meta
-              title={<a>{item.title}</a>}
+              title={<a>{item.name}</a>}
               description={
                 <Paragraph className={styles.item} ellipsis={{ rows: 2 }}>
-                  {item.content}
+                  {item.detail}
                 </Paragraph>
               }
             />
@@ -153,7 +185,7 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
               <span>{`活动规模: ${item.scale}人`}</span>
               <div className={styles.avatarList}>
                 <Tag icon={<ClockCircleOutlined />} color={'blue'}>
-                  {`截止时间：${new Date().toLocaleDateString()}`}
+                  {`截止时间：${item.endTime.split('T')[0]}`}
                 </Tag>
               </div>
             </div>
@@ -168,23 +200,29 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
       <Card bordered={false}>
         <Form
           layout="inline"
-          onValuesChange={() => {
-            // 表单项变化时请求数据
-            // 模拟查询表单生效
-            dispatch({
-              type: 'ActiveSquare/fetch',
-              payload: {
-                count: 8,
-              },
-            });
-          }}
+          // onValuesChange={(e) => {
+          // 已禁止
+          // 表单项变化时请求数据
+          // 模拟查询表单生效
+          // }}
         >
           <StandardFormRow title="活动类型" block style={{ paddingBottom: 11 }}>
             <FormItem name="category">
-              <TagSelect expandable>
-                <TagSelect.Option value="cat1">一类活动</TagSelect.Option>
-                <TagSelect.Option value="cat2">二类活动</TagSelect.Option>
-                <TagSelect.Option value="cat3">三类活动</TagSelect.Option>
+              <TagSelect expandable onChange={(e: any) => {
+                // 单击后调用查询接口，并且把数据保存起来，分页器调用
+                setSelectType(e)
+                dispatch({
+                  type: 'activeSquare/loading',
+                  payload: true
+                })
+                dispatch({
+                  type: 'activeSquare/searchPosterList',
+                  payload: {type: e}
+                })
+              }}
+              
+              >
+                {getTagSelectOption(activeType)}
               </TagSelect>
             </FormItem>
           </StandardFormRow>
@@ -195,12 +233,36 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
                   {...formItemLayout}
                   name="department"
                   label={'主办单位'}
-                  initialValue={'full'}
+                  initialValue={'allValue'}
                 >
-                  <Select style={{ width: '200px' }}>
-                    <Option value="full">全部</Option>
-                    <Option value="school">校团委</Option>
-                    <Option value="normal">信息工程学院</Option>
+                  <Select style={{ width: '200px' }} onChange={(e: any) => {
+                    // 单击后调用查询接口，并且把数据保存起来，分页器调用
+                    if (e === 'allValue') {
+                      setSelectSponsor(null)
+                      dispatch({
+                        type: 'activeSquare/loading',
+                        payload: true
+                      })
+                      dispatch({
+                        type: 'activeSquare/searchPosterList',
+                        payload: {sponsor: null}
+                      })
+                      return
+                    }
+
+                    setSelectSponsor(e)
+                    dispatch({
+                      type: 'activeSquare/loading',
+                      payload: true
+                    })
+                    dispatch({
+                      type: 'activeSquare/searchPosterList',
+                      payload: {sponsor: e}
+                    })
+                  }}
+                  >
+                    {department && <Option value={'allValue'} key={'allValue'} >全部</Option>}
+                    {getOption(department)}
                   </Select>
                 </FormItem>
               </Col>
@@ -210,11 +272,22 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
                   name="time"
                   label={'排序方式'}
                   style={{ width: '200px' }}
-                  initialValue={'time'}
+                  initialValue={'Date'}
                 >
-                  <Select style={{ width: '100px' }}>
-                    <Option value="time">按时间</Option>
-                    <Option value="hot">按热度</Option>
+                  <Select style={{ width: '100px' }} onChange={(e: string) => {
+                    // 单击后调用查询接口，并且把数据保存起来，分页器调用
+                    setSort(e)
+                    dispatch({
+                      type: 'activeSquare/loading',
+                      payload: true
+                    })
+                    dispatch({
+                      type: 'activeSquare/searchPosterList',
+                      payload: {orderby: e}
+                    })
+                  }}>
+                    <Option value="Date">按时间</Option>
+                    <Option value="Hot">按热度</Option>
                   </Select>
                 </FormItem>
               </Col>
@@ -224,6 +297,18 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
                     placeholder={'请输入'}
                     style={{ width: '250px' }}
                     enterButton={'搜索'}
+                    onSearch={(e: string) => {
+                      // input 搜索框的搜索方法
+                      setInputSearch(e)
+                      dispatch({
+                        type: 'activeSquare/loading',
+                        payload: true
+                      })
+                      dispatch({
+                        type: 'activeSquare/searchPosterList',
+                        payload: {key: e}
+                      })
+                    }}
                   />
                 </FormItem>
               </Col>
@@ -250,20 +335,21 @@ const ActiveSquare: React.FC<ProjectsProps> = ({
   return (
     <PageContainer tabList={tabList} onTabChange={(key) => setGetChildren(key)}>
       {getChildrenNode()}
-      <ActiveInfoModal visible={visible} info={dataInfo} onCancel={() => setVisible(false)} />
+      <ActiveSingUpModal visible={visible} onCancel={() => setVisible(false)} />
     </PageContainer>
   );
 };
 
 export default connect(
   ({
-    ActiveSquare,
-    loading,
+    activeSquare,
+    global
   }: {
-    ActiveSquare: StateType;
-    loading: { models: { [key: string]: boolean } };
+    activeSquare: SquareState;
+    global: GlobalModelState
   }) => ({
-    ActiveSquare,
-    loading: loading.models.ActiveSquare,
+    activeSquare,
+    activeType: global.SelectValue.activeType,
+    department: global.SelectValue.department
   }),
 )(ActiveSquare);

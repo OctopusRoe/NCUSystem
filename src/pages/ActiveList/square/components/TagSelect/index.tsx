@@ -162,7 +162,7 @@ class TagSelect extends Component<TagSelectProps, TagSelectState> {
             }
             return child;
           })}
-        {expandable && (
+        {/* {expandable && (
           <a className={styles.trigger} onClick={this.handleExpand}>
             {expand ? (
               <>
@@ -175,7 +175,7 @@ class TagSelect extends Component<TagSelectProps, TagSelectState> {
               </>
             )}
           </a>
-        )}
+        )} */}
       </div>
     );
   }
